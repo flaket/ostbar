@@ -1,9 +1,20 @@
+/* Have to define the parents height for this to work*/
+html
+{
+	height: 100%;
+}
+
+body
+{
+	height: 100%;
+}
+
 #customSidebar	
 {
 	background-color:#e0eeee; 
-	width:200px; 
-	height: 750px;
-	margin-left:100px;
+	width: 11%;
+	height: 85%;
+	margin-left:0.5%;
 	float:left; 
 	border:1px solid gray;
 	overflow:auto;
@@ -13,16 +24,16 @@
 #mainFrame		
 {
 	background-color:#fff8dc; 
-	margin-left:310px; 
-	height: 750px;
-	width: 1400px;
+	margin-left:12.5%; 
+	height: 85%;
+	width: 87%;
 	border:1px solid gray;
 	overflow:hidden;
 }
 
 .draggable
 {
-	height: 750px;
-	width: 1400px;
+	width: 85%;
+	height: 100%;
 	overflow:hidden;
 }
