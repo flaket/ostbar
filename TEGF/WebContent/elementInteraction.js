@@ -25,9 +25,12 @@ jQuery(document).ready(function(){
 		
 	});
 	
-	$(".draggable").dblclick(function(){
+	$(".draggable").dblclick(function(e){	
+		var src = $('img').attr('src').split('/');
+		var name = src[src.length-1].split('.')[0];
+		
 		$(".dialog").dialog({
-			title: "OST",
+			title: name,
 			resizable: false,
 			show: {
 				effect: "blind",
@@ -43,10 +46,10 @@ jQuery(document).ready(function(){
 					$(this).dialog("close");
 				},
 				"Delete": function(){
-					//må få elementet til å forsvinne og legge til et element igjen
+					$(e.target).remove();
 					$(this).dialog("close");
 				}
-			},
+			}
 		});
 	});
 	
