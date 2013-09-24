@@ -15,7 +15,7 @@ Based on
 Howto
 -----
 
-* Clone this repository: ``git clone git://github.com/strekmann/node-boilerplate.git``
+* Clone this repository: ``git clone git://github.com/flaket/ostbar.git``
 * Change directory: ``cd node-boilerplate``
 * Install dependencies: ``npm install``
 * Create a settings file, and remember to edit it: ``cp server/settings.example.js server/settings.js``
