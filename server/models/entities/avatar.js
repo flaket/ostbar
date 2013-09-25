@@ -18,7 +18,7 @@ Avatar.loadById = function(id, callback)
 {
 	if (Entity.validateDBAndCallback(db, callback))
 	{
-		db.query('SELECT * FROM avatar WHERE avatar_id = ?', function(error, rows, fields)
+		db.query('SELECT * FROM avatar WHERE avatar_id = ?', id, function(error, rows, fields)
 		{
 			if (error) throw error;
 

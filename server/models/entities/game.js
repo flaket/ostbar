@@ -2,7 +2,8 @@ var Entity 	= require('../entity');
 var DB 		= require('../db');
 var db 		= DB.instance;
 
-var Goal = require('./goal');
+var Goal 	= require('./goal');
+var Scene   = require('./scene');
 
 function Game(data)
 {
@@ -10,7 +11,7 @@ function Game(data)
 
 	this.game_id = data.game_id;
 	this.userId = data.user_id;
-	this.initialScene = 'FIKS OBJEKT, id: ' + data.initial_scene_id;
+	this.initialScene = data.initial_scene;
 	this.goal = data.goal;
 	this.created = data.created;
 	this.deleted = data.deleted;
@@ -34,7 +35,13 @@ Game.loadById = function(id, callback)
 				{
 					rows[0].goal = goal;
 
-					callback(new Game(rows[0]));
+					Scene.loadById(rows[0].initial_scene_id, function(scene)
+					{
+						rows[0].initial_scene = scene;
+
+						callback(new Game(rows[0]));
+					});
+					
 				});
 	  			
 	  		}
