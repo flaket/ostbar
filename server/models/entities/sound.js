@@ -1,6 +1,6 @@
-var Entity = require('../entity');
-var DB = require('../db');
-var db = DB.instance;
+var Entity 	= require('../entity');
+var DB 		= require('../db');
+var db 		= DB.instance;
 
 function Sound(data)
 {
