@@ -4,6 +4,7 @@ var db 		= DB.instance;
 
 var Avatar  = require('./avatar');
 var World 	= require('./world');
+var Element = require('./element');
 
 function Scene(data)
 {
@@ -12,7 +13,7 @@ function Scene(data)
 	this.sceneId = data.scene_id;
 	this.world = data.world;
 	this.backgroundAvatar = data.backgroundAvatar;
-	this.elements = '[...]';
+	this.elements = data.elements;
 }
 
 Scene.prototype = new Entity();
@@ -37,7 +38,12 @@ Scene.loadById = function(id, callback)
 					{
 						rows[0].world = world;
 
-						callback(new Scene(rows[0]));
+						Element.loadAllInScene(rows[0].scene_id, function(elements)
+						{
+							rows[0].elements = elements;
+
+							callback(new Scene(rows[0]));
+						});
 					});
 				});
 			}
