@@ -2,17 +2,17 @@ var localsettings = require('../settings.js');
 
 // -- global settings
 var settings = {
-    siteName        : 'strekmann',
+    siteName        : 'TEGF',
     sessionSecret   : localsettings.sessionSecret,
     uri             : 'http://localhost',
-    port            : process.env.PORT || 3000,
+    port            : process.env.PORT || 8888,
     db_name         : process.env.DB_NAME || 'test',
     debug           : 0,
     profile         : 0,
     auth            : localsettings.auth,
     redis           : {
         host        : '127.0.0.1',
-        port        : 6379
+        port        : 8888
     }
 };
 
