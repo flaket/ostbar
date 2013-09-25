@@ -25,9 +25,8 @@ jQuery(document).ready(function(){
 		
 	});
 	
-	$(".draggable").dblclick(function(e){	
-		var src = $('img').attr('src').split('/');
-		var name = src[src.length-1].split('.')[0];
+	$(".draggable").dblclick(function(e){			
+		var name = e.target.name;
 		
 		$(".dialog").dialog({
 			title: name,
