@@ -8,15 +8,17 @@ var Sound       = require('./entities/sound');
 var SubjectType = require('./entities/subjecttype');
 var World 		= require('./entities/world');
 
-Scene.loadById(1, function(scene)
-{
-	var myScene = scene;
-	console.log('found data', myScene);
-});
+var util 		= require('util');
 
-// Game.loadById(1, function(game)
+// Scene.loadById(function(scene)
 // {
-//     firstGame = game;
+// 	var myScene = scene;
+// 	console.log('found data', myScene);
+// }, 1);
 
-//     console.log('found data ', firstGame);
-// });
+Game.loadById(function(game)
+{
+    firstGame = game;
+
+    console.log('found game ', util.inspect(firstGame, false, null));
+}, 1);

@@ -1,6 +1,7 @@
 var Entity 	= require('../entity');
 var DB 		= require('../db');
 var db 		= DB.instance;
+var async 	= require('async');
 
 var Avatar  = require('./avatar');
 var World 	= require('./world');
@@ -20,39 +21,52 @@ Scene.prototype = new Entity();
 
 Scene.prototype.constructor = Scene;
 
-Scene.loadById = function(id, callback)
+Scene.loadById = function(callback, id)
 {
-	if (Entity.validateDBAndCallback(db, callback))
+	db.query('SELECT * FROM scene WHERE scene_id = ?', id, function(error, rows, fields)
 	{
-		db.query('SELECT * FROM scene WHERE scene_id = ?', id, function(error, rows, fields)
+		if (error) throw error;
+
+		if (rows.length == 1)
 		{
-			if (error) throw error;
+			var data = rows[0];
 
-			if (rows.length == 1)
+			async.parallel(
 			{
-				Avatar.loadById(rows[0].background_avatar_id, function(avatar)
+				backgroundAvatar: function(callback)
 				{
-					rows[0].backgroundAvatar = avatar;
-
-					World.loadById(rows[0].world_id, function(world)
+					Avatar.loadById(function(avatar)
 					{
-						rows[0].world = world;
-
-						Element.loadAllInScene(rows[0].scene_id, function(elements)
-						{
-							rows[0].elements = elements;
-
-							callback(new Scene(rows[0]));
-						});
-					});
-				});
-			}
-			else
+						callback(null, avatar);
+					}, data.background_avatar_id);
+				},
+				elements: function(callback)
+				{
+					Element.loadAllInScene(function(elements)
+					{
+						callback(null, elements);
+					}, data.scene_id);
+				},
+				world: function(callback)
+				{
+					World.loadById(function(world) {
+						callback(null, world);
+					}, data.world_id);
+				}
+			},
+			function(error, results)
 			{
-				callback(null);
-			}
-		});
-	}
+				data.backgroundAvatar = results.backgroundAvatar;
+				data.elements = results.elements;
+				data.world = results.world;
+				callback(new Scene(data));
+			});
+		}
+		else
+		{
+			callback(null);
+		}
+	});
 }
 
 module.exports = Scene;

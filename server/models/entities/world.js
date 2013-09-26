@@ -15,24 +15,21 @@ World.prototype = new Entity();
 
 World.prototype.constructor = World;
 
-World.loadById = function(id, callback)
+World.loadById = function(callback, id)
 {
-	if (Entity.validateDBAndCallback(db, callback))
+	db.query('SELECT * FROM world WHERE world_id = ?', id, function(error, rows, fields)
 	{
-		db.query('SELECT * FROM world WHERE world_id = ?', id, function(error, rows, fields)
-		{
-			if (error) throw error;
+		if (error) throw error;
 
-			if (rows.length == 1)
-			{
-				callback(new World(rows[0]));
-			}
-			else
-			{
-				callback(null);
-			}
-		});
-	}
+		if (rows.length == 1)
+		{
+			callback(new World(rows[0]));
+		}
+		else
+		{
+			callback(null);
+		}
+	});
 }
 
 module.exports = World;

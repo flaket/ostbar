@@ -1,6 +1,7 @@
 var Entity 	= require('../entity');
 var DB 		= require('../db');
 var db 		= DB.instance;
+var async 	= require('async');
 
 function Goal(data)
 {
@@ -14,26 +15,21 @@ Goal.prototype = new Entity();
 
 Goal.prototype.constructor = Goal;
 
-Goal.loadById = function(id, callback)
+Goal.loadById = function(callback, id)
 {
-	if (Entity.validateDBAndCallback(db, callback))
+	db.query('SELECT * FROM goal WHERE goal_id = ?', id, function(error, rows, fields)
 	{
-		db.query('SELECT * FROM goal WHERE goal_id = ?', id, function(error, rows, fields)
+		if (error) throw error;
+
+		if (rows.length == 1)
 		{
-			if (error) throw error;
-
-			console.log('fetched rows', rows);
-
-			if (rows.length == 1)
-			{
-				callback(new Goal(rows[0]));
-			}
-			else
-			{
-				callback(null);
-			}
-		});
-	}
+			callback(new Goal(rows[0]));
+		}
+		else
+		{
+			callback(null);
+		}
+	});
 }
 
 module.exports = Goal;
