@@ -1,4 +1,4 @@
-var Entity 	= require('../entity');
+var Entity 	= require('../entity').Entity;
 var DB 		= require('../db');
 var db 		= DB.instance;
 
@@ -15,9 +15,9 @@ World.prototype = new Entity();
 
 World.prototype.constructor = World;
 
-World.loadById = function(callback, id)
+World.loadById = function (callback, id)
 {
-	db.query('SELECT * FROM world WHERE world_id = ?', id, function(error, rows, fields)
+	db.query('SELECT * FROM world WHERE world_id = ?', id, function (error, rows, fields)
 	{
 		if (error) throw error;
 
@@ -32,4 +32,4 @@ World.loadById = function(callback, id)
 	});
 }
 
-module.exports = World;
+module.exports.World = World;

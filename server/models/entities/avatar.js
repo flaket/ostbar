@@ -1,4 +1,4 @@
-var Entity 	= require('../entity');
+var Entity 	= require('../entity').Entity;
 var DB 		= require('../db');
 var db 		= DB.instance;
 var async 	= require('async');
@@ -15,9 +15,9 @@ Avatar.prototype = new Entity();
 
 Avatar.prototype.constructor = Avatar;
 
-Avatar.loadById = function(callback, id)
+Avatar.loadById = function (callback, id)
 {
-	db.query('SELECT * FROM avatar WHERE avatar_id = ?', id, function(error, rows, fields) {
+	db.query('SELECT * FROM avatar WHERE avatar_id = ?', id, function (error, rows, fields) {
 		if (error) throw error;
 
 		if (rows.length == 1)
@@ -31,9 +31,9 @@ Avatar.loadById = function(callback, id)
 	});
 }
 
-Avatar.loadAll = function(callback)
+Avatar.loadAll = function (callback)
 {
-	db.query('SELECT * FROM avatar', function(error, rows, fields)
+	db.query('SELECT * FROM avatar', function (error, rows, fields)
 	{
 		if (error) throw error;
 
@@ -52,4 +52,4 @@ Avatar.loadAll = function(callback)
 	});
 }
 
-module.exports = Avatar;
+module.exports.Avatar = Avatar;

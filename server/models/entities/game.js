@@ -1,10 +1,10 @@
-var Entity 	= require('../entity');
+var Entity 	= require('../entity').Entity;
 var DB 		= require('../db');
 var db 		= DB.instance;
 var async 	= require('async');
 
-var Goal 	= require('./goal');
-var Scene   = require('./scene');
+var Goal 	= require('./goal').Goal;
+var Scene   = require('./scene').Scene;
 // var util  	= require('util');
 
 function Game(data)
@@ -23,9 +23,9 @@ Game.prototype = new Entity();
 
 Game.prototype.constructor = Game;
 
-Game.loadById = function(callback, id)
+Game.loadById = function (callback, id)
 {
-	db.query('SELECT * FROM game WHERE game_id = ?', id, function(error, rows, fields)
+	db.query('SELECT * FROM game WHERE game_id = ?', id, function (error, rows, fields)
 	{
   		if (error) throw error;
 
@@ -35,26 +35,33 @@ Game.loadById = function(callback, id)
 
   			async.parallel(
   			{
-				goal: function(callback)
+				goal: function (callback)
 				{
-					Goal.loadById(function(goal)
+					Goal.loadById(function (goal)
 					{
 						callback(null, goal);
 					}, rows[0].goal_id);
 				},
-				initial_scene: function(callback)
+				initial_scene: function (callback)
 				{
-					Scene.loadById(function(scene)
+					Scene.loadById(function (scene)
 					{
 						callback(null, scene);
 					}, rows[0].initial_scene_id);
 				}
 			},
-			function(error, results)
+			function (error, results)
 			{
-				data.goal = results.goal;
-				data.initial_scene = results.initial_scene;
-				callback(new Game(data));
+				if (error)
+				{
+					callback(null);
+				}
+				else
+				{
+					data.goal = results.goal;
+					data.initial_scene = results.initial_scene;
+					callback(new Game(data));
+				}
 			});
   		}
   		else
@@ -64,4 +71,4 @@ Game.loadById = function(callback, id)
 	});
 };
 
-module.exports = Game;
+module.exports.Game = Game;

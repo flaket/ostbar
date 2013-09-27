@@ -1,4 +1,4 @@
-var Entity 	= require('../entity');
+var Entity 	= require('../entity').Entity;
 var DB 		= require('../db');
 var db 		= DB.instance;
 var async 	= require('async');
@@ -12,9 +12,9 @@ TemplateEntity.prototype = new Entity();
 
 TemplateEntity.prototype.constructor = TemplateEntity;
 
-TemplateEntity.loadById = function(callback, id)
+TemplateEntity.loadById = function (callback, id)
 {
-	db.query('SELECT * FROM ... WHERE ... = ?', id, function(error, rows, fields)
+	db.query('SELECT * FROM ... WHERE ... = ?', id, function (error, rows, fields)
 	{
 		if (error) throw error;
 
@@ -29,4 +29,4 @@ TemplateEntity.loadById = function(callback, id)
 	});
 }
 
-module.exports = TemplateEntity;
+module.exports.TemplateEntity = TemplateEntity;

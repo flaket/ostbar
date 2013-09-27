@@ -1,34 +1,68 @@
-var Entity 	= require('../entity');
+var Entity 	= require('../entity').Entity;
 var DB 		= require('../db');
 var db 		= DB.instance;
 var async 	= require('async');
+var util 	= require('util');
+
+var ActionType 	= require('./actiontype').ActionType;
+var ElementType = require('./elementtype').ElementType;
 
 function Element(data)
 {
 	Entity.call(this);
 
 	this.elementId 		= data.element_id;
-	this.elementType 	= 'FIKS OBJEKT, id: ' + data.element_type_id;
+	this.elementType 	= data.element_type;
 	this.frameX 		= data.frame_x;
 	this.frameY 		= data.frame_y;
 	this.frameWidth 	= data.frame_width;
 	this.frameHeight 	= data.frame_height;
-	this.actionTypes 	= '[...]';
+	this.actionTypes 	= data.action_types;
 }
 
 Element.prototype = new Entity();
 
 Element.prototype.constructor = Element;
 
-Element.loadById = function(callback, id)
+Element.loadById = function (callback, id)
 {
-	db.query('SELECT * FROM element WHERE element_id = ?', id, function(error, rows, fields)
+	db.query('SELECT * FROM element WHERE element_id = ?', id, function (error, rows, fields)
 	{
 		if (error) throw error;
 
 		if (rows.length == 1)
 		{
-			callback(new Element(rows[0]));
+			var data = rows[0];
+
+			async.parallel(
+			{
+				elementType: function (callback)
+				{
+					ElementType.loadById(function (elementType)
+					{
+						callback(null, elementType);
+					}, data.element_type_id);
+				},
+				actionTypes: function (callback)
+				{
+					ActionType.loadAllInElement(function (actionTypes) {
+						callback(null, actionTypes);
+					}, data.element_id);
+				}
+			},
+			function (error, results)
+			{
+				if (error) 
+				{
+					callback(null);
+				}
+				else
+				{
+					data.element_type = results.elementType;
+					data.action_types = results.actionTypes;
+					callback(new Element(data));
+				}
+			});
 		}
 		else
 		{
@@ -37,30 +71,44 @@ Element.loadById = function(callback, id)
 	});
 }
 
-Element.loadAllInScene = function(callback, id)
+Element.loadAllInScene = function (callback, sceneId)
 {
-	var query;
-	query  = 'SELECT * ';
-	query += 'FROM scene_to_element_rel se_rel LEFT JOIN element e ON se_rel.element_id = e.element_id ';
-	query += 'WHERE se_rel.scene_id = ?';
+	var query = 'SELECT * FROM scene_to_element_rel se_rel WHERE se_rel.scene_id = ?';
 
-	db.query(query, id, function(error, rows, fields)
+	db.query(query, sceneId, function (error, rows, fields)
 	{
 		if (error) throw error;
 
 		var elements = new Array();
+		var currentElement = 0;
 
-		if (rows.length > 0)
-		{
-			for (key in rows)
-			{
-				var row = rows[key];
-				elements.push(new Element(row));
-			}
-		}
-
-		callback(elements);
+		async.whilst(
+		    function ()
+		    {
+		    	return elements.length < rows.length;
+		    },
+		    function (callback)
+		    {
+		    	Element.loadById(function (element)
+		    	{
+		    		currentElement++;
+		    		elements.push(element);
+		    		callback();
+		    	}, rows[currentElement].element_id);
+		    },
+		    function (error)
+		    {
+		    	if (error)
+		    	{
+		    		callback(null);
+		    	}
+		    	else
+		    	{
+		    		callback(elements);
+		    	}
+		    }
+		);
 	});
 }
 
-module.exports = Element;
+module.exports.Element = Element;

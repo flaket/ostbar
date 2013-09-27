@@ -1,4 +1,4 @@
-var Entity 	= require('../entity');
+var Entity 	= require('../entity').Entity;
 var DB 		= require('../db');
 var db 		= DB.instance;
 var async 	= require('async');
@@ -15,9 +15,9 @@ Sound.prototype = new Entity();
 
 Sound.prototype.constructor = Sound;
 
-Sound.loadById = function(callback, id)
+Sound.loadById = function (callback, id)
 {
-	db.query('SELECT * FROM sound WHERE sound_id = ?', function(error, rows, fields)
+	db.query('SELECT * FROM sound WHERE sound_id = ?', id, function (error, rows, fields)
 	{
 		if (error) throw error;
 
@@ -32,9 +32,9 @@ Sound.loadById = function(callback, id)
 	});
 }
 
-Sound.loadAll = function(callback)
+Sound.loadAll = function (callback)
 {
-	db.query('SELECT * FROM sound', function(error, rows, fields)
+	db.query('SELECT * FROM sound', function (error, rows, fields)
 	{
 		if (error) throw error;
 
@@ -53,4 +53,4 @@ Sound.loadAll = function(callback)
 	});
 }
 
-module.exports = Sound;
+module.exports.Sound = Sound;

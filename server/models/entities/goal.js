@@ -1,4 +1,4 @@
-var Entity 	= require('../entity');
+var Entity 	= require('../entity').Entity;
 var DB 		= require('../db');
 var db 		= DB.instance;
 var async 	= require('async');
@@ -15,9 +15,9 @@ Goal.prototype = new Entity();
 
 Goal.prototype.constructor = Goal;
 
-Goal.loadById = function(callback, id)
+Goal.loadById = function (callback, id)
 {
-	db.query('SELECT * FROM goal WHERE goal_id = ?', id, function(error, rows, fields)
+	db.query('SELECT * FROM goal WHERE goal_id = ?', id, function (error, rows, fields)
 	{
 		if (error) throw error;
 
@@ -32,4 +32,4 @@ Goal.loadById = function(callback, id)
 	});
 }
 
-module.exports = Goal;
+module.exports.Goal = Goal;
