@@ -111,4 +111,22 @@ Element.loadAllInScene = function (callback, sceneId)
 	});
 }
 
+Element.prototype.addActionType = function(callback, actionTypeId, data)
+{
+	var post = {
+		element_id: this.elementId, 
+		action_type_id: actionTypeId,
+		data: data
+	};
+
+	var query = 'INSERT INTO element_to_action_type_rel SET ?';
+
+	db.query(query, post, function (error, rows, fields)
+	{
+		if (error) throw error;
+
+		callback(true);
+	});
+}
+
 module.exports.Element = Element;

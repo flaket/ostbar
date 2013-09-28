@@ -1,4 +1,5 @@
 var ActionType  = require('./entities/actiontype').ActionType;
+var Activity 	= require('./entities/activity').Activity;
 var Avatar      = require('./entities/avatar').Avatar;
 var Element 	= require('./entities/element').Element;
 var Game        = require('./entities/game').Game;
@@ -19,7 +20,18 @@ var util 		= require('util');
 Game.loadById(function(game)
 {
     
-    firstGame = game;
-    console.log('found game ', util.inspect(firstGame, false, null));
+    var firstGame = game;
+    // console.log('found game ', util.inspect(firstGame, false, null));
 
+    var initialScene = game.initialScene;
+    var element = initialScene.elements[0];
+    
+    // console.log('found element'); 
+    // console.log(util.inspect(element, false, null));
+
+    var actionType = element.actionTypes[0];
+    Activity.loadById(function (activity)
+    {
+    	console.log('activity', activity);
+    }, actionType.data);
 }, 1);
