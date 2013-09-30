@@ -127,11 +127,13 @@ function OnChangeCheckBoxPickUp(){
 }
 function OnChangeCheckBoxAnimation(){
 	if(document.getElementById("animation").checked){
-		
 		// do some animation here
-		
+		$("#effectTypes").attr("disabled", false);
+		$("#button").attr("disabled", false);
 	}
 	else{
+		$("#effectTypes").attr("disabled", true);
+		$("#button").attr("disabled", true);
 	}
 }
 function OnChangeCheckBoxSound(){
