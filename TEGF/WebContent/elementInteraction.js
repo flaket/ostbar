@@ -46,7 +46,6 @@ jQuery(document).ready(function(){
 						// $("#activity").attr("disabled", true);
 						// $("#pickUp").attr("disabled", true);
 						
-
 						// // make a new scene here
 					// }
 					// else{
@@ -141,6 +140,10 @@ jQuery(document).ready(function(){
 	
 	
 });
+
+var sceneDisabled = false;
+var activityDisabled = false;
+var dialogDisabled = false;
 
 function OnChangeCheckBoxScene(){
 	if(document.getElementById("scene").checked){
