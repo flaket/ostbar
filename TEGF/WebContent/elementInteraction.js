@@ -75,20 +75,26 @@ jQuery(document).ready(function(){
 	
 });
 
-var sceneDisabled = false;
-var activityDisabled = false;
-var dialogDisabled = false;
+var sceneChecked = false;
+var activityChecked = false;
+var dialogChecked = false;
+var pickUpChecked = false;
+var animationChecked = false;
+var soundChecked = false;
 
 function OnChangeCheckBoxScene(){
 	if(document.getElementById("scene").checked){
 		$("#activity").attr("disabled", true);
 		$("#pickUp").attr("disabled", true);
-		
+		sceneChecked = true;
 		// make a new scene here
 	}
 	else{
-		$("#activity").attr("disabled", false);
-		$("#pickUp").attr("disabled", false);
+		sceneChecked = false;
+		if(!pickUpChecked)
+			$("#activity").attr("disabled", false);
+		if(!activityChecked)
+			$("#pickUp").attr("disabled", false);
 	}
 }
 
@@ -96,22 +102,28 @@ function OnChangeCheckBoxActivity(){
 	if(document.getElementById("activity").checked){
 		$("#scene").attr("disabled", true);
 		$("#pickUp").attr("disabled", true);
-
+		activityChecked = true;
 		// make a new activity here
 	}
 	else{
-		$("#scene").attr("disabled", false);
-		$("#pickUp").attr("disabled", false);
+		activityChecked = false;
+		
+		if(!pickUpChecked)
+			$("#scene").attr("disabled", false);
+		if(!sceneChecked)
+			$("#pickUp").attr("disabled", false);
 	}
 }
 function OnChangeCheckBoxDialog(){
 	if(document.getElementById("dialog").checked){
-	$("#pickUp").attr("disabled", true);
-
+		$("#pickUp").attr("disabled", true);
+		dialogChecked = true;
 	// make a new dialog here
 	}
 	else{
-		$("#pickUp").attr("disabled", false);
+		dialogChecked = false;
+		if(!sceneChecked && !activityChecked)
+			$("#pickUp").attr("disabled", false);
 	}
 }
 
@@ -120,33 +132,41 @@ function OnChangeCheckBoxPickUp(){
 		$("#scene").attr("disabled", true);
 		$("#activity").attr("disabled", true);
 		$("#dialog").attr("disabled", true);
-
+		pickUpChecked = true;
 		// make an element pickable here
 	}
 	else{
-		$("#scene").attr("disabled", false);
-		$("#activity").attr("disabled", false);
+		pickUpChecked = false;
+		
+		if(!activityChecked)
+			$("#scene").attr("disabled", false);
+		if(!sceneChecked)
+			$("#activity").attr("disabled", false);
+		
 		$("#dialog").attr("disabled", false);
 	}
 }
 function OnChangeCheckBoxAnimation(){
 	if(document.getElementById("animation").checked){
 		// do some animation here
+		animationChecked = true;
 		$("#effectTypes").attr("disabled", false);
 		$("#button").attr("disabled", false);
 	}
 	else{
+		animationChecked = false;
 		$("#effectTypes").attr("disabled", true);
 		$("#button").attr("disabled", true);
 	}
 }
 function OnChangeCheckBoxSound(){
 	if(document.getElementById("sound").checked){
-		
+		soundChecked = true;
 		// play a sound here
 		
 	}
 	else{
+		soundChecked = false;
 	}
 }
 
