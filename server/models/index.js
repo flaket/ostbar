@@ -1,22 +1,37 @@
-var mongoose = require('mongoose');
+var ActionType  = require('./entities/actiontype').ActionType;
+var Activity 	= require('./entities/activity').Activity;
+var Avatar      = require('./entities/avatar').Avatar;
+var Element 	= require('./entities/element').Element;
+var Game        = require('./entities/game').Game;
+var Goal 		= require('./entities/goal').Game;
+var Scene 		= require('./entities/scene').Scene;
+var Sound       = require('./entities/sound').Sound;
+var SubjectType = require('./entities/subjecttype').SubjectType;
+var World 		= require('./entities/world').World;
 
-var UserSchema = new mongoose.Schema({
-    _id: {type: String, lowercase: true, trim: true, required: true, unique: true},
-    username: {type: String, lowercase: true, trim: true, required: true, unique: true},
-    name: {type: String, required: true},
-    email: {type: String},
-    password: {type: String},
-    is_active: {type: Boolean, 'default': true},
-    is_admin: {type: Boolean, 'default': false},
-    created: {type: Date, required: true, 'default': Date.now},
-    google_id: {type: String},
-    google_email: {type: String},
-    google_link: {type: String},
-    google_picture: {type: String}
-});
+var util 		= require('util');
 
-var User = mongoose.model('User', UserSchema);
+// Scene.loadById(function(scene)
+// {
+// 	var myScene = scene;
+// 	console.log('found data', util.inspect(myScene, false, null));
+// }, 1);
 
-module.exports = {
-    User: User
-};
+Game.loadById(function(game)
+{
+    
+    var firstGame = game;
+    // console.log('found game ', util.inspect(firstGame, false, null));
+
+    var initialScene = game.initialScene;
+    var element = initialScene.elements[0];
+    
+    // console.log('found element'); 
+    // console.log(util.inspect(element, false, null));
+
+    var actionType = element.actionTypes[0];
+    Activity.loadById(function (activity)
+    {
+    	console.log('activity', activity);
+    }, actionType.data);
+}, 1);

@@ -25,12 +25,26 @@ jQuery(document).ready(function(){
 		
 	});
 	
-	$(".draggable").dblclick(function(e){			
+//	$(".dialog").append(
+//			'<input id="scene" type ="checkbox" name="to_scene" /> To Scene <br>',
+//			'<input id="activity" type ="checkbox" name="to_activity" /> To Activity <br>',
+//			'<input id="dialog" type ="checkbox" name="dialog" /> Dialog <br>',
+//			'<input id="pickUp" type ="checkbox" name="pick_up" /> Pick Up <br>',
+//			'<input id="animation" type ="checkbox" name="animation" /> Animation <br>',
+//			'<input id="sound" type ="checkbox" name="sound" /> Sound <br>'
+//	);
+	
+	
+	$(".draggable").dblclick(function(e){	
 		var name = e.target.name;
+		var target = e.target;
+		alert(target);
 		
+		// a new dialog should me made for each element, and should remember check boxes checked 
 		$(".dialog").dialog({
 			title: name,
 			resizable: false,
+			appendTo: ".draggable",
 			show: {
 				effect: "blind",
 				duration: 500
@@ -38,19 +52,68 @@ jQuery(document).ready(function(){
 			modal: true,
 			buttons: {
 				"Confirm": function(){
+					
+					// these checks should be done somewhere else
+					if(document.getElementById("scene").checked){
+						$("#activity").attr("disabled", true);
+						$("#pickUp").attr("disabled", true);
+						
+						// make a new scene here
+						
+						$("#activity").attr("disabled", false);
+						$("#pickUp").attr("disabled", fase);
+					}
+					if(document.getElementById("activity").checked){
+						$("#scene").attr("disabled", true);
+						$("#pickUp").attr("disabled", true);
+
+						// make a new activity here
+						
+						$("#scene").attr("disabled", false);
+						$("#pickUp").attr("disabled", false);
+					}
+					if(document.getElementById("dialog").checked){
+						$("#pickUp").attr("disabled", true);
+
+						// make a new dialog here
+						
+						$("#pickUp").attr("disabled", false);
+					}
+					if(document.getElementById("pickUp").checked){
+						$("#scene").attr("disabled", true);
+						$("#activity").attr("disabled", true);
+						$("#dialog").attr("disabled", true);
+
+						// make an element pickable here
+						
+						$("#scene").attr("disabled", false);
+						$("#activity").attr("disabled", false);
+						$("#dialog").attr("disabled", false);
+					}
+					if(document.getElementById("animation").checked){
+						
+						// do some animation here
+						
+					}
+					if(document.getElementById("sound").checked){
+						
+						// play a sound here
+						
+					}
 					$(this).dialog("close");
-					//må utføre sjekk for hva som er trykket og handle etter det
 				},
 				Cancel: function(){
 					$(this).dialog("close");
 				},
 				"Delete": function(){
-					$(e.target).remove();
+					$('input[type=checkbox]').attr('checked', false);
+					$(target).remove();
 					$(this).dialog("close");
 				}
 			}
 		});
 	});
+	
 	
 });
 

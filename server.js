@@ -3,8 +3,11 @@ var app = require('./server/app'),
     http = require('http');
 
 // -- database
-var mongoose = require('mongoose');
-app.db = mongoose.connect('mongodb://localhost/' + app.conf.db_name);
+var mysql = require('mysql');
+app.db = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'peterringset',
+});
 
 // -- handle node exceptions
 process.on('uncaughtException', function(err){
