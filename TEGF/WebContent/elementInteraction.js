@@ -34,7 +34,6 @@ jQuery(document).ready(function(){
 //			'<input id="sound" type ="checkbox" name="sound" /> Sound <br>'
 //	);
 	
-	
 	$(".draggable").dblclick(function(e){	
 		var name = e.target.name;
 		var target = e.target;
@@ -52,54 +51,58 @@ jQuery(document).ready(function(){
 			modal: true,
 			buttons: {
 				"Confirm": function(){
-					
 					// these checks should be done somewhere else
-					if(document.getElementById("scene").checked){
-						$("#activity").attr("disabled", true);
-						$("#pickUp").attr("disabled", true);
+					// if(document.getElementById("scene").checked){
+						// $("#activity").attr("disabled", true);
+						// $("#pickUp").attr("disabled", true);
 						
-						// make a new scene here
-						
-						$("#activity").attr("disabled", false);
-						$("#pickUp").attr("disabled", fase);
-					}
-					if(document.getElementById("activity").checked){
-						$("#scene").attr("disabled", true);
-						$("#pickUp").attr("disabled", true);
+						// // make a new scene here
+					// }
+					// else{
+						// $("#activity").attr("disabled", false);
+						// $("#pickUp").attr("disabled", false);
+					// }
+					// if(document.getElementById("activity").checked){
+						// $("#scene").attr("disabled", true);
+						// $("#pickUp").attr("disabled", true);
 
-						// make a new activity here
-						
-						$("#scene").attr("disabled", false);
-						$("#pickUp").attr("disabled", false);
-					}
-					if(document.getElementById("dialog").checked){
-						$("#pickUp").attr("disabled", true);
+						// // make a new activity here
+					// }
+					// else{
+						// $("#scene").attr("disabled", false);
+						// $("#pickUp").attr("disabled", false);
+					// }
+					
+					// if(document.getElementById("dialog").checked){
+						// $("#pickUp").attr("disabled", true);
 
-						// make a new dialog here
-						
-						$("#pickUp").attr("disabled", false);
-					}
-					if(document.getElementById("pickUp").checked){
-						$("#scene").attr("disabled", true);
-						$("#activity").attr("disabled", true);
-						$("#dialog").attr("disabled", true);
+						// // make a new dialog here
+					// }
+					// else{
+						// $("#pickUp").attr("disabled", false);
+					// }
+					// if(document.getElementById("pickUp").checked){
+						// $("#scene").attr("disabled", true);
+						// $("#activity").attr("disabled", true);
+						// $("#dialog").attr("disabled", true);
 
-						// make an element pickable here
+						// // make an element pickable here
+					// }
+					// else{
+						// $("#scene").attr("disabled", false);
+						// $("#activity").attr("disabled", false);
+						// $("#dialog").attr("disabled", false);
+					// }
+					// if(document.getElementById("animation").checked){
 						
-						$("#scene").attr("disabled", false);
-						$("#activity").attr("disabled", false);
-						$("#dialog").attr("disabled", false);
-					}
-					if(document.getElementById("animation").checked){
+						// // do some animation here
 						
-						// do some animation here
+					// }
+					// if(document.getElementById("sound").checked){
 						
-					}
-					if(document.getElementById("sound").checked){
+						// // play a sound here
 						
-						// play a sound here
-						
-					}
+					// }
 					$(this).dialog("close");
 				},
 				Cancel: function(){
@@ -116,4 +119,73 @@ jQuery(document).ready(function(){
 	
 	
 });
+
+function OnChangeCheckBoxScene(){
+	if(document.getElementById("scene").checked){
+		$("#activity").attr("disabled", true);
+		$("#pickUp").attr("disabled", true);
+		
+		// make a new scene here
+	}
+	else{
+		$("#activity").attr("disabled", false);
+		$("#pickUp").attr("disabled", false);
+	}
+}
+
+function OnChangeCheckBoxActivity(){
+	if(document.getElementById("activity").checked){
+		$("#scene").attr("disabled", true);
+		$("#pickUp").attr("disabled", true);
+
+		// make a new activity here
+	}
+	else{
+		$("#scene").attr("disabled", false);
+		$("#pickUp").attr("disabled", false);
+	}
+}
+function OnChangeCheckBoxDialog(){
+	if(document.getElementById("dialog").checked){
+	$("#pickUp").attr("disabled", true);
+
+	// make a new dialog here
+	}
+	else{
+		$("#pickUp").attr("disabled", false);
+	}
+}
+
+function OnChangeCheckBoxPickUp(){
+	if(document.getElementById("pickUp").checked){
+		$("#scene").attr("disabled", true);
+		$("#activity").attr("disabled", true);
+		$("#dialog").attr("disabled", true);
+
+		// make an element pickable here
+	}
+	else{
+		$("#scene").attr("disabled", false);
+		$("#activity").attr("disabled", false);
+		$("#dialog").attr("disabled", false);
+	}
+}
+function OnChangeCheckBoxAnimation(){
+	if(document.getElementById("animation").checked){
+		
+		// do some animation here
+		
+	}
+	else{
+	}
+}
+function OnChangeCheckBoxSound(){
+	if(document.getElementById("sound").checked){
+		
+		// play a sound here
+		
+	}
+	else{
+	}
+}
 
