@@ -31,6 +31,14 @@ body
 	overflow: hidden;
 }
 
+.dialog
+{
+	width: 85%;
+	height: 100%;
+	overflow: hidden;
+}
+
+
 .draggable
 {
 	width: 85%;
