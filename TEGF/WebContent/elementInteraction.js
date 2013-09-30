@@ -88,6 +88,11 @@ function OnChangeCheckBoxScene(){
 		$("#pickUp").attr("disabled", true);
 		sceneChecked = true;
 		// make a new scene here
+		var option = {
+				to: "#customSidebar",
+				className: "ui-effects-transfer"
+		};
+		$(".draggable").effect("transfer", option, 500);
 	}
 	else{
 		sceneChecked = false;
@@ -149,6 +154,7 @@ function OnChangeCheckBoxPickUp(){
 function OnChangeCheckBoxAnimation(){
 	if(document.getElementById("animation").checked){
 		// do some animation here
+		
 		animationChecked = true;
 		$("#effectTypes").attr("disabled", false);
 		$("#button").attr("disabled", false);
