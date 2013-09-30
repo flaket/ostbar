@@ -75,6 +75,10 @@ jQuery(document).ready(function(){
 	
 });
 
+var sceneDisabled = false;
+var activityDisabled = false;
+var dialogDisabled = false;
+
 function OnChangeCheckBoxScene(){
 	if(document.getElementById("scene").checked){
 		$("#activity").attr("disabled", true);
