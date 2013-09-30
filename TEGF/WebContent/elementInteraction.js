@@ -41,65 +41,6 @@ jQuery(document).ready(function(){
 			modal: true,
 			buttons: {
 				"Confirm": function(){
-					// these checks should be done somewhere else
-					// if(document.getElementById("scene").checked){
-						// $("#activity").attr("disabled", true);
-						// $("#pickUp").attr("disabled", true);
-						
-
-						// // make a new scene here
-					// }
-					// else{
-						// $("#activity").attr("disabled", false);
-						// $("#pickUp").attr("disabled", false);
-					// }
-					// if(document.getElementById("activity").checked){
-						// $("#scene").attr("disabled", true);
-						// $("#pickUp").attr("disabled", true);
-						// $("#activity").attr("disabled", false);
-						// $("#pickUp").attr("disabled", false);
-					// }
-					// if(document.getElementById("activity").checked){
-						// $("#scene").attr("disabled", true);
-						// $("#pickUp").attr("disabled", true);
-						// // make a new activity here
-					// }
-					// else{
-						// $("#scene").attr("disabled", false);
-						// $("#pickUp").attr("disabled", false);
-					// }
-					
-					// if(document.getElementById("dialog").checked){
-						// $("#pickUp").attr("disabled", true);
-
-						// // make a new dialog here
-					// }
-					// else{
-						// $("#pickUp").attr("disabled", false);
-					// }
-					// if(document.getElementById("pickUp").checked){
-						// $("#scene").attr("disabled", true);
-						// $("#activity").attr("disabled", true);
-						// $("#dialog").attr("disabled", true);
-
-						// // make an element pickable here
-					// }
-					// else{
-						// $("#scene").attr("disabled", false);
-						// $("#activity").attr("disabled", false);
-						// $("#dialog").attr("disabled", false);
-					// }
-					// if(document.getElementById("animation").checked){
-						
-						// // do some animation here
-						
-					// }
-					// if(document.getElementById("sound").checked){
-						
-						// // play a sound here
-						
-
-					// }
 					$(this).dialog("close");
 				},
 				Cancel: function(){
@@ -116,23 +57,15 @@ jQuery(document).ready(function(){
 	
 	// function for running animation
 	$(function() {
-	    // run the currently selected effect
 	    function runEffect() {
-	      // get effect type from
 	      var selectedEffect = $( "#effectTypes" ).val();
-	 
-	      // run the effect
 	      $( ".draggable" ).effect( selectedEffect, 500, callback );
 	    };
-	 
-	    // callback function to bring a hidden box back
 	    function callback() {
 	      setTimeout(function() {
 	        $( ".draggable" ).removeAttr( "style" ).hide().fadeIn();
 	      }, 1000 );
 	    };
-	 
-	    // set effect from select menu value
 	    $( "#button" ).click(function() {
 	      runEffect();
 	      return false;
