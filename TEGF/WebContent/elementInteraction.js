@@ -25,20 +25,10 @@ jQuery(document).ready(function(){
 		
 	});
 	
-//	$(".dialog").append(
-//			'<input id="scene" type ="checkbox" name="to_scene" /> To Scene <br>',
-//			'<input id="activity" type ="checkbox" name="to_activity" /> To Activity <br>',
-//			'<input id="dialog" type ="checkbox" name="dialog" /> Dialog <br>',
-//			'<input id="pickUp" type ="checkbox" name="pick_up" /> Pick Up <br>',
-//			'<input id="animation" type ="checkbox" name="animation" /> Animation <br>',
-//			'<input id="sound" type ="checkbox" name="sound" /> Sound <br>'
-//	);
-	
 	
 	$(".draggable").dblclick(function(e){	
 		var name = e.target.name;
 		var target = e.target;
-		alert(target);
 		
 		// a new dialog should me made for each element, and should remember check boxes checked 
 		$(".dialog").dialog({
@@ -61,7 +51,7 @@ jQuery(document).ready(function(){
 						// make a new scene here
 						
 						$("#activity").attr("disabled", false);
-						$("#pickUp").attr("disabled", fase);
+						$("#pickUp").attr("disabled", false);
 					}
 					if(document.getElementById("activity").checked){
 						$("#scene").attr("disabled", true);
@@ -100,7 +90,7 @@ jQuery(document).ready(function(){
 						// play a sound here
 						
 					}
-					$(this).dialog("close");
+//					$(this).dialog("close");
 				},
 				Cancel: function(){
 					$(this).dialog("close");
@@ -113,6 +103,31 @@ jQuery(document).ready(function(){
 			}
 		});
 	});
+	
+	// function for running animation
+	$(function() {
+	    // run the currently selected effect
+	    function runEffect() {
+	      // get effect type from
+	      var selectedEffect = $( "#effectTypes" ).val();
+	 
+	      // run the effect
+	      $( ".draggable" ).effect( selectedEffect, 500, callback );
+	    };
+	 
+	    // callback function to bring a hidden box back
+	    function callback() {
+	      setTimeout(function() {
+	        $( ".draggable" ).removeAttr( "style" ).hide().fadeIn();
+	      }, 1000 );
+	    };
+	 
+	    // set effect from select menu value
+	    $( "#button" ).click(function() {
+	      runEffect();
+	      return false;
+	    });
+	  });
 	
 	
 });
