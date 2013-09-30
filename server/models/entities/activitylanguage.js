@@ -3,6 +3,8 @@ var DB 		= require('../db');
 var db 		= DB.instance;
 var async 	= require('async');
 
+var LanguageQuestion = require('./languagequestion').LanguageQuestion;
+
 function ActivityLanguage(data)
 {
 	Entity.call(this);
@@ -43,6 +45,23 @@ ActivityLanguage.loadByActivityId = function (callback, activityId)
 
 		if (rows.length == 1)
 		{
+			var data = rows[0];
+
+			async.parallel(
+			{
+				questions: function (callback)
+				{
+					LanguageQuestion.loadAllInActivityLanguage(function (languageQuestions)
+					{
+						callback(null, languageQuestions);
+					}, data.)
+				}
+			},
+			function (error, results)
+			{
+				data.languageQuestions = results.languageQuestions;
+			});
+
 			callback(new ActivityLanguage(rows[0]));
 		}
 		else
