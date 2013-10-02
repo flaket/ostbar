@@ -52,10 +52,7 @@ Game.loadById = function (callback, id)
 			},
 			function (error, results)
 			{
-				if (error)
-				{
-					callback(null);
-				}
+				if (error) callback(null);
 				else
 				{
 					data.goal = results.goal;
@@ -64,10 +61,7 @@ Game.loadById = function (callback, id)
 				}
 			});
   		}
-  		else
-  		{
-  			callback(null);
-  		}
+  		else callback(null);
 	});
 };
 

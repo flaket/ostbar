@@ -3,13 +3,15 @@ var DB 		= require('../db');
 var db 		= DB.instance;
 var async 	= require('async');
 
+var QuizQuestion = require('./quizquestion').QuizQuestion;
+
 function ActivityQuiz(data)
 {
 	Entity.call(this);
 
 	this.activityQuizId = data.activity_quiz_id;
 	this.activity_id = data.activity_id;
-	this.questions = '[...]';
+	this.questions = data.quiz_questions;
 }
 
 ActivityQuiz.prototype = new Entity();
@@ -22,14 +24,8 @@ ActivityQuiz.loadById = function (callback, id)
 	{
 		if (error) throw error;
 
-		if (rows.length == 1)
-		{
-			callback(new ActivityQuiz(rows[0]));
-		}
-		else
-		{
-			callback(null);
-		}
+		if (rows.length == 1) ActivityQuiz.initWithData(callback, rows[0]);
+		else callback(null);
 	});
 }
 
@@ -39,14 +35,27 @@ ActivityQuiz.loadByActivityId = function (callback, activityId)
 	{
 		if (error) throw error;
 
-		if (rows.length == 1)
+		if (rows.length == 1) ActivityQuiz.initWithData(callback, rows[0]);
+		else callback(null);
+	});
+}
+
+ActivityQuiz.initWithData = function (callback, data)
+{
+	async.parallel(
+	{
+		questions: function (callback)
 		{
-			callback(new ActivityQuiz(rows[0]));
+			QuizQuestion.loadAllInActivityQuiz(function (questions)
+			{
+				callback(null, questions);
+			}, data.activity_quiz_id)
 		}
-		else
-		{
-			callback(null);
-		}
+	},
+	function (error, results)
+	{
+		data.quiz_questions = results.questions;
+		callback(new ActivityQuiz(data));
 	});
 }
 

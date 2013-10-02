@@ -3,13 +3,17 @@ var DB 		= require('../db');
 var db 		= DB.instance;
 var async 	= require('async');
 
+var MathOperator = require('./mathoperator').MathOperator;
+
 function ActivityMath(data)
 {
 	Entity.call(this);
 
 	this.activityMathId = data.activity_math_id;
 	this.activity_id = data.activity_id;
-	this.questions = '[...]';
+	this.operators = data.operators;
+	this.numbersRangeFrom = data.numbers_range_from;
+	this.numbersRangeTo = data.numbers_range_to;
 }
 
 ActivityMath.prototype = new Entity();
@@ -22,14 +26,8 @@ ActivityMath.loadById = function (callback, id)
 	{
 		if (error) throw error;
 
-		if (rows.length == 1)
-		{
-			callback(new ActivityMath(rows[0]));
-		}
-		else
-		{
-			callback(null);
-		}
+		if (rows.length == 1) ActivityMath.initWithData(callback, rows[0]);
+		else callback(null);
 	});
 }
 
@@ -39,14 +37,27 @@ ActivityMath.loadByActivityId = function (callback, activityId)
 	{
 		if (error) throw error;
 
-		if (rows.length == 1)
+		if (rows.length == 1) ActivityMath.initWithData(callback, rows[0]);
+		else callback(null);
+	});
+}
+
+ActivityMath.initWithData = function (callback, data)
+{
+	async.parallel(
+	{
+		operators: function (callback)
 		{
-			callback(new ActivityMath(rows[0]));
+			MathOperator.loadAllInActivityMath(function (operators)
+			{
+				callback(null, operators);
+			}, data.activity_math_id);
 		}
-		else
-		{
-			callback(null);
-		}
+	},
+	function (error, results)
+	{
+		data.operators = results.operators;
+		callback(new ActivityMath(data));
 	});
 }
 

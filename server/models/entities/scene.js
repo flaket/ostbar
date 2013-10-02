@@ -56,10 +56,7 @@ Scene.loadById = function (callback, id)
 			},
 			function (error, results)
 			{
-				if (error)
-				{
-					callback(null);
-				}
+				if (error) callback(null);
 				else
 				{
 					data.backgroundAvatar = results.backgroundAvatar;
@@ -69,10 +66,7 @@ Scene.loadById = function (callback, id)
 				}
 			});
 		}
-		else
-		{
-			callback(null);
-		}
+		else callback(null);
 	});
 }
 

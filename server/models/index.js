@@ -19,7 +19,6 @@ var util 		= require('util');
 
 Game.loadById(function(game)
 {
-    
     var firstGame = game;
     // console.log('found game ', util.inspect(firstGame, false, null));
 
@@ -32,6 +31,6 @@ Game.loadById(function(game)
     var actionType = element.actionTypes[0];
     Activity.loadById(function (activity)
     {
-    	console.log('activity', activity);
+    	console.log('activity', util.inspect(activity, false, null));
     }, actionType.data);
 }, 1);

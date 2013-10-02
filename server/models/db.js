@@ -2,7 +2,8 @@ function DB() {
 
 }
 
-DB.getInstance = function() {
+DB.getInstance = function()
+{
 	var mysql = require('mysql');
 
 	var db = mysql.createConnection({

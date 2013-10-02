@@ -6,7 +6,7 @@ var async 	= require('async');
 var ActivityLanguage 	= require('./activitylanguage').ActivityLanguage;
 var ActivityMath 		= require('./activitymath').ActivityMath;
 var ActivityQuiz 		= require('./activityquiz').ActivityQuiz;
-var Reward 	= require('./reward').Reward;
+var Reward 				= require('./reward').Reward;
 
 function Activity(data)
 {
@@ -65,10 +65,7 @@ Activity.loadById = function (callback, id)
 				callback(new Activity(data));
 			});
 		}
-		else
-		{
-			callback(null);
-		}
+		else callback(null);
 	});
 }
 

@@ -3,8 +3,9 @@ var DB 		= require('../db');
 var db 		= DB.instance;
 var async 	= require('async');
 
-var Avatar 	= require('./avatar').Avatar;
-var Sound 	= require('./sound').Sound;
+var Avatar 						= require('./avatar').Avatar;
+var Sound 						= require('./sound').Sound;
+var LanguageQuestionAlternative = require('./languagequestionalternative').LanguageQuestionAlternative;
 
 function LanguageQuestion(data)
 {
@@ -14,8 +15,8 @@ function LanguageQuestion(data)
 	this.activityLanguageId = data.activity_language_id;
 	this.languageQuestionType = data.language_question_type;
 	this.correctAlternative = data.correct_alternative;
-	this.data = data.dataObj;
-	this.alternatives = '[...]';
+	this.data = data.data;
+	this.alternatives = data.alternatives;
 }
 
 LanguageQuestion.prototype = new Entity();
@@ -28,14 +29,8 @@ LanguageQuestion.loadById = function (callback, id)
 	{
 		if (error) throw error;
 
-		if (rows.length == 1)
-		{
-			LanguageQuestion.initWithData(rows[0], callback);
-		}
-		else
-		{
-			callback(null);
-		}
+		if (rows.length == 1) LanguageQuestion.initWithData(rows[0], callback);
+		else callback(null);
 	});
 }
 
@@ -57,49 +52,57 @@ LanguageQuestion.loadAllInActivityLanguage = function(callback, activityLanguage
 			},
 			function (callback)
 			{
-				LanguageQuestion.initWithData(rows[currentLanguageQuestion], callback);
-				currentLanguageQuestion++;
+				LanguageQuestion.initWithData(function (languageQuestion)
+				{
+					languageQuestions.push(languageQuestion);
+					currentLanguageQuestion++;
+					callback();
+				}, rows[currentLanguageQuestion]);
 			},
 			function (error)
 			{
-				if (error)
-				{
-					callback(null);
-				}
-				else
-				{
-					callback(languageQuestions);
-				}
+				if (error) callback(null);
+				else callback(languageQuestions);
 			}
 		);
 	});
 }
 
-LanguageQuestion.initWithData = function (data, callback)
+LanguageQuestion.initWithData = function (callback, data)
 {
-	var dataClass = null;
-
 	switch (data.language_question_type)
 	{
-		case 'PICTURE_RECOGNIZE': dataClass = LanguageQuestionPicture;
-		case 'SOUND_RECOGNIZE': dataClass = LanguageQuestionSound;
+		case 'PICTURE_RECOGNIZE': dataClass = Avatar;
+		case 'SOUND_RECOGNIZE': dataClass = Sound;
 	}
 
 	async.parallel(
 	{
 		dataClass: function (callback)
 		{
-			subclass.loadById(function (dataObj)
+			dataClass.loadById(function (dataObj)
 			{
 				callback(null, dataObj);
 			}, data.data_id);
+		},
+		alternatives: function (callback)
+		{
+			LanguageQuestionAlternative.loadAllInLanguageQuestion(function (alternatives)
+			{
+				callback(null, alternatives);
+			}, data.language_question_id);
 		}
 	},
 	function (error, results)
 	{
-		data.data = results.dataObj;
+		if (error) callback(null)
+		else
+		{
+			data.data = results.dataClass;
+			data.alternatives = results.alternatives;
 
-		callback(new LanguageQuestion(data));
+			callback(new LanguageQuestion(data));	
+		}
 	});
 }
 

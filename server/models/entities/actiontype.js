@@ -21,20 +21,17 @@ ActionType.loadById = function (callback, id)
 	{
 		if (error) throw error;
 
-		if (rows.length == 1)
-		{
-			callback(new ActionType(rows[0]));
-		}
-		else
-		{
-			callback(null);
-		}
+		if (rows.length == 1) ActionType.initWithData(callback, rows[0]);
+		else callback(null);
 	});
 }
 
 ActionType.loadAllInElement = function (callback, elementId)
 {
-	var query = 'SELECT * FROM element_to_action_type_rel WHERE element_id = ?';
+	var query = 'SELECT * '
+		query += 'FROM element_to_action_type_rel e_to_at_rel LEFT JOIN action_type at ';
+		query += 'ON e_to_at_rel.action_type_id = at.action_type_id AND e_to_at_rel.element_id = ? ';
+		query += 'WHERE at.action_type_id IS NOT NULL';
 
 	db.query(query, elementId, function (error, rows, fields)
 	{
@@ -50,7 +47,7 @@ ActionType.loadAllInElement = function (callback, elementId)
 			},
 			function (callback)
 			{
-				ActionType.loadById(function (actionType)
+				ActionType.initWithData(function (actionType)
 				{
 					var buffer = new Buffer(rows[currentActionType].data, 'binary' );
 
@@ -60,21 +57,20 @@ ActionType.loadAllInElement = function (callback, elementId)
 					});
 
 					currentActionType++;
-					
 					callback();
-				}, rows[currentActionType].action_type_id)
+				}, rows[currentActionType])
 			},
-			function (error)
-			{
-				callback(actionTypes);
-			}
+			function (error) { callback(actionTypes); }
 		);
 	});
 }
 
 ActionType.loadAllInElementType = function (callback, elementTypeId)
 {
-	var query = 'SELECT * FROM element_type_to_action_type_rel WHERE element_type_id = ?';
+	var query = 'SELECT * ';
+		query += 'FROM element_type_to_action_type_rel et_to_at_rel LEFT JOIN action_type at ';
+		query += 'ON et_to_at_rel.action_type_id = at.action_type_id AND et_to_at_rel.element_type_id = ? ';
+		query += 'WHERE at.action_type_id IS NOT NULL';
 
 	db.query(query, elementTypeId, function (error, rows, fields)
 	{
@@ -90,20 +86,24 @@ ActionType.loadAllInElementType = function (callback, elementTypeId)
 			},
 			function (callback)
 			{
-				ActionType.loadById(function (actionType)
+				ActionType.initWithData(function (actionType)
 				{
 					actionTypes.push(actionType);
 					currentActionType++;
 					
 					callback();
-				}, rows[currentActionType].action_type_id)
+				}, rows[currentActionType]);
 			},
-			function (error)
-			{
-				callback(actionTypes);
-			}
+			function (error) { callback(actionTypes); }
 		);
 	});
+}
+
+ActionType.initWithData = function (callback, data)
+{
+	var actionType = new ActionType(data);
+
+	callback(actionType);
 }
 
 module.exports.ActionType = ActionType;

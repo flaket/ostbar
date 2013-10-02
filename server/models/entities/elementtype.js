@@ -14,7 +14,6 @@ function ElementType(data)
 	Entity.call(this);
 
 	this.elementTypeId = data.element_type_id;
-	this.data = data.data;
 	this.avatar = data.avatar;
 	this.sound = data.sound;
 	this.world = data.world;
@@ -66,10 +65,7 @@ ElementType.loadById = function (callback, id)
 			},
 			function (error, results)
 			{
-				if (error)
-				{
-					callback(null);
-				}
+				if (error) callback(null);
 				else
 				{
 					data.avatar = results.avatar;
@@ -81,10 +77,7 @@ ElementType.loadById = function (callback, id)
 				}
 			});
 		}
-		else
-		{
-			callback(null);
-		}
+		else callback(null);
 	});
 }
 

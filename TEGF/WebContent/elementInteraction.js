@@ -40,6 +40,8 @@ jQuery(document).ready(function(){
 		if(!name)
 			return
 		
+		console.log(target);
+
 		// a new dialog should me made for each element, and should remember check boxes checked 
 		$(".dialog").dialog({
 			// autoOpen: true,
