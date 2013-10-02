@@ -17,7 +17,7 @@ jQuery(document).ready(function(){
 				"left": ui.offset.left
 			}).appendTo(".draggable").draggable({
 				containment:"parent"
-			});
+			}).removeClass("ui-draggable").toggleClass("element");
 		}
 	});
 	
@@ -25,12 +25,24 @@ jQuery(document).ready(function(){
 		
 	});
 	
+	
+	// $(".dialog").dialog({autoOpen:false});
+	
+	// alert($(".dialog").dialog( "isOpen" ))
+	// if(!$(".dialog").dialog( "isOpen" )){
+	// alert($(".dialog").dialog( "isOpen" ))
 	$(".draggable").dblclick(function(e){	
-		var name = e.target.name;
 		var target = e.target;
+		var name = e.target.name;
+		
+		// console.log(e)
+		
+		if(!name)
+			return
 		
 		// a new dialog should me made for each element, and should remember check boxes checked 
 		$(".dialog").dialog({
+			// autoOpen: true,
 			title: name,
 			resizable: false,
 			appendTo: ".draggable",
@@ -48,30 +60,33 @@ jQuery(document).ready(function(){
 				},
 				"Delete": function(){
 					$('input[type=checkbox]').attr('checked', false);
+					$("#effectTypes").attr("disabled", true);
+					$("#button").attr("disabled", true);
 					$(target).remove();
 					$(this).dialog("close");
 				}
 			}
 		});
+	
 	});
-	
-	// function for running animation
+	// }
+		// function for running animation
 	$(function() {
-	    function runEffect() {
-	      var selectedEffect = $( "#effectTypes" ).val();
-	      $( ".draggable" ).effect( selectedEffect, 500, callback );
-	    };
-	    function callback() {
-	      setTimeout(function() {
-	        $( ".draggable" ).removeAttr( "style" ).hide().fadeIn();
-	      }, 1000 );
-	    };
-	    $( "#button" ).click(function() {
-	      runEffect();
-	      return false;
-	    });
+		function runEffect() {
+		  var selectedEffect = $( "#effectTypes" ).val();
+		  $( ".draggable" ).effect( selectedEffect, 500, callback );
+		};
+		function callback() {
+		  setTimeout(function() {
+			$( ".draggable" ).removeAttr( "style" ).hide().fadeIn();
+		  }, 1000 );
+		};
+		$( "#button" ).click(function() {
+		  runEffect();
+		  return false;
+		});
 	  });
-	
+		
 	
 });
 
@@ -169,7 +184,6 @@ function OnChangeCheckBoxSound(){
 	if(document.getElementById("sound").checked){
 		soundChecked = true;
 		// play a sound here
-		
 	}
 	else{
 		soundChecked = false;
