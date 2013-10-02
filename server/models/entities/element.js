@@ -52,10 +52,7 @@ Element.loadById = function (callback, id)
 			},
 			function (error, results)
 			{
-				if (error) 
-				{
-					callback(null);
-				}
+				if (error) callback(null);
 				else
 				{
 					data.element_type = results.elementType;
@@ -64,10 +61,7 @@ Element.loadById = function (callback, id)
 				}
 			});
 		}
-		else
-		{
-			callback(null);
-		}
+		else callback(null);
 	});
 }
 
@@ -98,14 +92,8 @@ Element.loadAllInScene = function (callback, sceneId)
 		    },
 		    function (error)
 		    {
-		    	if (error)
-		    	{
-		    		callback(null);
-		    	}
-		    	else
-		    	{
-		    		callback(elements);
-		    	}
+		    	if (error) callback(null);
+		    	else callback(elements);
 		    }
 		);
 	});

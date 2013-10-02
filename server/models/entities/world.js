@@ -21,14 +21,8 @@ World.loadById = function (callback, id)
 	{
 		if (error) throw error;
 
-		if (rows.length == 1)
-		{
-			callback(new World(rows[0]));
-		}
-		else
-		{
-			callback(null);
-		}
+		if (rows.length == 1) callback(new World(rows[0]));
+		else callback(null);
 	});
 }
 

@@ -24,10 +24,7 @@ Avatar.loadById = function (callback, id)
 		{
 			callback(new Avatar(rows[0]));
 		}
-		else
-		{
-			callback(null);
-		}
+		else callback(null);
 	});
 }
 
