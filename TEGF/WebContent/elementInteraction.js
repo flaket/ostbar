@@ -26,21 +26,18 @@ jQuery(document).ready(function(){
 	});
 	
 	
-	// $(".dialog").dialog({autoOpen:false});
-	
-	// alert($(".dialog").dialog( "isOpen" ))
-	// if(!$(".dialog").dialog( "isOpen" )){
-	// alert($(".dialog").dialog( "isOpen" ))
-	$(".draggable").dblclick(function(e){	
+	// $(".draggable").dblclick(function(e){	
+	$(".draggable").on("dblclick",".element",function(e){
 		var target = e.target;
 		var name = e.target.name;
 		
-		// console.log(e)
+		console.log(e)
 		
-		if(!name)
-			return
+		// if(!name)
+			// return
 		
 		console.log(target);
+		console.log(this);
 
 		// a new dialog should me made for each element, and should remember check boxes checked 
 		$(".dialog").dialog({
