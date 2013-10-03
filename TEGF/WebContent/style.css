@@ -56,3 +56,8 @@ body
 {
 	border: 2px dotted gray;
 }
+
+.textarea
+{
+	resize: none;
+}

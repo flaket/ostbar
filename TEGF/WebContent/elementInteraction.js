@@ -31,7 +31,7 @@ jQuery(document).ready(function(){
 		var target = e.target;
 		var name = e.target.name;
 		
-		console.log(e)
+//		console.log(e)
 		
 		// if(!name)
 			// return
@@ -52,6 +52,52 @@ jQuery(document).ready(function(){
 			modal: true,
 			buttons: {
 				"Confirm": function(){
+					if(sceneChecked==true){
+						var tempElement = target;
+						var option = {
+								to: "#customSidebar",
+								className: "ui-effects-transfer"
+						};
+						$(target).effect("transfer", option, 500);
+						
+						//make a new scene
+					};
+					if(activityChecked==true){
+						//make a new activity
+					};
+					if(dialogChecked==true){
+						//make a new dialog
+						$(".userInputDialog").dialog({
+							title: "type in dialog",
+							buttons:{
+								"Confirm": function(){
+									if(!$(".textarea").val()){
+										alert("please type in a dialog");
+									}
+									else{
+										$(target).on("click", function(){
+//											$(target).dialog();
+											alert($(".textarea").val());
+										});
+										$(this).dialog("close");
+									}
+								},
+								Cancel: function(){
+									$(this).dialog("close");
+								}
+							}
+						});
+					};
+					if(pickUpChecked==true){
+						//make an element pickable
+					};
+					if(animationChecked==true){
+						//append animation on target
+					}
+					if(soundChecked==true){
+						//append sound on target
+					}
+					
 					$(this).dialog("close");
 				},
 				Cancel: function(){
@@ -101,12 +147,6 @@ function OnChangeCheckBoxScene(){
 		$("#activity").attr("disabled", true);
 		$("#pickUp").attr("disabled", true);
 		sceneChecked = true;
-		// make a new scene here
-		var option = {
-				to: "#customSidebar",
-				className: "ui-effects-transfer"
-		};
-		$(".draggable").effect("transfer", option, 500);
 	}
 	else{
 		sceneChecked = false;
@@ -122,7 +162,6 @@ function OnChangeCheckBoxActivity(){
 		$("#scene").attr("disabled", true);
 		$("#pickUp").attr("disabled", true);
 		activityChecked = true;
-		// make a new activity here
 	}
 	else{
 		activityChecked = false;
@@ -137,7 +176,6 @@ function OnChangeCheckBoxDialog(){
 	if(document.getElementById("dialog").checked){
 		$("#pickUp").attr("disabled", true);
 		dialogChecked = true;
-	// make a new dialog here
 	}
 	else{
 		dialogChecked = false;
@@ -152,7 +190,6 @@ function OnChangeCheckBoxPickUp(){
 		$("#activity").attr("disabled", true);
 		$("#dialog").attr("disabled", true);
 		pickUpChecked = true;
-		// make an element pickable here
 	}
 	else{
 		pickUpChecked = false;
@@ -167,8 +204,6 @@ function OnChangeCheckBoxPickUp(){
 }
 function OnChangeCheckBoxAnimation(){
 	if(document.getElementById("animation").checked){
-		// do some animation here
-		
 		animationChecked = true;
 		$("#effectTypes").attr("disabled", false);
 		$("#button").attr("disabled", false);
@@ -182,7 +217,6 @@ function OnChangeCheckBoxAnimation(){
 function OnChangeCheckBoxSound(){
 	if(document.getElementById("sound").checked){
 		soundChecked = true;
-		// play a sound here
 	}
 	else{
 		soundChecked = false;
