@@ -17,20 +17,20 @@ var util 		= require('util');
 // 	console.log('found data', util.inspect(myScene, false, null));
 // }, 1);
 
-Game.loadById(function(game)
-{
-    var firstGame = game;
-    // console.log('found game ', util.inspect(firstGame, false, null));
+// Game.loadById(function(game)
+// {
+//     var firstGame = game;
+//     // console.log('found game ', util.inspect(firstGame, false, null));
 
-    var initialScene = game.initialScene;
-    var element = initialScene.elements[0];
+//     var initialScene = game.initialScene;
+//     var element = initialScene.elements[0];
     
-    // console.log('found element'); 
-    // console.log(util.inspect(element, false, null));
+//     // console.log('found element'); 
+//     // console.log(util.inspect(element, false, null));
 
-    var actionType = element.actionTypes[0];
-    Activity.loadById(function (activity)
-    {
-    	console.log('activity', util.inspect(activity, false, null));
-    }, actionType.data);
-}, 1);
+//     var actionType = element.actionTypes[0];
+//     Activity.loadById(function (activity)
+//     {
+//     	console.log('activity', util.inspect(activity, false, null));
+//     }, actionType.data);
+// }, 1);
