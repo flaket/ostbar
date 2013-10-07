@@ -180,6 +180,10 @@ function inList(arr,obj){
 	return -1;
 }
 
+function resetCheckBoxes(dialogObject){
+	
+}
+
 function OnChangeCheckBoxScene(){
 	if(document.getElementById("scene").checked){
 		$("#activity").attr("disabled", true);
