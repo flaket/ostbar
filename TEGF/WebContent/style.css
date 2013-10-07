@@ -52,6 +52,161 @@ body
 	text-decoration: none; 
 }
 
+#newWorldButton
+{
+	padding: .5em .5em;
+	margin-left: 40%;
+	margin-top: 20%;
+}
+
+.img-grid
+{
+	width: 100%;
+	margin: 0 auto;
+	margin-top: .5%;
+}
+
+.img-wrapper1
+{
+	display: inline-block;
+	width: 50%;
+	position: relative;
+	float: left;
+}
+
+.img-wrapper1 .img-container
+{
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.img-wrapper2
+{
+	display: inline-block;
+	width: 50%;
+	position: relative;
+	float: left;
+}
+
+.img-wrapper2 .img-container
+{
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.img-wrapper3
+{
+	display: inline-block;
+	width: 50%;
+	position: relative;
+	float: left;
+}
+
+.img-wrapper3 .img-container
+{
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.img-wrapper4
+{
+	display: inline-block;
+	width: 50%;
+	position: relative;
+	float: left;
+}
+
+.img-wrapper4 .img-container
+{
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.img-wrapper5
+{
+	display: inline-block;
+	width: 50%;
+	position: relative;
+	float: left;
+}
+
+.img-wrapper5 .img-container
+{
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.img-wrapper6
+{
+	display: inline-block;
+	width: 50%;
+	position: relative;
+	float: left;
+}
+
+.img-wrapper6 .img-container
+{
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.img-wrapper:after
+{
+	content:"";
+	padding-top: 100%;
+	display: block;
+}
+
+.img-wrapper 
+{
+    width: 25%;
+}
+
+.img-wrapper2 
+{
+    margin-left: .1%;
+}
+
+.img-wrapper3 
+{
+    margin-left: .1%;
+}
+
+.img-wrapper4 
+{
+    margin-top: .1%;
+}
+
+.img-wrapper5
+{
+	margin-top: .1%;
+	margin-left: .%
+}
+
+.img-wrapper6
+{
+	margin-top: .1%;
+	margin-left: .1%
+}
+
 .ui-effects-transfer
 {
 	border: 2px dotted gray;
