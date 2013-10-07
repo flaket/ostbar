@@ -223,3 +223,40 @@ function OnChangeCheckBoxSound(){
 	}
 }
 
+
+$(function(){
+	$("#newWorldDialog").dialog({
+		autoOpen: false,
+		width: 900,
+		modal: true,
+		show: {
+			effect: "blind",
+			duration: 500
+		}
+	});
+	
+	$("#newWorldButton").click(function(){
+		$("#newWorldDialog").dialog("open");
+	});
+});
+
+//$(".img-grid").on("click", "img", function(e){
+//	var target = e.target;
+//	$(target).css("border", "3px solid yellow")
+//	
+//});
+
+$(document).ready(function(){
+	$(".img-grid").on("dblclick", "img", function(e){
+		var imgUrl = e.target.getAttribute('src');
+		$("#mainFrame").css({
+			"background-image": "url('"+ imgUrl + "')",
+			"background-repeat": "no-repeat",
+			"background-position": "center",
+			"background-size": "cover"
+		});
+		$("#newWorldButton").hide();
+		$("#newWorldDialog").dialog("close");
+	});
+});
+
