@@ -1,5 +1,7 @@
 jQuery(document).ready(function(){
 	
+	$(".elements").hide();
+	
 	$(".elements").draggable({
 		revert:"invalid",
 		helper:"clone",
@@ -292,6 +294,7 @@ $(document).ready(function(){
 			"background-size": "cover"
 		});
 		$("#newWorldButton").hide();
+		$(".elements").show();
 		$("#newWorldDialog").dialog("close");
 	});
 });
