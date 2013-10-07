@@ -31,17 +31,33 @@ jQuery(document).ready(function(){
 		var target = e.target;
 		var name = e.target.name;
 		
-//		console.log(e)
-		
-		// if(!name)
-			// return
-		
 		console.log(target);
-		console.log(this);
-
+		// console.log(this);
+		if(currentDialog == null){
+			var dia = new Dialog(false,false,false,false,false,false,target);
+			currentDialog = dia;
+			console.log(currentDialog)
+			objectList.push(dia);
+		}
+		else if(currentDialog.div != target){
+			var index = inList(objectList,target);
+			if(index>=0){
+				currentDialog = objectList[index];
+			}
+			else{
+				var dia = new Dialog(false,false,false,false,false,false,target);
+				currentDialog = dia;
+				objectList.push(dia);
+				console.log(currentDialog.div);
+				console.log("new object");
+			}
+		}
+		console.log(currentDialog);
+		console.log(objectList);
+		console.log(index);
+		
 		// a new dialog should me made for each element, and should remember check boxes checked 
 		$(".dialog").dialog({
-			// autoOpen: true,
 			title: name,
 			resizable: false,
 			appendTo: ".draggable",
@@ -52,7 +68,7 @@ jQuery(document).ready(function(){
 			modal: true,
 			buttons: {
 				"Confirm": function(){
-					if(sceneChecked==true){
+					if(currentDialog.sceneChecked==true){
 						var tempElement = target;
 						var option = {
 								to: "#customSidebar",
@@ -62,10 +78,10 @@ jQuery(document).ready(function(){
 						
 						//make a new scene
 					};
-					if(activityChecked==true){
+					if(currentDialog.activityChecked==true){
 						//make a new activity
 					};
-					if(dialogChecked==true){
+					if(currentDialog.dialogChecked==true){
 						//make a new dialog
 						$(".userInputDialog").dialog({
 							title: "type in dialog",
@@ -88,16 +104,16 @@ jQuery(document).ready(function(){
 							}
 						});
 					};
-					if(pickUpChecked==true){
+					if(currentDialog.pickUpChecked==true){
 						//make an element pickable
 					};
-					if(animationChecked==true){
+					if(currentDialog.animationChecked==true){
 						//append animation on target
 					}
-					if(soundChecked==true){
+					if(currentDialog.soundChecked==true){
 						//append sound on target
 					}
-					
+					objectList[inList(objectList,target)] = currentDialog;
 					$(this).dialog("close");
 				},
 				Cancel: function(){
@@ -135,24 +151,44 @@ jQuery(document).ready(function(){
 	
 });
 
-var sceneChecked = false;
-var activityChecked = false;
-var dialogChecked = false;
-var pickUpChecked = false;
-var animationChecked = false;
-var soundChecked = false;
+// var sceneChecked = false;
+// var activityChecked = false;
+// var dialogChecked = false;
+// var pickUpChecked = false;
+// var animationChecked = false;
+// var soundChecked = false;
+
+var currentDialog = null;
+var objectList = [];
+
+function Dialog(scene,activity,dialog,pickUp,animation,sound,object){
+	this.sceneChecked = scene;
+	this.activityChecked = activity;
+	this.dialogChecked = dialog;
+	this.pickUpChecked = pickUp;
+	this.animationChecked = animation;
+	this.soundChecked = sound;
+	this.div = object
+}
+
+function inList(arr,obj){
+	for(var i = 0; i <arr.length; i++){
+		if(arr[i].div == obj) return i;
+	}
+	return -1;
+}
 
 function OnChangeCheckBoxScene(){
 	if(document.getElementById("scene").checked){
 		$("#activity").attr("disabled", true);
 		$("#pickUp").attr("disabled", true);
-		sceneChecked = true;
+		currentDialog.sceneChecked = true;
 	}
 	else{
-		sceneChecked = false;
-		if(!pickUpChecked)
+		currentDialog.sceneChecked = false;
+		if(!currentDialog.pickUpChecked)
 			$("#activity").attr("disabled", false);
-		if(!activityChecked)
+		if(!currentDialog.activityChecked)
 			$("#pickUp").attr("disabled", false);
 	}
 }
@@ -161,25 +197,25 @@ function OnChangeCheckBoxActivity(){
 	if(document.getElementById("activity").checked){
 		$("#scene").attr("disabled", true);
 		$("#pickUp").attr("disabled", true);
-		activityChecked = true;
+		currentDialog.activityChecked = true;
 	}
 	else{
-		activityChecked = false;
+		currentDialog.activityChecked = false;
 		
-		if(!pickUpChecked)
+		if(!currentDialog.pickUpChecked)
 			$("#scene").attr("disabled", false);
-		if(!sceneChecked)
+		if(!currentDialog.sceneChecked)
 			$("#pickUp").attr("disabled", false);
 	}
 }
 function OnChangeCheckBoxDialog(){
 	if(document.getElementById("dialog").checked){
 		$("#pickUp").attr("disabled", true);
-		dialogChecked = true;
+		currentDialog.dialogChecked = true;
 	}
 	else{
-		dialogChecked = false;
-		if(!sceneChecked && !activityChecked)
+		currentDialog.dialogChecked = false;
+		if(!currentDialog.sceneChecked && !currentDialog.activityChecked)
 			$("#pickUp").attr("disabled", false);
 	}
 }
@@ -189,14 +225,14 @@ function OnChangeCheckBoxPickUp(){
 		$("#scene").attr("disabled", true);
 		$("#activity").attr("disabled", true);
 		$("#dialog").attr("disabled", true);
-		pickUpChecked = true;
+		currentDialog.pickUpChecked = true;
 	}
 	else{
-		pickUpChecked = false;
+		currentDialog.pickUpChecked = false;
 		
-		if(!activityChecked)
+		if(!currentDialog.activityChecked)
 			$("#scene").attr("disabled", false);
-		if(!sceneChecked)
+		if(!currentDialog.sceneChecked)
 			$("#activity").attr("disabled", false);
 		
 		$("#dialog").attr("disabled", false);
@@ -204,22 +240,22 @@ function OnChangeCheckBoxPickUp(){
 }
 function OnChangeCheckBoxAnimation(){
 	if(document.getElementById("animation").checked){
-		animationChecked = true;
+		currentDialog.animationChecked = true;
 		$("#effectTypes").attr("disabled", false);
 		$("#button").attr("disabled", false);
 	}
 	else{
-		animationChecked = false;
+		currentDialog.animationChecked = false;
 		$("#effectTypes").attr("disabled", true);
 		$("#button").attr("disabled", true);
 	}
 }
 function OnChangeCheckBoxSound(){
 	if(document.getElementById("sound").checked){
-		soundChecked = true;
+		currentDialog.soundChecked = true;
 	}
 	else{
-		soundChecked = false;
+		currentDialog.soundChecked = false;
 	}
 }
 
