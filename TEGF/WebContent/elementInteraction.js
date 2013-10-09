@@ -77,7 +77,7 @@ jQuery(document).ready(function(){
 					if(currentDialog.sceneChecked==true){
 						var tempElement = target;
 						var option = {
-								to: "#customSidebar",
+								to: "#customSidebar2",
 								className: "ui-effects-transfer"
 						};
 						$(target).effect("transfer", option, 500);
@@ -112,9 +112,11 @@ jQuery(document).ready(function(){
 					};
 					if(currentDialog.pickUpChecked==true){
 						//make an element pickable
+						
 					};
 					if(currentDialog.animationChecked==true){
 						//append animation on target
+						
 					}
 					if(currentDialog.soundChecked==true){
 						//append sound on target
@@ -143,11 +145,11 @@ jQuery(document).ready(function(){
 	$(function() {
 		function runEffect() {
 		  var selectedEffect = $( "#effectTypes" ).val();
-		  $( ".draggable" ).effect( selectedEffect, 500, callback );
+		  $( ".element" ).effect( selectedEffect, 500, callback );
 		};
 		function callback() {
 		  setTimeout(function() {
-			$( ".draggable" ).removeAttr( "style" ).hide().fadeIn();
+			$( ".element" ).hide().fadeIn();
 		  }, 1000 );
 		};
 		$( "#button" ).click(function() {
