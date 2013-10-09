@@ -50,13 +50,11 @@ jQuery(document).ready(function(){
 				var dia = new Dialog(false,false,false,false,false,false,target);
 				currentDialog = dia;
 				objectList.push(dia);
-				// console.log(currentDialog.div);
 				console.log("new object");
 			}
 		}
 		console.log(currentDialog);
 		console.log(objectList);
-		
 		
 		var previousVersionDialog = $.extend(true,{},currentDialog);
 		
@@ -79,7 +77,7 @@ jQuery(document).ready(function(){
 					if(currentDialog.sceneChecked==true){
 						var tempElement = target;
 						var option = {
-								to: "#customSidebar",
+								to: "#customSidebar2",
 								className: "ui-effects-transfer"
 						};
 						$(target).effect("transfer", option, 500);
@@ -117,6 +115,7 @@ jQuery(document).ready(function(){
 					};
 					if(currentDialog.animationChecked==true){
 						//append animation on target
+						
 					}
 					if(currentDialog.soundChecked==true){
 						//append sound on target
@@ -143,21 +142,19 @@ jQuery(document).ready(function(){
 		// function for running animation
 	$(function() {
 		function runEffect() {
-		  var selectedEffect = $( "#effectTypes" ).val();
-		  $( ".draggable" ).effect( selectedEffect, 500, callback );
+			var selectedEffect = $( "#effectTypes" ).val();
+			$( ".element" ).effect( selectedEffect, 500, callback );
 		};
 		function callback() {
-		  setTimeout(function() {
-			$( ".draggable" ).removeAttr( "style" ).hide().fadeIn();
-		  }, 1000 );
+			setTimeout(function() {
+			$( ".element" ).removeAttr( "style" ).hide().fadeIn();
+			}, 1000 );
 		};
 		$( "#button" ).click(function() {
-		  runEffect();
-		  return false;
+			runEffect();
+			return false;
 		});
-	  });
-		
-	
+	});
 });
 
 var currentDialog = null;
@@ -169,6 +166,7 @@ function Dialog(scene,activity,dialog,pickUp,animation,sound,object){
 	this.dialogChecked = dialog;
 	this.pickUpChecked = pickUp;
 	this.animationChecked = animation;
+	this.animationIndex = 0;
 	this.soundChecked = sound;
 	this.div = object;
 }
@@ -181,7 +179,6 @@ function inList(arr,obj){
 }
 
 function resetCheckBoxes(dialogObject){
-
 	if(dialogObject.activityChecked){ $("#activity").prop("checked",true);}
 	else{ $("#activity").prop("checked",false);}
 	
@@ -206,6 +203,7 @@ function resetCheckBoxes(dialogObject){
 	OnChangeCheckBoxPickUp();
 	OnChangeCheckBoxAnimation();
 	OnChangeCheckBoxSound();
+	$("#effectTypes").prop("selectedIndex",dialogObject.animationIndex);
 }
 
 function OnChangeCheckBoxScene(){
@@ -283,6 +281,10 @@ function OnChangeCheckBoxAnimation(){
 	}
 }
 
+function OnChangeAnimationList(){
+	currentDialog.animationIndex = document.getElementById("effectTypes").selectedIndex;
+}
+
 function OnChangeCheckBoxSound(){
 	if(document.getElementById("sound").checked){
 		currentDialog.soundChecked = true;
@@ -291,7 +293,6 @@ function OnChangeCheckBoxSound(){
 		currentDialog.soundChecked = false;
 	}
 }
-
 
 $(function(){
 	$("#newWorldDialog").dialog({
