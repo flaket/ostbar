@@ -1,5 +1,7 @@
 jQuery(document).ready(function(){
 	
+	$(".elements").hide();
+	
 	$(".elements").draggable({
 		revert:"invalid",
 		helper:"clone",
@@ -310,11 +312,6 @@ $(function(){
 	});
 });
 
-//$(".img-grid").on("click", "img", function(e){
-//	var target = e.target;
-//	$(target).css("border", "3px solid yellow")
-//	
-//});
 
 $(document).ready(function(){
 	$(".img-grid").on("dblclick", "img", function(e){
@@ -326,6 +323,7 @@ $(document).ready(function(){
 			"background-size": "cover"
 		});
 		$("#newWorldButton").hide();
+		$(".elements").show();
 		$("#newWorldDialog").dialog("close");
 	});
 });
