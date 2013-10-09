@@ -56,7 +56,7 @@ jQuery(document).ready(function(){
 		console.log(currentDialog);
 		console.log(objectList);
 		
-		var previousVersionDialog = $.extend(true,{},currentDialog);
+		var previousVersionDialog = $.extend(true,{},currentDialog); // copy
 		
 		resetCheckBoxes(currentDialog);
 		
@@ -147,7 +147,7 @@ jQuery(document).ready(function(){
 		};
 		function callback() {
 			setTimeout(function() {
-			$( ".element" ).removeAttr( "style" ).hide().fadeIn();
+			$( ".element" ).hide().fadeIn();
 			}, 1000 );
 		};
 		$( "#button" ).click(function() {
@@ -203,6 +203,7 @@ function resetCheckBoxes(dialogObject){
 	OnChangeCheckBoxPickUp();
 	OnChangeCheckBoxAnimation();
 	OnChangeCheckBoxSound();
+	
 	$("#effectTypes").prop("selectedIndex",dialogObject.animationIndex);
 }
 
