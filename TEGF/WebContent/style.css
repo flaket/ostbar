@@ -20,13 +20,22 @@ body
 	overflow: auto;
 }
 
+#customSidebar2
+{
+	background-color: #e0eeee; 
+	width: 11%;
+	height: 85%;
+	float: right; 
+	border: 1px solid gray;
+	overflow: auto;
+}
 
 #mainFrame		
 {
 	background-color: #fff8dc; 
 	margin-left:12.5%; 
 	height: 85%;
-	width: 87%; 
+	width: 77.1%; 
 	border: 1px solid gray;
 	overflow: hidden;
 }
