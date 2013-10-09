@@ -28,12 +28,12 @@ jQuery(document).ready(function(){
 	});
 	
 	
-	// $(".draggable").dblclick(function(e){	
 	$(".draggable").on("dblclick",".element",function(e){
 		var target = e.target;
 		var name = e.target.name;
-		
+		var parent = target.parentNode.parentNode;
 		console.log(target);
+		console.log(parent);
 		// console.log(this);
 		if(currentDialog == null){
 			var dia = new Dialog(false,false,false,false,false,false,target);
@@ -61,6 +61,8 @@ jQuery(document).ready(function(){
 		var previousVersionDialog = $.extend(true,{},currentDialog);
 		
 		resetCheckBoxes(currentDialog);
+		
+		var index = inList(objectList,target);
 		
 		// a new dialog should me made for each element, and should remember check boxes checked 
 		$(".dialog").dialog({
@@ -123,22 +125,21 @@ jQuery(document).ready(function(){
 				},
 				Cancel: function(){
 					$(this).dialog("close");
-					objectList[inList(objectList,target)] = previousVersionDialog;
+					objectList[index] = previousVersionDialog;
 					currentDialog = previousVersionDialog;
 				},
 				"Delete": function(){
 					$('input[type=checkbox]').attr('checked', false);
 					$("#effectTypes").attr("disabled", true);
 					$("#button").attr("disabled", true);
-					objectList.splice(inList(objectList,target),1);
-					$(target).remove();
+					objectList.splice(index,1); //removes from the list
+					$(parent).remove();
 					$(this).dialog("close");
 				}
 			}
 		});
-	
 	});
-	// }
+	
 		// function for running animation
 	$(function() {
 		function runEffect() {
@@ -158,13 +159,6 @@ jQuery(document).ready(function(){
 		
 	
 });
-
-// var sceneChecked = false;
-// var activityChecked = false;
-// var dialogChecked = false;
-// var pickUpChecked = false;
-// var animationChecked = false;
-// var soundChecked = false;
 
 var currentDialog = null;
 var objectList = [];
@@ -244,6 +238,7 @@ function OnChangeCheckBoxActivity(){
 			$("#pickUp").attr("disabled", false);
 	}
 }
+
 function OnChangeCheckBoxDialog(){
 	if(document.getElementById("dialog").checked){
 		$("#pickUp").attr("disabled", true);
@@ -274,6 +269,7 @@ function OnChangeCheckBoxPickUp(){
 		$("#dialog").attr("disabled", false);
 	}
 }
+
 function OnChangeCheckBoxAnimation(){
 	if(document.getElementById("animation").checked){
 		currentDialog.animationChecked = true;
@@ -286,6 +282,7 @@ function OnChangeCheckBoxAnimation(){
 		$("#button").attr("disabled", true);
 	}
 }
+
 function OnChangeCheckBoxSound(){
 	if(document.getElementById("sound").checked){
 		currentDialog.soundChecked = true;
