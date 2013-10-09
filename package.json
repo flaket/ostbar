@@ -25,6 +25,7 @@
     "express-hbs": "",
     "requester": "",
     "passport": "",
+    "passport-local": "",
     "passport-google-oauth": "",
     "express-validator":"",
     "connect-redis": ""

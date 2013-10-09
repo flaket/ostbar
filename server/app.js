@@ -1,5 +1,6 @@
 // -- module dependencies
 var express     = require('express');
+var passport  	= require('passport');
 
 // -- create app
 var app         = express(),
@@ -8,25 +9,26 @@ var app         = express(),
 // -- import configuration
     conf        = require('./settings/config'),
     settings    = conf.settings;
+// conf(app, express, env);
 
-conf(app, express, env);
+app.post('/login',
+  passport.authenticate('local', { successRedirect: '/',
+                                   failureRedirect: '/login',
+                                   failureFlash: true })
+);
 
-app.get('/', function(req, res) {
-   res.send('./views/index.html');
-});
- 
-app.get('/about', function(req, res) {
-   res.send('./views/about.html');
-});
- 
-app.get('/article', function(req, res) {
-   res.send('./views/article.html');
+app.get('/', function (req, res) {
+	res.send('hehehe');
 });
 
-// // -- bootstrap config
+app.get('/login', function (req, res) {
+	res.render('<html>tekst tekst tekst</html>');
+});
+
+// -- bootstrap config
 // require('./bootstrap').boot(app);
 
-// // -- routes
+// -- routes
 // var core_routes = require('./routes/index');
 // app.get('/', core_routes.index);
 // app.get('/account', app.ensureAuthenticated, core_routes.account);
