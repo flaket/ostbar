@@ -282,11 +282,6 @@ $(function(){
 	});
 });
 
-//$(".img-grid").on("click", "img", function(e){
-//	var target = e.target;
-//	$(target).css("border", "3px solid yellow")
-//	
-//});
 
 $(document).ready(function(){
 	$(".img-grid").on("dblclick", "img", function(e){
