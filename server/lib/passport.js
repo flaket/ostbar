@@ -5,16 +5,17 @@ var User = require('../models/entities/user').User,
 
 module.exports = function(app) {
 
-    passport.use(new LocalStrategy(
-        function (username, password, done) {
+    passport.use(
+        new LocalStrategy(function (username, password, done) {
             User.loginWithUsernameAndPassword(function (user) {
                 return done(null, user);
             }, username, password);
-        }))
+        })
+    );
 
-    // passport.serializeUser(function(user, done) {
-    //     done(null, user._id);
-    // });
+    passport.serializeUser(function(user, done) {
+        done(null, user.userId);
+    });
 
     // passport.deserializeUser(function(id, done) {
     //     User.findById(id, function(err, user){
