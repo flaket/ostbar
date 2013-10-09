@@ -28,7 +28,8 @@ jQuery(document).ready(function(){
 	});
 	
 	
-	$(".draggable").on("dblclick",".element",function(e){
+	$(".draggable").on("contextmenu rightclick",".element",function(e){
+		e.preventDefault();
 		var target = e.target;
 		var name = e.target.name;
 		var parent = target.parentNode.parentNode;
@@ -97,10 +98,10 @@ jQuery(document).ready(function(){
 										alert("please type in a dialog");
 									}
 									else{
-										$(target).on("click", function(){
-//											$(target).dialog();
-											alert($(".textarea").val());
+										$(target).on("click", function(e){
+											alert($('.textarea').val());
 										});
+											
 										$(this).dialog("close");
 									}
 								},
@@ -112,6 +113,7 @@ jQuery(document).ready(function(){
 					};
 					if(currentDialog.pickUpChecked==true){
 						//make an element pickable
+						
 					};
 					if(currentDialog.animationChecked==true){
 						//append animation on target
@@ -326,5 +328,4 @@ $(document).ready(function(){
 		$("#newWorldDialog").dialog("close");
 	});
 });
-
 
