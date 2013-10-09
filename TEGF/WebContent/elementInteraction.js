@@ -107,6 +107,8 @@ jQuery(document).ready(function(){
 								},
 								Cancel: function(){
 									$(this).dialog("close");
+									objectList[index] = previousVersionDialog;
+									currentDialog = previousVersionDialog;
 								}
 							}
 						});
