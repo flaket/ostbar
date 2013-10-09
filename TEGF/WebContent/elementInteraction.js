@@ -50,13 +50,15 @@ jQuery(document).ready(function(){
 				var dia = new Dialog(false,false,false,false,false,false,target);
 				currentDialog = dia;
 				objectList.push(dia);
-				console.log(currentDialog.div);
+				// console.log(currentDialog.div);
 				console.log("new object");
 			}
 		}
 		console.log(currentDialog);
 		console.log(objectList);
-		console.log(index);
+		
+		
+		var previousVersionDialog = $.extend(true,{},currentDialog);
 		
 		resetCheckBoxes(currentDialog);
 		
@@ -117,11 +119,12 @@ jQuery(document).ready(function(){
 					if(currentDialog.soundChecked==true){
 						//append sound on target
 					}
-					objectList[inList(objectList,target)] = currentDialog;
 					$(this).dialog("close");
 				},
 				Cancel: function(){
 					$(this).dialog("close");
+					objectList[inList(objectList,target)] = previousVersionDialog;
+					currentDialog = previousVersionDialog;
 				},
 				"Delete": function(){
 					$('input[type=checkbox]').attr('checked', false);
@@ -173,7 +176,7 @@ function Dialog(scene,activity,dialog,pickUp,animation,sound,object){
 	this.pickUpChecked = pickUp;
 	this.animationChecked = animation;
 	this.soundChecked = sound;
-	this.div = object
+	this.div = object;
 }
 
 function inList(arr,obj){
@@ -185,9 +188,6 @@ function inList(arr,obj){
 
 function resetCheckBoxes(dialogObject){
 
-	console.log(dialogObject)
-	console.log(dialogObject.activityChecked)
-	
 	if(dialogObject.activityChecked){ $("#activity").prop("checked",true);}
 	else{ $("#activity").prop("checked",false);}
 	
