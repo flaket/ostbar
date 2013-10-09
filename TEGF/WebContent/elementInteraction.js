@@ -28,7 +28,8 @@ jQuery(document).ready(function(){
 	});
 	
 	
-	$(".draggable").on("dblclick",".element",function(e){
+	$(".draggable").on("contextmenu rightclick",".element",function(e){
+		e.preventDefault();
 		var target = e.target;
 		var name = e.target.name;
 		var parent = target.parentNode.parentNode;
@@ -97,10 +98,10 @@ jQuery(document).ready(function(){
 										alert("please type in a dialog");
 									}
 									else{
-										$(target).on("click", function(){
-//											$(target).dialog();
-											alert($(".textarea").val());
+										$(target).on("click", function(e){
+											alert($('.textarea').val());
 										});
+											
 										$(this).dialog("close");
 									}
 								},
@@ -143,23 +144,13 @@ jQuery(document).ready(function(){
 		// function for running animation
 	$(function() {
 		function runEffect() {
-<<<<<<< HEAD
-		  var selectedEffect = $( "#effectTypes" ).val();
-		  $( ".element" ).effect( selectedEffect, 500, callback );
-		};
-		function callback() {
-		  setTimeout(function() {
-			$( ".element" ).hide().fadeIn();
-		  }, 1000 );
-=======
 			var selectedEffect = $( "#effectTypes" ).val();
 			$( ".element" ).effect( selectedEffect, 500, callback );
 		};
 		function callback() {
 			setTimeout(function() {
-			$( ".element" ).removeAttr( "style" ).hide().fadeIn();
+			$( ".element" ).hide().fadeIn();
 			}, 1000 );
->>>>>>> 7c922115a3e16fa0f16b2ec0a2eaf93fbb4d7446
 		};
 		$( "#button" ).click(function() {
 			runEffect();
@@ -336,5 +327,4 @@ $(document).ready(function(){
 		$("#newWorldDialog").dialog("close");
 	});
 });
-
 
