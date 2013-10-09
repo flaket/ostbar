@@ -28,12 +28,12 @@ jQuery(document).ready(function(){
 	});
 	
 	
-	// $(".draggable").dblclick(function(e){	
 	$(".draggable").on("dblclick",".element",function(e){
 		var target = e.target;
 		var name = e.target.name;
-		
+		var parent = target.parentNode.parentNode;
 		console.log(target);
+		console.log(parent);
 		// console.log(this);
 		if(currentDialog == null){
 			var dia = new Dialog(false,false,false,false,false,false,target);
@@ -50,17 +50,17 @@ jQuery(document).ready(function(){
 				var dia = new Dialog(false,false,false,false,false,false,target);
 				currentDialog = dia;
 				objectList.push(dia);
-				// console.log(currentDialog.div);
 				console.log("new object");
 			}
 		}
 		console.log(currentDialog);
 		console.log(objectList);
 		
-		
 		var previousVersionDialog = $.extend(true,{},currentDialog);
 		
 		resetCheckBoxes(currentDialog);
+		
+		var index = inList(objectList,target);
 		
 		// a new dialog should me made for each element, and should remember check boxes checked 
 		$(".dialog").dialog({
@@ -125,25 +125,25 @@ jQuery(document).ready(function(){
 				},
 				Cancel: function(){
 					$(this).dialog("close");
-					objectList[inList(objectList,target)] = previousVersionDialog;
+					objectList[index] = previousVersionDialog;
 					currentDialog = previousVersionDialog;
 				},
 				"Delete": function(){
 					$('input[type=checkbox]').attr('checked', false);
 					$("#effectTypes").attr("disabled", true);
 					$("#button").attr("disabled", true);
-					objectList.splice(inList(objectList,target),1);
-					$(target).remove();
+					objectList.splice(index,1); //removes from the list
+					$(parent).remove();
 					$(this).dialog("close");
 				}
 			}
 		});
-	
 	});
-	// }
+	
 		// function for running animation
 	$(function() {
 		function runEffect() {
+<<<<<<< HEAD
 		  var selectedEffect = $( "#effectTypes" ).val();
 		  $( ".element" ).effect( selectedEffect, 500, callback );
 		};
@@ -151,22 +151,22 @@ jQuery(document).ready(function(){
 		  setTimeout(function() {
 			$( ".element" ).hide().fadeIn();
 		  }, 1000 );
+=======
+			var selectedEffect = $( "#effectTypes" ).val();
+			$( ".element" ).effect( selectedEffect, 500, callback );
+		};
+		function callback() {
+			setTimeout(function() {
+			$( ".element" ).removeAttr( "style" ).hide().fadeIn();
+			}, 1000 );
+>>>>>>> 7c922115a3e16fa0f16b2ec0a2eaf93fbb4d7446
 		};
 		$( "#button" ).click(function() {
-		  runEffect();
-		  return false;
+			runEffect();
+			return false;
 		});
-	  });
-		
-	
+	});
 });
-
-// var sceneChecked = false;
-// var activityChecked = false;
-// var dialogChecked = false;
-// var pickUpChecked = false;
-// var animationChecked = false;
-// var soundChecked = false;
 
 var currentDialog = null;
 var objectList = [];
@@ -177,6 +177,7 @@ function Dialog(scene,activity,dialog,pickUp,animation,sound,object){
 	this.dialogChecked = dialog;
 	this.pickUpChecked = pickUp;
 	this.animationChecked = animation;
+	this.animationIndex = 0;
 	this.soundChecked = sound;
 	this.div = object;
 }
@@ -189,7 +190,6 @@ function inList(arr,obj){
 }
 
 function resetCheckBoxes(dialogObject){
-
 	if(dialogObject.activityChecked){ $("#activity").prop("checked",true);}
 	else{ $("#activity").prop("checked",false);}
 	
@@ -214,6 +214,7 @@ function resetCheckBoxes(dialogObject){
 	OnChangeCheckBoxPickUp();
 	OnChangeCheckBoxAnimation();
 	OnChangeCheckBoxSound();
+	$("#effectTypes").prop("selectedIndex",dialogObject.animationIndex);
 }
 
 function OnChangeCheckBoxScene(){
@@ -246,6 +247,7 @@ function OnChangeCheckBoxActivity(){
 			$("#pickUp").attr("disabled", false);
 	}
 }
+
 function OnChangeCheckBoxDialog(){
 	if(document.getElementById("dialog").checked){
 		$("#pickUp").attr("disabled", true);
@@ -276,6 +278,7 @@ function OnChangeCheckBoxPickUp(){
 		$("#dialog").attr("disabled", false);
 	}
 }
+
 function OnChangeCheckBoxAnimation(){
 	if(document.getElementById("animation").checked){
 		currentDialog.animationChecked = true;
@@ -288,6 +291,11 @@ function OnChangeCheckBoxAnimation(){
 		$("#button").attr("disabled", true);
 	}
 }
+
+function OnChangeAnimationList(){
+	currentDialog.animationIndex = document.getElementById("effectTypes").selectedIndex;
+}
+
 function OnChangeCheckBoxSound(){
 	if(document.getElementById("sound").checked){
 		currentDialog.soundChecked = true;
@@ -296,7 +304,6 @@ function OnChangeCheckBoxSound(){
 		currentDialog.soundChecked = false;
 	}
 }
-
 
 $(function(){
 	$("#newWorldDialog").dialog({
