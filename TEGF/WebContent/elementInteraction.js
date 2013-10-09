@@ -56,6 +56,8 @@ jQuery(document).ready(function(){
 		console.log(objectList);
 		console.log(index);
 		
+		resetCheckBoxes(currentDialog);
+		
 		// a new dialog should me made for each element, and should remember check boxes checked 
 		$(".dialog").dialog({
 			title: name,
@@ -123,6 +125,7 @@ jQuery(document).ready(function(){
 					$('input[type=checkbox]').attr('checked', false);
 					$("#effectTypes").attr("disabled", true);
 					$("#button").attr("disabled", true);
+					objectList.splice(inList(objectList,target),1);
 					$(target).remove();
 					$(this).dialog("close");
 				}
@@ -179,7 +182,34 @@ function inList(arr,obj){
 }
 
 function resetCheckBoxes(dialogObject){
+
+	console.log(dialogObject)
+	console.log(dialogObject.activityChecked)
 	
+	if(dialogObject.activityChecked){ $("#activity").prop("checked",true);}
+	else{ $("#activity").prop("checked",false);}
+	
+	if(dialogObject.sceneChecked){ $("#scene").prop("checked",true);}
+	else{ $("#scene").prop("checked",false);}
+	
+	if(dialogObject.pickUpChecked){ $("#pickUp").prop("checked",true);}
+	else{ $("#pickUp").prop("checked",false);}
+	
+	if(dialogObject.dialogChecked){ $("#dialog").prop("checked",true);}
+	else{ $("#dialog").prop("checked",false);}
+	
+	if(dialogObject.animationChecked){ $("#animation").prop("checked",true);}
+	else{ $("#animation").prop("checked",false);}
+	
+	if(dialogObject.soundChecked){ $("#sound").prop("checked",true);}
+	else{ $("#sound").prop("checked",false);}
+	
+	OnChangeCheckBoxScene();
+	OnChangeCheckBoxActivity();
+	OnChangeCheckBoxDialog();
+	OnChangeCheckBoxPickUp();
+	OnChangeCheckBoxAnimation();
+	OnChangeCheckBoxSound();
 }
 
 function OnChangeCheckBoxScene(){
