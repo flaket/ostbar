@@ -1,4 +1,6 @@
-var User = require('../models').User;
+var User = require('../models/entities/user').User;
+var util = require('util');
+
 
 // core routes - base is /
 module.exports.index = function(req, res) {

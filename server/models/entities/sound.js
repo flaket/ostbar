@@ -34,15 +34,12 @@ Sound.loadAll = function (callback)
 
 		var sounds = new Array();
 
-		if (rows.length > 0)
+		for (key in rows)
 		{
-			for (key in rows)
-			{
-				var row = rows[key];
-				sounds.push(new Sound(row));
-			}
+			var row = rows[key];
+			sounds.push(new Sound(row));
 		}
-
+		
 		callback(sounds);
 	});
 }

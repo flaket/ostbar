@@ -26,4 +26,22 @@ World.loadById = function (callback, id)
 	});
 }
 
+World.loadAll = function (callback)
+{
+	db.query('SELECT * FROM WORLD', function (error, rows, fields)
+	{
+		if (error) throw error;
+
+		var worlds = new Array();
+
+		for (key in rows)
+		{
+			var row = rows[key];
+			worlds.push(new World(row));
+		}
+
+		callback(worlds);
+	});
+}
+
 module.exports.World = World;
