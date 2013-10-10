@@ -1,6 +1,7 @@
 jQuery(document).ready(function(){
 	
 	$(".elements").hide();
+	$(".draggable").tooltip({disabled: true});
 	
 	$(".elements").draggable({
 		revert:"invalid",
@@ -22,11 +23,6 @@ jQuery(document).ready(function(){
 			}).removeClass("ui-draggable").toggleClass("element");
 		}
 	});
-	
-	$(".draggable").tooltip({
-		
-	});
-	
 	
 	$(".draggable").on("contextmenu rightclick",".element",function(e){
 		e.preventDefault();
@@ -76,7 +72,6 @@ jQuery(document).ready(function(){
 			buttons: {
 				"Confirm": function(){
 					if(currentDialog.sceneChecked==true){
-						var tempElement = target;
 						var option = {
 								to: "#customSidebar2",
 								className: "ui-effects-transfer"
@@ -84,6 +79,15 @@ jQuery(document).ready(function(){
 						$(target).effect("transfer", option, 500);
 						
 						//make a new scene
+//						var mainFrameClone = $("#mainFrame").clone();
+//						mainFrameClone.css({
+//							"height": "20%"
+//						});
+//						$("#mainFrame").empty();
+//						$("#customSidebar2").html(mainFrameClone);
+//						
+//						$(this).dialog("close");
+						
 					};
 					if(currentDialog.activityChecked==true){
 						//make a new activity
@@ -119,6 +123,9 @@ jQuery(document).ready(function(){
 					};
 					if(currentDialog.animationChecked==true){
 						//append animation on target
+						$(target).on("click", function(e){
+							runEffect(objectList[inList(objectList,e.target)]);
+						});
 						
 					}
 					if(currentDialog.soundChecked==true){
@@ -143,21 +150,20 @@ jQuery(document).ready(function(){
 		});
 	});
 	
-		// function for running animation
-	$(function() {
-		function runEffect() {
-			var selectedEffect = $( "#effectTypes" ).val();
-			$( ".element" ).effect( selectedEffect, 500, callback );
-		};
-		function callback() {
-			setTimeout(function() {
-			$( ".element" ).hide().fadeIn();
-			}, 1000 );
-		};
-		$( "#button" ).click(function() {
-			runEffect();
-			return false;
-		});
+	// function for running animation
+	function runEffect(e) {
+		console.log($( "#effectTypes" ).prop("selectedIndex",e.selectedIndex).val());
+		var selectedEffect = $( "#effectTypes" ).val(); //e.selectedIndex; 
+		$(e.div).effect( selectedEffect, 500, callback(e.div));
+	};
+	function callback(e) {
+		setTimeout(function() {
+		$(e).hide().fadeIn();
+		}, 1000 );
+	};
+	$( "#button" ).click(function() {
+		runEffect(currentDialog);
+		return false;
 	});
 });
 
@@ -327,6 +333,7 @@ $(document).ready(function(){
 		});
 		$("#newWorldButton").hide();
 		$(".elements").show();
+		$(".draggable").tooltip({disabled: false});
 		$("#newWorldDialog").dialog("close");
 	});
 });
