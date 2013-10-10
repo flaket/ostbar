@@ -152,8 +152,7 @@ jQuery(document).ready(function(){
 	
 	// function for running animation
 	function runEffect(e) {
-		console.log($( "#effectTypes" ).prop("selectedIndex",e.selectedIndex).val());
-		var selectedEffect = $( "#effectTypes" ).val(); //e.selectedIndex; 
+		var selectedEffect = $( "#effectTypes" ).prop("selectedIndex",e.animationIndex).val(); 
 		$(e.div).effect( selectedEffect, 500, callback(e.div));
 	};
 	function callback(e) {
