@@ -29,13 +29,13 @@ jQuery(document).ready(function(){
 		var target = e.target;
 		var name = e.target.name;
 		var parent = target.parentNode.parentNode;
-		console.log(target);
-		console.log(parent);
+		// console.log(target);
+		// console.log(parent);
 		// console.log(this);
+		
 		if(currentDialog == null){
-			var dia = new Dialog(false,false,false,false,false,false,target);
+			var dia = new Dialog(target);
 			currentDialog = dia;
-			console.log(currentDialog)
 			objectList.push(dia);
 		}
 		else if(currentDialog.div != target){
@@ -44,7 +44,7 @@ jQuery(document).ready(function(){
 				currentDialog = objectList[index];
 			}
 			else{
-				var dia = new Dialog(false,false,false,false,false,false,target);
+				var dia = new Dialog(target);
 				currentDialog = dia;
 				objectList.push(dia);
 				console.log("new object");
@@ -89,9 +89,15 @@ jQuery(document).ready(function(){
 //						$(this).dialog("close");
 						
 					};
+					
+					
+					
 					if(currentDialog.activityChecked==true){
 						//make a new activity
 					};
+					
+					
+					
 					if(currentDialog.dialogChecked==true){
 						//make a new dialog
 						$(".userInputDialog").dialog({
@@ -102,10 +108,10 @@ jQuery(document).ready(function(){
 										alert("please type in a dialog");
 									}
 									else{
-										$(target).on("click", function(e){
-											alert($('.textarea').val());
-										});
-											
+										if(!currentDialog.dialogClickActionMade){
+											$(target).on("click", dialogFunction);
+											currentDialog.dialogClickActionMade = true;
+										}
 										$(this).dialog("close");
 									}
 								},
@@ -117,20 +123,39 @@ jQuery(document).ready(function(){
 							}
 						});
 					};
-					if(currentDialog.pickUpChecked==true){
+					if(!currentDialog.dialogChecked){
+						$(target).off("click", dialogFunction);
+						currentDialog.dialogClickActionMade = false;
+					}
+					
+					
+					
+					if(currentDialog.pickUpChecked){
 						//make an element pickable
 						
 					};
-					if(currentDialog.animationChecked==true){
+					
+					
+					if(currentDialog.animationChecked){
 						//append animation on target
-						$(target).on("click", function(e){
-							runEffect(objectList[inList(objectList,e.target)]);
-						});
-						
+						if(!currentDialog.animationClickActionMade){
+							$(target).on("click", animationFunction);
+							currentDialog.animationClickActionMade = true;
+						}
 					}
-					if(currentDialog.soundChecked==true){
+					if(!currentDialog.animationChecked){
+						$(target).off("click", animationFunction);
+						currentDialog.animationClickActionMade = false;
+					}
+					
+					
+					
+					if(currentDialog.soundChecked){
 						//append sound on target
 					}
+					
+					
+					
 					$(this).dialog("close");
 				},
 				Cancel: function(){
@@ -150,34 +175,49 @@ jQuery(document).ready(function(){
 		});
 	});
 	
-	// function for running animation
-	function runEffect(e) {
-		var selectedEffect = $( "#effectTypes" ).prop("selectedIndex",e.animationIndex).val(); 
-		$(e.div).effect( selectedEffect, 500, callback(e.div));
-	};
-	function callback(e) {
-		setTimeout(function() {
-		$(e).hide().fadeIn();
-		}, 1000 );
-	};
 	$( "#button" ).click(function() {
-		runEffect(currentDialog);
+		runAnimationEffect(currentDialog);
 		return false;
 	});
 });
 
+// function for running animation
+function runAnimationEffect(e) {
+	var selectedEffect = $("#effectTypes").prop("selectedIndex",e.animationIndex).val(); 
+	$(e.div).effect( selectedEffect, 500, animationCallback(e.div));
+};
+function animationCallback(e) {
+	setTimeout(function() {
+		$(e).hide().fadeIn();
+	}, 1000 );
+};
+
+function dialogFunction(e){
+	currentDialog.dialogData = $('.textarea').val();
+	console.log(currentDialog.dialogData);
+}
+
+function animationFunction(e){
+	runAnimationEffect(objectList[inList(objectList,e.target)]);
+}
+
 var currentDialog = null;
 var objectList = [];
 
-function Dialog(scene,activity,dialog,pickUp,animation,sound,object){
-	this.sceneChecked = scene;
-	this.activityChecked = activity;
-	this.dialogChecked = dialog;
-	this.pickUpChecked = pickUp;
-	this.animationChecked = animation;
+function Dialog(object){
+	this.sceneChecked = false;
+	this.activityChecked = false;
+	this.dialogChecked = false;
+	this.pickUpChecked = false;
+	this.animationChecked = false;
 	this.animationIndex = 0;
-	this.soundChecked = sound;
+	this.soundChecked = false;
+	
+	this.dialogData = null;
 	this.div = object;
+	
+	this.animationClickActionMade = false;
+	this.dialogClickActionMade = false;
 }
 
 function inList(arr,obj){
