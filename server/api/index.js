@@ -34,6 +34,21 @@ module.exports = function (app)
     {
     	var Game = models.Game;
 
-    	res.send(req.user);
+    	if (req.params.id)
+    	{
+    		Game.loadByIdForUser(function (game)
+    		{
+    			if (game) res.send(game);
+    			else res.send('');
+    		}, req.params.id, req.user.userId)
+    	}
+    	else
+    	{
+    		Game.loadAllForUser(function (games)
+    		{
+    			if (games) res.send(games);
+    			else res.send('');
+    		}, req.user.userId);
+    	}
     });
 };
