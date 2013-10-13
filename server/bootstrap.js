@@ -1,8 +1,10 @@
 // -- module dependencies
 var express = require('express'),
-path = require('path'),
-expressValidator = require('express-validator'),
-hbs = require('express-hbs');
+    path = require('path'),
+    expressValidator = require('express-validator'),
+    hbs = require('express-hbs'),
+    flash = require('connect-flash');
+;
 
 module.exports.boot = function(app) {
     app.passport = require('./lib/passport')(app);
@@ -29,9 +31,11 @@ module.exports.boot = function(app) {
         }));
         app.use(express.methodOverride());
 
+        app.use(express.session({ secret: 'hemmelighet' }));
+        app.use(flash());
         app.use(app.passport.initialize());
         app.use(app.passport.session());
-
+        
         // -- Express routing
         app.use(app.router);
 

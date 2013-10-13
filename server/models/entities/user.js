@@ -36,7 +36,18 @@ User.loadById = function (callback, id)
 	});
 }
 
-User.loginWithUsernameAndPassword = function(callback, username, password)
+User.usernameExists = function (callback, username)
+{
+	db.query('SELECT username FROM user WHERE username = ?', username, function (error, rows, fields)
+	{	
+		if (error) throw error;
+
+		if (rows.length == 1) callback(true);
+		else callback(false);
+	});
+}
+
+User.loginWithUsernameAndPassword = function (callback, username, password)
 {
 	db.query('SELECT * FROM user WHERE username = ? AND password = ?', [username, password], function (error, rows, fields)
 	{

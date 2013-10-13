@@ -16,6 +16,9 @@ module.exports.account = function(req, res){
 };
 
 module.exports.save_account = function(req, res){
+
+    console.log('save account', req.user);
+
     return User.findById(req.user._id, function(err, user){
         if (err) {
             return res.json('200', {
@@ -54,7 +57,7 @@ module.exports.save_account = function(req, res){
     });
 };
 
-module.exports.login = function(req, res){
+module.exports.login = function(req, res){        
     res.render('login', {
         user: req.user
     });
@@ -71,3 +74,9 @@ module.exports.google_callback = function(req, res){
     delete req.session.returnTo;
     res.redirect(url);
 };
+
+module.exports.local_callback = function(req, res) {
+    var url = req.session.returnTo || '/';
+    delete req.session.returnTo;
+    res.redirect(url);
+}

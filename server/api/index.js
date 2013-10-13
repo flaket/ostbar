@@ -1,17 +1,17 @@
 var util = require('util');
-var models = require('../models')
+var models = require('../models');
+var passport = require('passport');
 
-
-module.exports = function (app) {
-    // set up the routes themselves
-    app.get('/api', function (req, res)
+module.exports = function (app)
+{
+    app.get('/api', app.ensureAuthenticated, function (req, res)
     {
         res.render('error', {
         	user: req.user
         });
     });
 
-	app.get('/api/world/:id?', function (req, res)
+	app.get('/api/world/:id?', app.ensureAuthenticated, function (req, res)
 	{
 		var World = models.World;
 		
@@ -19,26 +19,21 @@ module.exports = function (app) {
 		{
 			World.loadById(function (world)
 			{
-				if (world != null)
-				{
-					res.send(world);
-				}
-				else
-				{
-					res.send('');
-				}
+				if (world) res.send(world);
+				else res.send('');
 			}, req.params.id);
 		}
 
 		World.loadAll(function (worlds) {
-			if (worlds != null)
-			{
-				res.send(worlds);
-			}
-			else
-			{
-				res.send('');
-			}
+			if (worlds) res.send(worlds);
+			else res.send('');
 		});
+    });
+
+    app.get('/api/game/:id?', app.ensureAuthenticated, function (req, res)
+    {
+    	var Game = models.Game;
+
+    	res.send(req.user);
     });
 };
