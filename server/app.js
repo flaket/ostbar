@@ -16,10 +16,9 @@ conf(app, express, env);
 require('./bootstrap').boot(app);
 
 // -- api
-var api			= require('./api')(app);
+require('./api')(app);
 
 // -- routes
-
 var core_routes = require('./routes/index');
 app.get('/', core_routes.index);
 app.get('/account', app.ensureAuthenticated, core_routes.account);

@@ -2,16 +2,15 @@ function DB() {
 
 }
 
-DB.getInstance = function()
-{
-	var mysql = require('mysql');
+DB.getInstance = function(){
+	var mysql = require( 'mysql' );
 
 	var db = mysql.createConnection({
 		host : 'localhost',
 		user : 'tegf',
 	});
 
-	db.query('USE tegf', function(err, rows, fields) {
+	db.query('USE tegf', function ( err, rows, fields ){
 		if (err) throw err;
 	});
 

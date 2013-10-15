@@ -1,11 +1,11 @@
-var Entity 	= require('../entity').Entity;
-var DB 		= require('../db');
+var Entity 	= require( '../entity' ).Entity;
+var DB 		= require( '../db' );
 var db 		= DB.instance;
-var async 	= require('async');
+var async 	= require( 'async' );
 
-function User(data)
+function User( data )
 {
-	Entity.call(this);
+	Entity.call( this );
 
 	this.userId   = data.user_id;
 	this.username = data.username;
@@ -19,47 +19,37 @@ User.prototype = new Entity();
 
 User.prototype.constructor = User;
 
-User.loadById = function (callback, id)
-{
-	db.query('SELECT * FROM user WHERE user_id = ?', id, function (error, rows, fields)
-	{
-		if (error) throw error;
+User.loadById = function ( callback, id ){
+	db.query( 'SELECT * FROM user WHERE user_id = ?', id, function ( error, rows, fields ){
+		if ( error ) throw error;
 
-		if (rows.length == 1)
-		{
-			callback(new User(rows[0]));
+		if ( rows.length == 1 ){
+			callback( new User( rows[0] ) );
 		}
-		else
-		{
-			callback(null);
+		else {
+			callback( null );
 		}
 	});
 }
 
-User.usernameExists = function (callback, username)
-{
-	db.query('SELECT username FROM user WHERE username = ?', username, function (error, rows, fields)
-	{	
-		if (error) throw error;
+User.usernameExists = function ( callback, username ){
+	db.query( 'SELECT username FROM user WHERE username = ?', username, function ( error, rows, fields ){	
+		if ( error ) throw error;
 
-		if (rows.length == 1) callback(true);
-		else callback(false);
+		if ( rows.length == 1 ) callback( true );
+		else callback( false );
 	});
 }
 
-User.loginWithUsernameAndPassword = function (callback, username, password)
-{
-	db.query('SELECT * FROM user WHERE username = ? AND password = ?', [username, password], function (error, rows, fields)
-	{
-		if (error) throw error;
+User.loginWithUsernameAndPassword = function ( callback, username, password ){
+	db.query( 'SELECT * FROM user WHERE username = ? AND password = ?', [username, password], function ( error, rows, fields ){
+		if ( error ) throw error;
 
-		if (rows.length == 1)
-		{
-			callback(new User(rows[0]));
+		if ( rows.length == 1 ){
+			callback( new User( rows[0] ) );
 		}
-		else
-		{
-			callback(null);
+		else{
+			callback( null );
 		}
 	});
 }
