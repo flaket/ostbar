@@ -9,9 +9,6 @@ app.db = mysql.createConnection({
   user     : 'peterringset',
 });
 
-var nowjs = require('now');
-
-
 // -- handle node exceptions
 process.on('uncaughtException', function(err){
     console.error('uncaughtException', err.message);
@@ -25,11 +22,6 @@ var server = http.createServer(app).listen(app.conf.port, function()
     console.log("Express server listening on port %d in %s mode", app.conf.port, app.settings.env);
 });
 
-var everyone = nowjs.initialize(server);
+module.exports.server = server;
 
-everyone.now.logStuff = function (msg) 
-{
-	console.log(msg);
-}
-
-console.log('!!! \nMOVE NOWJS TO OWN MODULE\n!!!\n\n\n');
+require('./server/now');

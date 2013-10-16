@@ -18,6 +18,7 @@
 	        box-shadow: none;
 	border: none;
 }
+
 .button:hover {
 	text-decoration: none;
 }
@@ -103,3 +104,8 @@ table.vask {
 	}
 }
 
+.errors {
+	background-color: rgba(255,0,0,0.3);
+	border: 1px solid red;
+	text-align: center;
+}

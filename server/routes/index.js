@@ -79,4 +79,4 @@ module.exports.local_callback = function(req, res) {
     var url = req.session.returnTo || '/';
     delete req.session.returnTo;
     res.redirect(url);
-}
+};

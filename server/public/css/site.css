@@ -1,5 +1,5 @@
 @charset "UTF-8";
-/* normalize.css v2.1.1 | MIT License | git.io/normalize */
+/*! normalize.css v2.1.1 | MIT License | git.io/normalize */
 /* ==========================================================================
    HTML5 display definitions
    ========================================================================== */
@@ -4689,3 +4689,8 @@ table.vask td.app {
   height: 220px;
   border: 1px solid #dddddd;
   padding: 1em; }
+
+.errors {
+  background-color: rgba(255, 0, 0, 0.3);
+  border: 1px solid red;
+  text-align: center; }

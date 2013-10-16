@@ -47,11 +47,33 @@ User.loginWithUsernameAndPassword = function ( callback, username, password ){
 
 		if ( rows.length == 1 ){
 			callback( new User( rows[0] ) );
-		}
-		else{
+		} else {
 			callback( null );
 		}
 	});
+}
+
+User.create = function ( callback, username, password ){
+	if ( username.length < 6 ){
+		callback( 'Username must be 6 or more characters', false );
+	} else if ( password.length < 6 ){
+		callback( 'Password must be 6 or more characters', false );
+	} else {
+		db.query( 'INSERT INTO user VALUES (NULL, ?, MD5(?), NOW(), NULL)', [ username, password ], function ( error, rows, fields){
+			if ( error ){
+				if ( error.code == 'ER_DUP_ENTRY' ){
+					callback( 'Username is already taken', false );
+				} else {
+					throw error;
+				}
+			} else {
+				User.loadById( function ( user ){
+					callback(null, user);
+				}, rows.insertId );
+			}
+		});
+	}
+
 }
 
 module.exports.User = User;
