@@ -3,8 +3,9 @@
     <div class="row">
         <div class="large-12 columns">
             <h3>User data</h3>
-            <form class="custom" action="/" method="PUT" >
-                <div id="errors"></div>
+            <form class="custom" action="/account" method="POST">
+                <div id="errors" {{#if error}} class="errors" {{/if}}>{{error}}</div>
+                <div id="messages" {{#if message}} class="messages" {{/if}}>{{message}}</div>
                 <div class="row listair">
                     <div class="large-2 small-3 columns"><label class="right">Bruker-id:</label></div>
                     <div class="large-10 small-9 columns">{{user.userId}}</div>
@@ -43,7 +44,7 @@
                 </div>
                 <div class="row listair">
                     <div class="large-10 large-offset-2 small-9 small-offset-3 columns">
-                        <input type="button" value="Lagre" class="button small" onclick="testInput(this.form)" />
+                        <input type="submit" value="Lagre" class="button small" />
                         <!-- <a id="savebtn" class="button small">Save</a> -->
                     </div>
                 </div>
@@ -55,38 +56,42 @@
 <script type="text/javascript">
     now.ready(function(){
         // "Hello World!" will print on server
-        // now.logStuff("Hello World!");
+        // now.logOnServer("Hello World!");
+
+        now.logOnClient = function ( msg ){
+            console.log( msg );
+        };
     });
 
-    function testInput ( form ){
-        var oldPassword = form.oldpassword.value,
-            newPassword = form.newpassword.value,
-            newPassword2 = form.newpassword2.value;
+    // function testInput ( form ){
+    //     var oldPassword = form.oldpassword.value,
+    //         newPassword = form.newpassword.value,
+    //         newPassword2 = form.newpassword2.value;
 
-        var errors = document.getElementById( 'errors' );
+    //     var errors = document.getElementById( 'errors' );
 
-        if ( oldPassword.length < 6 ){
-            errors.innerHTML = 'For få bokstaver i passord';
-        } else if ( newPassword.length < 6) {
-            errors.innerHTML = 'For få bokstaver i nytt passord';
-        } else if ( newPassword != newPassword2 ) {
-            errors.innerHTML = 'Nytt passord er ikke skrevet likt begge gangene';
-        } else {
-            errors.innerHTML = '';
-        }
+    //     // if ( oldPassword.length < 6 ){
+    //     //     errors.innerHTML = 'For få bokstaver i passord';
+    //     // } else if ( newPassword.length < 6) {
+    //     //     errors.innerHTML = 'For få bokstaver i nytt passord';
+    //     // } else if ( newPassword.valueOf() !== newPassword2.valueOf() ) {
+    //     //     errors.innerHTML = 'Nytt passord er ikke skrevet likt begge gangene';
+    //     // } else {
+    //     //     errors.innerHTML = '';
+    //     // }
 
 
-        if ( errors.innerHTML.length > 0){
-            errors.className += ' errors'
-        } else {
-            errors.className = errors.className.replace( /(?:^|\s)errors(?!\S)/g , '' );
-        }
+    //     if ( errors.innerHTML.length > 0){
+    //         errors.className += ' errors';
+    //     } else {
+    //         errors.className = errors.className.replace( /(?:^|\s)errors(?!\S)/g , '' );
+    //     }
 
-        if ( errors.innerHTML.length == 0 ){
-            form.action = '/account';
-            form.submit();
-        }
-    }
+    //     if ( errors.innerHTML.length === 0 ){
+    //         form.action = '/account';
+    //         form.submit();
+    //     }
+    // }
 </script>
 
 {{#content "footer"}}

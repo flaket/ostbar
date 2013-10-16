@@ -2,7 +2,7 @@ var util = require( 'util' );
 var models = require( '../models' );
 var passport = require( 'passport' );
 
-module.exports = function (  app  ){
+module.exports = function ( app ){
     app.get( '/api', app.ensureAuthenticated, function ( req, res ){
         res.render( 'error', {
         	user: req.user

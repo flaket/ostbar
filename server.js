@@ -22,6 +22,8 @@ var server = http.createServer(app).listen(app.conf.port, function()
     console.log("Express server listening on port %d in %s mode", app.conf.port, app.settings.env);
 });
 
+// -- exports
 module.exports.server = server;
 
-require('./server/now');
+// -- now
+var now = require('./server/now');
