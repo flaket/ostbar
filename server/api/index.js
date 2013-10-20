@@ -2,75 +2,127 @@ var util = require( 'util' );
 var models = require( '../models' );
 var passport = require( 'passport' );
 
+var emptyResponse = function ( res ){
+    res.send( 204, ' ' );
+}
+
+var requestError = function ( res, error ){
+    res.send( 400, { error: error } );
+}
+
+var standardGETResponse = function ( req, res, Entity ){
+    if ( req.params.id ){
+        Entity.loadById( function ( error, entity ){
+            if ( error ) return requestError( res, error );
+
+            if ( entity ) res.send( entity );
+            else emptyResponse( res );
+        }, req.params.id );
+    } else {
+        Entity.loadAll( function ( error, entities){
+            if ( error ) return requestError( res, error );
+
+            if ( entities) res.send( entities );
+            else emptyResponse( res );
+        });
+    }
+}
+
 module.exports = function ( app ){
-    app.get( '/api', app.ensureAuthenticated, function ( req, res ){
-        res.send('');
+    var auth = app.ensureAuthenticated;
+
+    app.get( '/api/', auth, function ( req, res ){
+        emptyResponse( res );
     });
 
-	app.get( '/api/world/:id?', app.ensureAuthenticated, function ( req, res  ){
-		var World = models.World;
-		
-		if ( req.params.id ){
-			World.loadById( function ( error, world ){
-				if ( world ) res.send( world );
-				else res.send( '' );
-			}, req.params.id );
-		}
-
-		World.loadAll( function ( error, worlds ){
-			if ( worlds ) res.send( worlds );
-			else res.send( '' );
-		});
+    app.get( '/api/world/:id?', auth, function ( req, res  ){
+        standardGETResponse( req, res, models.World );
     });
 
-    app.get( '/api/game/:id?', app.ensureAuthenticated, function ( req, res ){
-    	var Game = models.Game;
-
-    	if ( req.params.id ){
-    		Game.loadByIdForUser( function ( error, game ){
-    			if ( game ) res.send( game );
-    			else res.send( '' );
-    		}, req.params.id, req.user.userId )
-    	} else {
-    		Game.loadAllForUser( function ( error, games ){
-    			if ( games ) res.send( games );
-    			else res.send( '' );
-    		}, req.user.userId );
-    	}
+    app.get( '/api/elementtype/:id?', auth, function ( req, res ){
+        standardGETResponse( req, res, models.ElementType );
     });
 
-    app.get( '/api/elementtype/:id?', app.ensureAuthenticated, function ( req, res ){
-        var ElementType = models.ElementType;
+    app.get( '/api/game/:id?', auth, function ( req, res ){
+        var Game = models.Game;
 
         if ( req.params.id ){
-            ElementType.loadById( function ( error, elementType ){
-                if ( elementType ) res.send( elementType );
-                else res.send( '' );
-            });
+            Game.loadByIdForUser( function ( error, game ){
+                if ( error ) return requestError( res, error );
+
+                if ( game ) res.send( game );
+                else emptyResponse( res );
+            }, req.params.id, req.user.userId );
         } else {
-            ElementType.loadAll( function ( error, elementTypes ){
-                if ( elementTypes ) res.send( elementTypes );
-                else res.send( '' );
-            });
+            Game.loadAllForUser( function ( error, games ){
+                if ( error ) return requestError( res, error );
+
+                if ( games ) res.send( games );
+                else emptyResponse( res );
+            }, req.user.userId );
         }
     });
 
-    console.log('element resource should have ensureAuthenticated');
+    app.get( '/api/scene/:id?', auth, function ( req, res ){
+        if (!req.params.id) return emptyResponse( res );
 
-    app.post( '/api/element/', function ( req, res ){
+        standardGETResponse( req, res, models.Scene );
+    });
+
+    app.post( '/api/element/:id?', auth, function ( req, res ){
         var Element = models.Element;
 
-        var elementTypeId = 1;
+        req.assert( 'element_type_id', 'element_type_id (int) is required' ).isInt();
+        req.assert( 'frame_x', 'frame_x (float) is required' ).isFloat();
+        req.assert( 'frame_y', 'frame_y (float) is required' ).isFloat();
+        req.assert( 'frame_width', 'frame_width (float) is required' ).isFloat();
+        req.assert( 'frame_height', 'frame_height (float) is required' ).isFloat();
+        
+        req.sanitize( 'element_type_id' ).toInt();
+        req.sanitize( 'frame_x' ).xss();
+        req.sanitize( 'frame_y' ).xss();
+        req.sanitize( 'frame_width' ).xss();
+        req.sanitize( 'frame_height' ).xss();
+        
+        var errors = req.validationErrors();
+
+        if ( errors ) return res.send( { error: errors } );
+
+        var elementTypeId = req.query.element_type_id;
         var frame = {
-            x: 10,
-            y: 15,
-            width: 20,
-            height: 25
+            x: req.query.frame_x,
+            y: req.query.frame_y,
+            width: req.query.frame_width,
+            height: req.query.frame_height
         }
 
-        Element.create( function ( error, createdElement ){
-            if ( createdElement ) res.send( createdElement );
-            else res.send( '' );
-        }, elementTypeId, frame);
+        if ( req.params.id ){
+            Element.loadById( function ( error, element ){
+                if ( error ) requestError( res, error );
+
+                if ( element ){
+                    element.elementTypeId = elementTypeId;
+
+                    element.frameX = frame.x;
+                    element.frameY = frame.y;
+                    element.frameWidth = frame.width;
+                    element.frameHeight = frame.height;
+
+                    element.update( function ( error, element ){
+                        if ( error ) requestError( res, error );
+
+                        if ( element ) res.send( element );
+                        else emptyResponse( res );
+                    });
+                }
+            }, req.params.id );
+        } else {
+            Element.create( function ( error, createdElement ){
+                if ( error ) return requestError( res, error );
+
+                if ( createdElement ) res.send( 201, createdElement );
+                else emptyResponse( res );
+            }, elementTypeId, frame);
+        }
     });
 };

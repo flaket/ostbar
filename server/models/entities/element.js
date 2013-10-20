@@ -11,7 +11,7 @@ function Element( data ){
     Entity.call( this );
 
     this.elementId      = data.element_id;
-    this.elementType    = data.element_type;
+    this.elementTypeId  = data.element_type_id;
     this.frameX         = data.frame_x;
     this.frameY         = data.frame_y;
     this.frameWidth     = data.frame_width;
@@ -27,25 +27,7 @@ Element.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM element WHERE element_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ){
-            var data = rows[0];
-
-            async.parallel({
-                elementType: function ( callback ){
-                    ElementType.loadById( callback, data.element_type_id );
-                },
-                actionTypes: function ( callback ){
-                    ActionType.loadAllInElement( callback, data.element_id );
-                }
-            },
-            function ( error, results ){
-                if ( error ) return callback( error, false );
-
-                data.element_type = results.elementType;
-                data.action_types = results.actionTypes;
-                callback( null, new Element( data ) );
-            });
-        }
+        if ( rows.length == 1 ) Element.initWithData( callback, rows[0] );
         else callback( 'Could not load Element with id ' + id, false );
     });
 };
@@ -105,6 +87,47 @@ Element.create = function ( callback, elementTypeId, frame ){
         });
     }, elementTypeId);
 };
+
+Element.initWithData = function ( callback, data ){
+    async.parallel({
+        actionTypes: function ( callback ){
+            ActionType.loadAllInElement( callback, data.element_id );
+        }
+    },
+    function ( error, results ){
+        if ( error ) return callback( error, false );
+
+        data.action_types = results.actionTypes;
+        callback( null, new Element( data ) );
+    });
+}
+
+Element.prototype.update = function ( callback ){
+    var query = 'UPDATE element SET ';
+        query += 'element_type_id = ?, ';
+        query += 'frame_x = ?, ';
+        query += 'frame_y = ?, ';
+        query += 'frame_width = ?, ';
+        query += 'frame_height = ? ';
+        query += 'WHERE element_id = ?';
+
+    var post = [
+        this.elementTypeId,
+        this.frameX,
+        this.frameY,
+        this.frameWidth,
+        this.frameHeight,
+        this.elementId
+    ];
+    
+    var self = this;
+
+    db.query(query, post, function ( error, rows, fields){        
+        if ( error ) return callback( error, false );
+
+        callback( null, self );
+    });
+}
 
 Element.prototype.addActionType = function( callback, actionTypeId, data ){
     var post = {
