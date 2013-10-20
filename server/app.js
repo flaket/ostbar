@@ -31,7 +31,9 @@ app.get('/logout', core_routes.logout);
 //         ]}), function(req, res){});
 // app.get('/auth/google/callback', app.passport.authenticate('google', { failureRedirect: '/login' }), core_routes.google_callback);
 app.post('/login', 
-  passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }),
+  passport.authenticate('local', {
+    failureRedirect: '/login',
+    failureFlash: true }),
   core_routes.local_callback);
 
 // -- exports

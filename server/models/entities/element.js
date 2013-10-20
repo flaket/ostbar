@@ -25,41 +25,36 @@ Element.prototype.constructor = Element;
 
 Element.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM element WHERE element_id = ?', id, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         if ( rows.length == 1 ){
             var data = rows[0];
 
             async.parallel({
                 elementType: function ( callback ){
-                    ElementType.loadById( function ( elementType ){
-                        callback( null, elementType );
-                    }, data.element_type_id );
+                    ElementType.loadById( callback, data.element_type_id );
                 },
                 actionTypes: function ( callback ){
-                    ActionType.loadAllInElement( function ( actionTypes ) {
-                        callback( null, actionTypes );
-                    }, data.element_id );
+                    ActionType.loadAllInElement( callback, data.element_id );
                 }
             },
             function ( error, results ){
-                if ( error ) callback( null );
-                else{
-                    data.element_type = results.elementType;
-                    data.action_types = results.actionTypes;
-                    callback( new Element( data ) );
-                }
+                if ( error ) return callback( error, false );
+
+                data.element_type = results.elementType;
+                data.action_types = results.actionTypes;
+                callback( null, new Element( data ) );
             });
         }
-        else callback( null );
+        else callback( 'Could not load Element with id ' + id, false );
     });
-}
+};
 
 Element.loadAllInScene = function ( callback, sceneId ){
     var query = 'SELECT * FROM scene_to_element_rel se_rel WHERE se_rel.scene_id = ?';
 
     db.query( query, sceneId, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         var elements = new Array();
         var currentElement = 0;
@@ -69,19 +64,47 @@ Element.loadAllInScene = function ( callback, sceneId ){
                 return elements.length < rows.length;
             },
             function ( callback ){
-                Element.loadById( function ( element ){
+                Element.loadById( function ( error, element ){
+                    if ( error ) return callback ( error, false );
+
                     currentElement++;
                     elements.push( element );
                     callback();
                 }, rows[currentElement].element_id );
             },
             function ( error ){
-                if ( error ) callback( null );
-                else callback( elements );
+                callback( error, elements );
             }
          );
     });
-}
+};
+
+Element.create = function ( callback, elementTypeId, frame ){
+    var post = {
+        element_id: null,
+        element_type_id: elementTypeId,
+        frame_x: frame.x,
+        frame_y: frame.y,
+        frame_width: frame.width,
+        frame_height: frame.height
+    }
+
+    var query = 'INSERT INTO element SET ?';
+
+    ElementType.loadById( function ( error, elementType ){
+        if ( error ) callback( error, false );
+
+        db.query(query, post, function ( error, rows, fields ){
+            if ( error ) return callback( error, false );
+            
+            if ( rows.insertId ) Element.loadById( callback, rows.insertId );
+            else return callback( 'Could not create element with data ' + {
+                    elementTypeId: elementTypeId,
+                    frame: frame
+                }, false );
+        });
+    }, elementTypeId);
+};
 
 Element.prototype.addActionType = function( callback, actionTypeId, data ){
     var post = {
@@ -93,10 +116,11 @@ Element.prototype.addActionType = function( callback, actionTypeId, data ){
     var query = 'INSERT INTO element_to_action_type_rel SET ?';
 
     db.query( query, post, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
-        callback( true );
+        if ( rows.insertId ) Element.loadById( callback, this.elementId );
+        else return callback( 'Could not add actoin type ' + actionTypeId + ' to element with id ' + this.elementId, false );
     });
-}
+};
 
 module.exports.Element = Element;

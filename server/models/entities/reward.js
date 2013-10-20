@@ -16,10 +16,10 @@ Reward.prototype.constructor = Reward;
 
 Reward.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM reward WHERE reward_id = ?', id, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ) callback( new Reward( rows[0] ) );
-        else callback( null );
+        if ( rows.length == 1 ) callback( null, new Reward( rows[0] ) );
+        else callback( 'Could not load Reward with id ' + id, false );
     });
 }
 

@@ -15,21 +15,19 @@ Avatar.prototype = new Entity(  );
 Avatar.prototype.constructor = Avatar;
 
 Avatar.loadById = function ( callback, id ){
-    db.query( 'SELECT * FROM avatar WHERE avatar_id = ?', id, function ( error, rows, fields ) {
-        if ( error ) throw error;
+    db.query( 'SELECT * FROM avatar WHERE avatar_id = ?', id, function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ){
-            callback( new Avatar( rows[0] ) );
-        }
-        else callback( null );
-    } );
+        if ( rows.length == 1 ) callback( null, new Avatar( rows[0] ) );
+        else callback( 'Could not load Avatar with id ' + id, false );
+    });
 }
 
 Avatar.loadAll = function ( callback ){
     db.query( 'SELECT * FROM avatar', function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
-        var avatars = new Array(  );
+        var avatars = new Array();
 
         if ( rows.length > 0 ){
             for ( key in rows ){
@@ -38,8 +36,8 @@ Avatar.loadAll = function ( callback ){
             }
         }
 
-        callback( avatars );
-    } );
+        callback( null, avatars );
+    });
 }
 
 module.exports.Avatar = Avatar;

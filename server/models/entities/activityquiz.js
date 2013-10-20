@@ -19,33 +19,33 @@ ActivityQuiz.prototype.constructor = ActivityQuiz;
 
 ActivityQuiz.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM activity_quiz WHERE activity_quiz_id = ?', id, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         if ( rows.length == 1 ) ActivityQuiz.initWithData( callback, rows[0] );
-        else callback( null );
+        else callback( 'Could not load ActivityQuiz with id ' + id, false );
     });
 }
 
 ActivityQuiz.loadByActivityId = function ( callback, activityId ){
     db.query( 'SELECT * FROM activity_quiz WHERE activity_id = ?', activityId, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         if ( rows.length == 1 ) ActivityQuiz.initWithData( callback, rows[0] );
-        else callback( null );
+        else callback( 'Could not load ActivityQuiz with activity_id ' + activityId, false );
     });
 }
 
 ActivityQuiz.initWithData = function ( callback, data ){
     async.parallel({
         questions: function ( callback ){
-            QuizQuestion.loadAllInActivityQuiz( function ( questions ){
-                callback( null, questions );
-            }, data.activity_quiz_id )
+            QuizQuestion.loadAllInActivityQuiz( callback, data.activity_quiz_id )
         }
     },
     function ( error, results ){
+        if ( error ) return callback( error, false );
+
         data.quiz_questions = results.questions;
-        callback( new ActivityQuiz(  data ) );
+        callback( null, new ActivityQuiz(  data ) );
     });
 }
 

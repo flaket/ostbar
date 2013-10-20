@@ -14,6 +14,9 @@ module.exports = {
         req.session.returnTo = req.url;
 
         if (req.isAuthenticated()) next();
-        else res.redirect('/login');
+        else {
+            req.flash('info', 'Du må være logget inn for å gjøre dette');
+            res.redirect('/login');
+        }
     }
 };

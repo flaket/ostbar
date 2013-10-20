@@ -19,33 +19,33 @@ ActivityLanguage.prototype.constructor = ActivityLanguage;
 
 ActivityLanguage.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM activity_language WHERE activity_language_id = ?', id, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         if ( rows.length == 1 ) ActivityLanguage.initWithData( callback, rows[0] ); 
-        else callback( null );
+        else callback( 'Could not load ActivityLanguage with id ' + id, false );
     });
 }
 
 ActivityLanguage.loadByActivityId = function ( callback, activityId ){
     db.query( 'SELECT * FROM activity_language WHERE activity_id = ?', activityId, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         if ( rows.length == 1 ) ActivityLanguage.initWithData( callback, rows[0] );
-        else callback( null );
+        else callback( 'Could not load ActivityLanguage with activity_id ' + activityId, false );
     });
 }
 
 ActivityLanguage.initWithData = function ( callback, data ) {
     async.parallel({
         questions: function ( callback ){
-            LanguageQuestion.loadAllInActivityLanguage( function ( languageQuestions ){
-                callback( null, languageQuestions );
-            }, data.activity_language_id );
+            LanguageQuestion.loadAllInActivityLanguage( callback, data.activity_language_id );
         }
     },
     function ( error, results ){
+        if ( error ) return callback( error, false );
+
         data.language_questions = results.questions;
-        callback( new ActivityLanguage( data ) );
+        callback( null, new ActivityLanguage( data ) );
     });
 }
 

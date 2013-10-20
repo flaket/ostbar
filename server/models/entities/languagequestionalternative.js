@@ -17,23 +17,18 @@ LanguageQuestionAlternative.prototype.constructor = LanguageQuestionAlternative;
 
 LanguageQuestionAlternative.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM language_question_alternative WHERE language_question_alternative_id = ?', id, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ){
-            callback( new LanguageQuestionAlternative( rows[0] ) );
-        }
-        else {
-            callback( null );
-        }
+        if ( rows.length == 1 ) callback( null, new LanguageQuestionAlternative( rows[0] ) );
+        else callback( 'Could not load LanguageQuestionAlternative with id ' + id, false );
     });
 }
 
-LanguageQuestionAlternative.loadAllInLanguageQuestion = function ( callback, languageQuestionId )
-{
+LanguageQuestionAlternative.loadAllInLanguageQuestion = function ( callback, languageQuestionId ){
     var query = 'SELECT * FROM language_question_alternative WHERE language_question_id = ?';
     
     db.query( query, languageQuestionId, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         var languageQuestionAlternatives = new Array();
         var currentAlternative = 0;
@@ -49,8 +44,7 @@ LanguageQuestionAlternative.loadAllInLanguageQuestion = function ( callback, lan
                 callback();
             },
             function ( error ){
-                if ( error ) callback( null );
-                else callback( languageQuestionAlternatives );
+                callback( error, languageQuestionAlternatives );
             }
          );     
     });

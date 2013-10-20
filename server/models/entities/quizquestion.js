@@ -23,10 +23,10 @@ QuizQuestion.prototype.constructor = QuizQuestion;
 
 QuizQuestion.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM quiz_question WHERE quiz_question_id = ?', id, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ) callback( new QuizQuestion( rows[0] ) );
-        else callback( null );
+        if ( rows.length == 1 ) QuizQuestion.initWithData( callback, rows[0]);
+        else callback( 'Could not load QuizQuestion with id ' + id, false );
     });
 }
 
@@ -36,7 +36,7 @@ QuizQuestion.loadAllInActivityQuiz = function ( callback, activityQuizId ){
         query += 'WHERE activity_quiz_id = ?';
 
     db.query( query, activityQuizId, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         var quizQuestions = new Array();
         var currentQuizQuestion = 0;
@@ -46,15 +46,16 @@ QuizQuestion.loadAllInActivityQuiz = function ( callback, activityQuizId ){
                 return quizQuestions.length < rows.length;
             },
             function ( callback ){
-                QuizQuestion.initWithData( function ( quizQuestion ){
+                QuizQuestion.initWithData( function ( error, quizQuestion ){
+                    if ( error ) return callback( error );
+
                     quizQuestions.push( quizQuestion );
                     currentQuizQuestion++;
                     callback();
                 }, rows[currentQuizQuestion] );
             },
             function ( error ){
-                if ( error ) callback( null );
-                else callback( quizQuestions );
+                callback( error, quizQuestions );
             }
          );
     });
@@ -63,27 +64,23 @@ QuizQuestion.loadAllInActivityQuiz = function ( callback, activityQuizId ){
 QuizQuestion.initWithData = function ( callback, data ){
     async.parallel({
         alternatives: function ( callback ){
-            QuizQuestionAlternative.loadAllInQuizQuestion( function ( alternatives ){
-                callback( null, alternatives );
-            }, data.quiz_question_id );
+            QuizQuestionAlternative.loadAllInQuizQuestion( callback, data.quiz_question_id );
         },
         correctAlternatives: function ( callback ){
-            QuizQuestionAlternative.loadAllCorrectInQuizQuestion( function ( correctAlternatives ){
-                callback( null, correctAlternatives );
-            }, data.quiz_question_id );
+            QuizQuestionAlternative.loadAllCorrectInQuizQuestion( callback, data.quiz_question_id );
         },
         subject: function ( callback ){
-            SubjectType.loadById( function ( subject ){
-                callback( null, subject );
-            }, data.subject_type_id );
+            SubjectType.loadById( callback, data.subject_type_id );
         }
     },
     function ( error, results ){
+        if ( error ) return callback( error, false );
+
         data.alternatives = results.alternatives;
         data.correct_alternatives = results.correctAlternatives;
         data.subject = results.subject;
 
-        callback( new QuizQuestion( data ) );
+        callback( null, new QuizQuestion( data ) );
     });
 }
 

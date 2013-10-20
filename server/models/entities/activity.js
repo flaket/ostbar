@@ -23,7 +23,7 @@ Activity.prototype.constructor = Activity;
 
 Activity.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM activity WHERE activity_id = ?', id, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         if ( rows.length == 1 ){
             var data = rows[0];
@@ -37,24 +37,22 @@ Activity.loadById = function ( callback, id ){
 
             async.parallel({
                 reward: function ( callback ){
-                    Reward.loadById( function ( reward ){
-                        callback( null, reward );
-                    }, rows[0].reward_id );
+                    Reward.loadById( callback, data.reward_id );
                 },
                 subclass: function ( callback ){
-                    subclass.loadByActivityId( function ( subclass ){
-                        callback( null, subclass );
-                    }, data.activity_id );
+                    subclass.loadByActivityId( callback, data.activity_id );
                 }
             },
             function ( error, results ){
+                if ( error ) return callback ( error, false );
+
                 data.reward = results.reward;
                 data.subclass = results.subclass;
 
-                callback( new Activity( data ) );
+                callback( null, new Activity( data ) );
             });
         }
-        else callback( null );
+        else callback( 'Could not load activity', false );
     });
 }
 

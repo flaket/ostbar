@@ -32,9 +32,9 @@ module.exports.boot = function(app) {
         app.use(express.methodOverride());
 
         app.use(express.session({ secret: 'hemmelighet' }));
-        app.use(flash());
         app.use(app.passport.initialize());
         app.use(app.passport.session());
+        app.use(flash());
         
         // -- Express routing
         app.use(app.router);

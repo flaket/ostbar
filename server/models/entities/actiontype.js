@@ -16,10 +16,10 @@ ActionType.prototype.constructor = ActionType;
 
 ActionType.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM action_type WHERE action_type_id = ?', id, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         if ( rows.length == 1 ) ActionType.initWithData( callback, rows[0] );
-        else callback( null );
+        else callback( 'No objects', false );
     });
 }
 
@@ -30,7 +30,7 @@ ActionType.loadAllInElement = function ( callback, elementId ){
         query += 'WHERE at.action_type_id IS NOT NULL';
 
     db.query( query, elementId, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         var actionTypes = new Array();
         var currentActionType = 0;
@@ -40,7 +40,9 @@ ActionType.loadAllInElement = function ( callback, elementId ){
                 return actionTypes.length < rows.length;
             },
             function ( callback ){
-                ActionType.initWithData( function ( actionType ){
+                ActionType.initWithData( function ( error, actionType ){
+                    if ( error ) return callback( error );
+
                     var buffer = new Buffer( rows[currentActionType].data, 'binary' );
 
                     actionTypes.push({
@@ -52,7 +54,9 @@ ActionType.loadAllInElement = function ( callback, elementId ){
                     callback();
                 }, rows[currentActionType])
             },
-            function ( error ) { callback( actionTypes ); }
+            function ( error ){
+                callback( error, actionTypes );
+            }
         );
     });
 }
@@ -64,7 +68,7 @@ ActionType.loadAllInElementType = function ( callback, elementTypeId ){
         query += 'WHERE at.action_type_id IS NOT NULL';
 
     db.query( query, elementTypeId, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         var actionTypes = new Array();
         var currentActionType = 0;
@@ -74,7 +78,9 @@ ActionType.loadAllInElementType = function ( callback, elementTypeId ){
                 return actionTypes.length < rows.length;
             },
             function ( callback ){
-                ActionType.initWithData( function ( actionType ){
+                ActionType.initWithData( function ( error, actionType ){
+                    if ( error ) return callback( error );
+
                     actionTypes.push( actionType );
                     currentActionType++;
                     
@@ -83,7 +89,7 @@ ActionType.loadAllInElementType = function ( callback, elementTypeId ){
             },
             function ( error )
             {
-                callback( actionTypes );
+                callback( error, actionTypes );
             }
         );
     });
@@ -92,7 +98,7 @@ ActionType.loadAllInElementType = function ( callback, elementTypeId ){
 ActionType.initWithData = function ( callback, data ){
     var actionType = new ActionType( data );
 
-    callback( actionType );
+    callback( null, actionType );
 }
 
 module.exports.ActionType = ActionType;

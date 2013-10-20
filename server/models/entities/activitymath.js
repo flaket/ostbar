@@ -21,33 +21,33 @@ ActivityMath.prototype.constructor = ActivityMath;
 
 ActivityMath.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM activity_math WHERE activity_math_id = ?', id, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         if ( rows.length == 1 ) ActivityMath.initWithData( callback, rows[0] );
-        else callback( null );
+        else callback( 'Could not load ActivityMath with id ' + id, false );
     });
 }
 
 ActivityMath.loadByActivityId = function ( callback, activityId ){
     db.query( 'SELECT * FROM activity_math WHERE activity_id = ?', activityId, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         if ( rows.length == 1 ) ActivityMath.initWithData( callback, rows[0] );
-        else callback( null );
+        else callback( 'Could not load ActivityMath with activity_id ' + activityId, false );
     });
 }
 
 ActivityMath.initWithData = function ( callback, data ){
     async.parallel({
         operators: function ( callback ){
-            MathOperator.loadAllInActivityMath( function ( operators ){
-                callback( null, operators );
-            }, data.activity_math_id );
+            MathOperator.loadAllInActivityMath( callback, data.activity_math_id );
         }
     },
     function ( error, results ){
+        if ( error ) return callback( error, false );
+
         data.operators = results.operators;
-        callback( new ActivityMath( data ) );
+        callback( null, new ActivityMath( data ) );
     });
 }
 

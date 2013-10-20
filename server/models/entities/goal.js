@@ -16,10 +16,10 @@ Goal.prototype.constructor = Goal;
 
 Goal.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM goal WHERE goal_id = ?', id, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ) callback( new Goal( rows[0] ) );
-        else callback( null );
+        if ( rows.length == 1 ) callback( null, new Goal( rows[0] ) );
+        else callback( 'Could not load Goal with id ' + id, false );
     });
 }
 

@@ -16,16 +16,16 @@ World.prototype.constructor = World;
 
 World.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM world WHERE world_id = ?', id, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) callback( error, false );
 
-        if ( rows.length == 1 ) callback( new World( rows[0] ) );
-        else callback( null );
+        if ( rows.length == 1 ) callback( null, new World( rows[0] ) );
+        else callback( 'Could not load World with id ' + id, false );
     });
 }
 
 World.loadAll = function ( callback ){
     db.query( 'SELECT * FROM WORLD', function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) callback( error, false );
 
         var worlds = new Array();
 
@@ -34,7 +34,7 @@ World.loadAll = function ( callback ){
             worlds.push( new World( row ) );
         }
 
-        callback( worlds );
+        callback( null, worlds );
     });
 }
 

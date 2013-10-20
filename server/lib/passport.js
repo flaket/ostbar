@@ -8,7 +8,9 @@ module.exports = function( app ){
     });
 
     passport.deserializeUser( function ( id, done ){
-        User.loadById( function ( user ){
+        User.loadById( function ( error, user ){
+            if ( error ) return done( error, false );
+
             if ( user ) done( null, user );
             else done( null, false );
         }, id );
@@ -17,14 +19,18 @@ module.exports = function( app ){
     passport.use( new LocalStrategy( 
         function ( username, password, done ){
             process.nextTick( function (  ){
-                User.usernameExists( function ( exists ){
+                User.usernameExists( function ( error, exists ){
+                    if ( error ) return done( error, false );
+
                     if ( exists ){
-                        User.loginWithUsernameAndPassword( function ( user ){
+                        User.loginWithUsernameAndPassword( function ( error, user ){
+                            if ( error ) return done( error, false );
+
                             if ( user ) done( null, user );
-                            else done( null, false, { message: 'Incorrect password.'});
+                            else done( null, false, { message: 'Passordet er ikke riktig'});
                         }, username, password );
                     } else {
-                        return done( null, false, { message: 'Incorrect username.' });
+                        return done( null, false, { message: 'Brukernavnet finnes ikke' });
                     }
                 }, username );
             });

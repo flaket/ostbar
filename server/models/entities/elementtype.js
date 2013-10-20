@@ -25,47 +25,67 @@ ElementType.prototype.constructor = ElementType;
 
 ElementType.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM element_type WHERE element_type_id = ?', id, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ){
-            var data = rows[0];
-
-            async.parallel({
-                avatar: function ( callback ){
-                    Avatar.loadById( function ( avatar ){
-                        callback( null, avatar );
-                    }, data.avatar_id );
-                },
-                sound: function ( callback ){
-                    Sound.loadById( function ( sound ){
-                        callback( null, sound );
-                    }, data.sound_id );
-                },
-                world: function ( callback ){
-                    World.loadById( function ( world ) {
-                        callback( null, world );
-                    }, data.world_id );
-                },
-                allowedActionTypes: function ( callback ){
-                    ActionType.loadAllInElementType( function ( actionTypes ) {
-                        callback( null, actionTypes );
-                    }, data.element_type_id );
-                }
-            },
-            function ( error, results ){
-                if ( error ) callback( null );
-                else {
-                    data.avatar = results.avatar;
-                    data.sound = results.sound;
-                    data.world = results.world;
-                    data.allowed_action_types = results.allowedActionTypes;
-
-                    callback( new ElementType( data ) );
-                }
-            });
-        }
-        else callback( null );
+        if ( rows.length == 1 ) ElementType.initWithData( callback, rows[0]);
+        else callback( 'Could not load ElementType with id ' + id, false );
     });
-}
+};
+
+ElementType.loadAll = function ( callback ){
+    db.query( 'SELECT * FROM element_type', function ( error, rows, fields ){
+        if (error) return callback( error, false );
+
+        var elementTypes = new Array();
+        var currentElementType = 0;
+
+        async.whilst(
+            function (){
+                return elementTypes.length < rows.length;
+            },
+            function ( callback ){
+                ElementType.initWithData( function ( error, elementType ){
+                    if ( error ) return callback( error );
+
+                    currentElementType++;
+                    elementTypes.push( elementType );
+                    callback();
+                }, rows[currentElementType]);
+            },
+            function ( error ){
+                callback( error, elementTypes );
+            }
+        );
+    });
+};
+
+ElementType.initWithData = function ( callback, data ){
+    async.parallel({
+        avatar: function ( callback ){
+            Avatar.loadById( callback, data.avatar_id );
+        },
+        sound: function ( callback ){
+            Sound.loadById( callback, data.sound_id );
+        },
+        world: function ( callback ){
+            World.loadById( callback, data.world_id );
+        },
+        allowedActionTypes: function ( callback ){
+            ActionType.loadAllInElementType( callback, data.element_type_id );
+        }
+    },
+    function ( error, results ){
+
+
+        if ( error ) return callback( error, null );
+
+        data.avatar = results.avatar;
+        data.sound = results.sound;
+        data.world = results.world;
+        data.allowed_action_types = results.allowedActionTypes;
+
+        callback( null, new ElementType( data ) );
+    });
+};
 
 module.exports.ElementType = ElementType;

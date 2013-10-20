@@ -16,10 +16,10 @@ SubjectType.prototype.constructor = SubjectType;
 
 SubjectType.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM subject_type WHERE subject_type_id = ?', id, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
-        if ( rows.length === 1 ) callback( new SubjectType( rows[0] ) );
-        else callback( null );
+        if ( rows.length === 1 ) callback( null, new SubjectType( rows[0] ) );
+        else callback( 'Could not load SubjectType with id ' + id, false );
     });
 };
 

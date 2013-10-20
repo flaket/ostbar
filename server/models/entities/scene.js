@@ -22,39 +22,32 @@ Scene.prototype.constructor = Scene;
 
 Scene.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM scene WHERE scene_id = ?', id, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         if ( rows.length == 1 ){
             var data = rows[0];
 
             async.parallel({
                 backgroundAvatar: function ( callback ){
-                    Avatar.loadById( function ( avatar ){
-                        callback( null, avatar );
-                    }, data.background_avatar_id );
+                    Avatar.loadById( callback, data.background_avatar_id );
                 },
                 elements: function ( callback ){
-                    Element.loadAllInScene( function ( elements ){
-                        callback( null, elements );
-                    }, data.scene_id );
+                    Element.loadAllInScene( callback, data.scene_id );
                 },
                 world: function ( callback ){
-                    World.loadById( function ( world ){
-                        callback( null, world );
-                    }, data.world_id );
+                    World.loadById( callback, data.world_id );
                 }
             },
             function ( error, results ){
-                if ( error ) callback( null );
-                else {
-                    data.backgroundAvatar = results.backgroundAvatar;
-                    data.elements = results.elements;
-                    data.world = results.world;
-                    callback( new Scene( data ) );  
-                }
+                if ( error ) return callback( error, false );
+
+                data.backgroundAvatar = results.backgroundAvatar;
+                data.elements = results.elements;
+                data.world = results.world;
+                callback( null, new Scene( data ) );  
             });
         }
-        else callback( null );
+        else callback( 'Could not load Scene with id ' + id, false );
     });
 }
 

@@ -1,7 +1,8 @@
 {{!< main}}
 <section id="login">
     <div class="row">
-        <div class="large-4 columns">
+        <div id="errors" {{#if message}} class="errors" {{/if}}>{{message}}</div>
+        <div class="large-4 columns" style="float: center;">
             <form action="/login" method="post">
 							<div>
 								<label>Username:</label>

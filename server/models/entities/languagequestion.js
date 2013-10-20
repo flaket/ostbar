@@ -24,10 +24,10 @@ LanguageQuestion.prototype.constructor = LanguageQuestion;
 
 LanguageQuestion.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM language_question WHERE language_question_id = ?', id, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ) LanguageQuestion.initWithData( rows[0], callback );
-        else callback( null );
+        if ( rows.length == 1 ) LanguageQuestion.initWithData( callback, rows[0] );
+        else callback( 'Could not load LanguageQuestion with id ' + id, false );
     });
 }
 
@@ -35,7 +35,7 @@ LanguageQuestion.loadAllInActivityLanguage = function( callback, activityLanguag
     var query = 'SELECT  * FROM language_question WHERE activity_language_id = ?';
 
     db.query( query, activityLanguageId, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         var languageQuestions = new Array();
         var currentLanguageQuestion = 0;
@@ -45,15 +45,16 @@ LanguageQuestion.loadAllInActivityLanguage = function( callback, activityLanguag
                 return languageQuestions.length < rows.length;
             },
             function ( callback ){
-                LanguageQuestion.initWithData( function ( languageQuestion ){
+                LanguageQuestion.initWithData( function ( error, languageQuestion ){
+                    if ( error ) callback( error );
+
                     languageQuestions.push( languageQuestion );
                     currentLanguageQuestion++;
                     callback();
                 }, rows[currentLanguageQuestion] );
             },
             function ( error ){
-                if ( error ) callback( null );
-                else callback( languageQuestions );
+                callback( error, languageQuestions );
             }
          );
     });
@@ -67,24 +68,19 @@ LanguageQuestion.initWithData = function ( callback, data ){
 
     async.parallel({
         dataClass: function ( callback ){
-            dataClass.loadById( function ( dataObj ){
-                callback( null, dataObj );
-            }, data.data_id );
+            dataClass.loadById( callback, data.data_id );
         },
         alternatives: function ( callback ){
-            LanguageQuestionAlternative.loadAllInLanguageQuestion( function ( alternatives ){
-                callback( null, alternatives );
-            }, data.language_question_id );
+            LanguageQuestionAlternative.loadAllInLanguageQuestion( callback, data.language_question_id );
         }
     },
     function ( error, results ){
-        if ( error ) callback( null )
-        else {
-            data.data = results.dataClass;
-            data.alternatives = results.alternatives;
+        if ( error ) return callback( error, false );
+        
+        data.data = results.dataClass;
+        data.alternatives = results.alternatives;
 
-            callback( new LanguageQuestion( data ) );   
-        }
+        callback( null, new LanguageQuestion( data ) );   
     });
 }
 

@@ -16,16 +16,16 @@ Sound.prototype.constructor = Sound;
 
 Sound.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM sound WHERE sound_id = ?', id, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ) callback( new Sound( rows[0] ) );
-        else callback( null );
+        if ( rows.length == 1 ) callback( null, new Sound( rows[0] ) );
+        else callback( 'Could not load Sound with id ' + id, false );
     });
 }
 
 Sound.loadAll = function ( callback ){
     db.query( 'SELECT * FROM sound', function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         var sounds = new Array();
 
@@ -34,7 +34,7 @@ Sound.loadAll = function ( callback ){
             sounds.push( new Sound( row ) );
         }
         
-        callback( sounds );
+        callback( null, sounds );
     });
 }
 

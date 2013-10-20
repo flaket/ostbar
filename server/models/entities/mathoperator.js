@@ -16,10 +16,10 @@ MathOperator.prototype.constructor = MathOperator;
 
 MathOperator.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM math_operator WHERE math_operator_id = ?', id, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         if ( rows.length == 1 ) MathOperator.initWithData( callback, rows[0] );
-        else callback( null );
+        else callback( 'Could not load MathOperator with id ' + id, false );
     });
 }
 
@@ -29,7 +29,7 @@ MathOperator.loadAllInActivityMath = function ( callback, activityMathId ){
         query += 'ON am_to_mo_rel.math_operator_id = mo.math_operator_id AND am_to_mo_rel.activity_math_id = ?';
 
     db.query( query, activityMathId, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         var operators = new Array();
         var currentOperator = 0;
@@ -39,22 +39,23 @@ MathOperator.loadAllInActivityMath = function ( callback, activityMathId ){
                 return operators.length < rows.length;
             },
             function ( callback ){
-                MathOperator.initWithData( function ( mathOperator ){
+                MathOperator.initWithData( function ( error, mathOperator ){
+                    if ( error ) callback( error );
+
                     operators.push( mathOperator );
                     currentOperator++;
                     callback();
                 }, rows[currentOperator] )
             },
             function ( error ){
-                if ( error ) callback( null );
-                else callback( operators );
+                callback( error, operators );
             }
          );
     });
 }
 
 MathOperator.initWithData = function ( callback, data ){
-    callback( new MathOperator( data ) );
+    callback( null, new MathOperator( data ) );
 }
 
 module.exports.MathOperator = MathOperator;

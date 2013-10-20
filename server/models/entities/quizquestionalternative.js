@@ -17,10 +17,10 @@ QuizQuestionAlternative.prototype.constructor = QuizQuestionAlternative;
 
 QuizQuestionAlternative.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM quiz_question_alternative WHERE quiz_question_alternative_id = ?', id, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ) callback( new QuizQuestionAlternative( rows[0] ) );
-        else callback( null );
+        if ( rows.length == 1 ) callback( null, new QuizQuestionAlternative( rows[0] ) );
+        else callback( 'Could not load QuizQuestionAlternative with id ' + id, false );
     });
 }
 
@@ -30,7 +30,7 @@ QuizQuestionAlternative.loadAllInQuizQuestion = function ( callback, quizQuestio
         query += 'WHERE quiz_question_id = ?';
 
     db.query( query, quizQuestionId, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         var quizQuestionAlternatives = new Array();
         var currentAlternative = 0;
@@ -46,8 +46,7 @@ QuizQuestionAlternative.loadAllInQuizQuestion = function ( callback, quizQuestio
                 callback();
             },
             function ( error ){
-                if ( error ) callback( null );
-                else callback( quizQuestionAlternatives );
+                callback( error, quizQuestionAlternatives );
             }
          );
     });
@@ -59,7 +58,7 @@ QuizQuestionAlternative.loadAllCorrectInQuizQuestion = function ( callback, quiz
         query += 'WHERE quiz_question_id = ?';
 
     db.query( query, quizQuestionId, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         var correctAlternatives = Array();
 
@@ -67,7 +66,7 @@ QuizQuestionAlternative.loadAllCorrectInQuizQuestion = function ( callback, quiz
             correctAlternatives.push( rows[key]['quiz_question_alternative_id'] );
         }
 
-        callback( correctAlternatives );
+        callback( null, correctAlternatives );
     });
 }
 

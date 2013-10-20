@@ -13,14 +13,10 @@ TemplateEntity.prototype.constructor = TemplateEntity;
 
 TemplateEntity.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM ... WHERE ... = ?', id, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
-        if ( rows.length === 1 ){
-            callback( new TemplateEntity( rows[0] ) );
-        }
-        else {
-            callback( null );
-        }
+        if ( rows.length === 1 ) callback( null, new TemplateEntity( rows[0] ) );
+        else callback( 'Could not load TemplateEntity with id ' + id, false );
     });
 };
 

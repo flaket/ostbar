@@ -24,27 +24,25 @@ Game.prototype.constructor = Game;
 
 Game.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM game WHERE game_id = ?', id, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ){
-            Game.initWithData( callback, rows[0] );
-        }
-        else callback( null );
+        if ( rows.length == 1 ) Game.initWithData( callback, rows[0] );
+        else callback( 'Could not load game with id ' + id, false );
     });
 };
 
 Game.loadByIdForUser = function ( callback, gameId, userId ){
     db.query( 'SELECT * FROM game WHERE game_id = ? AND user_id = ?', [gameId, userId], function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback( error, false );
 
         if ( rows.length == 1 ) Game.initWithData( callback, rows[0] );
-        else callback( null );
+        else callback( 'Could not load games for user_id ' + user_id, false );
     });
 }
 
 Game.loadAllForUser = function ( callback, userId ){
     db.query( 'SELECT * FROM game WHERE user_id = ?', userId, function ( error, rows, fields ){
-        if ( error ) throw error;
+        if ( error ) return callback ( error, false );
 
         var games = new Array();
         var currentGame = 0;
@@ -54,15 +52,16 @@ Game.loadAllForUser = function ( callback, userId ){
                 return games.length < rows.length;
             },
             function ( callback ){
-                Game.initWithData( function ( game ){
+                Game.initWithData( function ( error, game ){
+                    if ( error ) return callback( error );
+
                     games.push( game );
                     currentGame++;
                     callback();
                 }, rows[currentGame] );
             },
             function ( error ){
-                if ( error ) callback( null );
-                else callback( games );
+                callback( error, games );
             }
          );
     });
@@ -71,23 +70,18 @@ Game.loadAllForUser = function ( callback, userId ){
 Game.initWithData = function ( callback, data ){
     async.parallel({
         goal: function ( callback ){
-            Goal.loadById( function ( goal ){
-                callback( null, goal );
-            }, data.goal_id );
+            Goal.loadById( callback, data.goal_id );
         },
         initial_scene: function ( callback ){
-            Scene.loadById( function ( scene ){
-                callback( null, scene );
-            }, data.initial_scene_id );
+            Scene.loadById( callback, data.initial_scene_id );
         }
     },
     function ( error, results ){
-        if ( error ) callback( null );
-        else {
-            data.goal = results.goal;
-            data.initial_scene = results.initial_scene;
-            callback( new Game( data ) );
-        }
+        if ( error ) return callback( error, false );
+
+        data.goal = results.goal;
+        data.initial_scene = results.initial_scene;
+        callback(null,  new Game( data ) );
     });
 }
 
