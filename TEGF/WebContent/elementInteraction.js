@@ -195,6 +195,12 @@ function animationCallback(e) {
 
 function dialogFunction(e){
 	console.log(objectList[inList(objectList,e.target)].dialogData);
+	$(e).tipsy({
+		gravity: 's',
+		title: function(){
+			return objectList[inList(objectList,e.target)].dialogData;
+		}
+	});
 }
 
 function animationFunction(e){
