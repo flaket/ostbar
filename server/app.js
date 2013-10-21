@@ -33,7 +33,7 @@ app.get('/logout', core_routes.logout);
 app.post('/login', 
   passport.authenticate('local', {
     failureRedirect: '/login',
-    failureFlash: true }),
+    failureFlash: true } ),
   core_routes.local_callback);
 
 // -- exports

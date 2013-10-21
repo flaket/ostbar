@@ -19,18 +19,18 @@ module.exports = function( app ){
     passport.use( new LocalStrategy( 
         function ( username, password, done ){
             process.nextTick( function (  ){
-                User.usernameExists( function ( error, exists ){
+                User.loadByUsername( function ( error, user ){
                     if ( error ) return done( error, false );
+                    
+                    if ( user ){
+                        user.checkPassword( function ( error, correct ){
+                            if ( error ) { return done( error, false ); }
 
-                    if ( exists ){
-                        User.loginWithUsernameAndPassword( function ( error, user ){
-                            if ( error ) return done( error, false );
-
-                            if ( user ) done( null, user );
-                            else done( null, false, { message: 'Passordet er ikke riktig'});
-                        }, username, password );
+                            if (!correct) return done( error, false, { message: 'Passordet er ikke riktig' } );
+                            else return done( null, user );
+                        }, password );
                     } else {
-                        return done( null, false, { message: 'Brukernavnet finnes ikke' });
+                        done( null, false, { message: 'Brukernavnet finnes ikke' });
                     }
                 }, username );
             });

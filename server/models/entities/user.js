@@ -27,17 +27,21 @@ User.loadById = function ( callback, id ){
     });
 };
 
-User.usernameExists = function ( callback, username ){
-    db.query( 'SELECT username FROM user WHERE username = ?', username, function ( error, rows, fields ){   
+User.loadByUsername = function ( callback, username ){
+    db.query( 'SELECT * FROM user WHERE username = ?', username, function ( error, rows, fields ){   
         if ( error ) return callback( error, false );
 
-        if ( rows.length === 1 ) callback( null, true );
+        if ( rows.length === 1 ) callback( null, new User( rows[0] ) );
         else callback( null, false );
     });
 };
 
 User.loginWithUsernameAndPassword = function ( callback, username, password ){
+    if (username == null) return callback( 'username cannot be null', false );
+    if (password == null) return callback( 'password cannot be null', false );
+
     db.query( 'SELECT * FROM user WHERE username = ? AND password = MD5(?)', [username, password], function ( error, rows, fields ){
+        if ( error ) throw error;
         if ( error ) return callback( error, false );
 
         if ( rows.length === 1 ) callback( null, new User( rows[0] ) );
@@ -72,6 +76,8 @@ User.prototype.setPassword = function ( callback, password ){
 }
 
 User.prototype.checkPassword = function ( callback, password ){
+    console.log('querying user id', this.userId, 'and password', password);
+
     db.query('SELECT * FROM user WHERE user_id = ? AND password = MD5(?)', [ this.userId, password ], function (error, rows, fields ){
         if ( error ) return callback( error, false );
 
