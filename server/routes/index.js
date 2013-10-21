@@ -86,6 +86,14 @@ module.exports.login = function( req, res ) {
     });
 };
 
+module.exports.login_failed = function ( err, user, info ) {
+    console.log('custom callback, err is', err);
+    console.log('custom callback, user is', user);
+    console.log('custom callback, info is', info);
+
+    res.render('login', info);
+}
+
 module.exports.logout = function( req, res ) {
     req.logout();
     req.session.destroy();

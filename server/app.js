@@ -30,11 +30,13 @@ app.get('/logout', core_routes.logout);
 //             'https://www.googleapis.com/auth/userinfo.email'
 //         ]}), function(req, res){});
 // app.get('/auth/google/callback', app.passport.authenticate('google', { failureRedirect: '/login' }), core_routes.google_callback);
-app.post('/login', 
-  passport.authenticate('local', {
+app.post('/login', passport.authenticate('local', {
+    successRedirect: '/',
     failureRedirect: '/login',
     failureFlash: true } ),
-  core_routes.local_callback);
+  function(req, res) {
+    res.redirect('/');
+  });
 
 // -- exports
 module.exports = app;
