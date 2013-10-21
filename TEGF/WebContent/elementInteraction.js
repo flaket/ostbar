@@ -197,10 +197,23 @@ function dialogFunction(e){
 	console.log(objectList[inList(objectList,e.target)].dialogData);
 	$(e.target).tipsy({
 		gravity: 's',
+		html: true,
 		title: function(){
-			return objectList[inList(objectList,e.target)].dialogData;
-		}
+				return convertToHtml(objectList[inList(objectList,e.target)].dialogData)
+			}
 	});
+}
+
+function convertToHtml(e){
+	var temp = e.split('\n');
+	console.log(temp);
+	var output = "";
+	
+	for (var i = 0; i<temp.length; i++){
+		output += temp[i]+"<br>";
+	}
+	console.log(output)
+	return output;
 }
 
 function animationFunction(e){
