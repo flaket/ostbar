@@ -45,7 +45,7 @@ User.loginWithUsernameAndPassword = function ( callback, username, password ){
         if ( error ) return callback( error, false );
 
         if ( rows.length === 1 ) callback( null, new User( rows[0] ) );
-        else callback( 'Ugyldig passord eller brukernavn', false );
+        else callback( null, false );
     });
 };
 
@@ -80,7 +80,7 @@ User.prototype.checkPassword = function ( callback, password ){
         if ( error ) return callback( error, false );
 
         if (rows.length == 1) callback( null, true );
-        else callback( 'Passordet er ikke riktig', false );
+        else callback( null, false );
     });
 }
 

@@ -18,15 +18,15 @@ module.exports = function( app ){
     
     passport.use( new LocalStrategy( 
         function ( username, password, done ){
-            process.nextTick( function (  ){
+            process.nextTick( function (){
                 User.loadByUsername( function ( error, user ){
-                    if ( error ) return done( error, false );
+                    if ( error ) return done( error );
                     
                     if ( user ){
                         user.checkPassword( function ( error, correct ){
-                            if ( error ) { return done( error, false ); }
+                            if ( error ) return done( error );
 
-                            if (!correct) return done( error, false, { message: 'Passordet er ikke riktig' } );
+                            if (!correct) return done( null, false, { message: 'Passordet er ikke riktig' } );
                             else return done( null, user );
                         }, password );
                     } else {
