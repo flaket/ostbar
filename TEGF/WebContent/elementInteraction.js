@@ -104,7 +104,7 @@ jQuery(document).ready(function(){
 							title: "type in dialog",
 							buttons:{
 								"Confirm": function(){
-									if(!$(".dialogText").val()){
+									if(!$("#dialogText").val()){
 										alert("please type in a dialog");
 									}
 									else{
@@ -112,7 +112,7 @@ jQuery(document).ready(function(){
 											$(target).on("click", dialogFunction);
 											currentDialog.dialogClickActionMade = true;
 										}
-										currentDialog.dialogData = $('.dialogText').val();
+										currentDialog.dialogData = $('#dialogText').val();
 										$(this).dialog("close");
 									}
 								},
@@ -195,13 +195,23 @@ function animationCallback(e) {
 
 function dialogFunction(e){
 	console.log(objectList[inList(objectList,e.target)].dialogData);
-	$(e.target).tipsy({
-		gravity: 's',
-		html: true,
-		title: function(){
-				return convertToHtml(objectList[inList(objectList,e.target)].dialogData)
+	// $(e.target).tipsy({
+		// gravity: 's',
+		// html: true,
+		// title: function(){
+				// return convertToHtml(objectList[inList(objectList,e.target)].dialogData)
+			// }
+	// });
+	$("#writtenText").text(objectList[inList(objectList,e.target)].dialogData);
+	$(".writtenDialog").dialog({
+		modal: true,
+		buttons: {
+			Ok: function(){
+					$(this).dialog("close");
 			}
-	});
+		}
+	}).siblings(".ui-dialog-titlebar").hide();
+	// $("#writtenDialog");
 }
 
 function convertToHtml(e){
@@ -272,7 +282,7 @@ function resetCheckBoxes(dialogObject){
 	OnChangeCheckBoxAnimation();
 	OnChangeCheckBoxSound();
 	
-	$(".dialogText").val(dialogObject.dialogData);
+	$("#dialogText").val(dialogObject.dialogData);
 	$("#effectTypes").prop("selectedIndex",dialogObject.animationIndex);
 }
 
