@@ -189,7 +189,6 @@ function runAnimationEffect(e) {
 };
 function animationCallback(e) {
 	setTimeout(function() {
-		$(e).hide().fadeIn();
 	}, 1000 );
 };
 
