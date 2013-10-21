@@ -22,7 +22,7 @@ User.loadById = function ( callback, id ){
     db.query( 'SELECT * FROM user WHERE user_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback ( error, false );
 
-        if ( rows.length === 1 ) callback( false, new User( rows[0] ) );
+        if ( rows.length === 1 ) callback( null, new User( rows[0] ) );
         else callback( 'Could not load user with id ' + id, false );
     });
 };
@@ -76,13 +76,11 @@ User.prototype.setPassword = function ( callback, password ){
 }
 
 User.prototype.checkPassword = function ( callback, password ){
-    console.log('querying user id', this.userId, 'and password', password);
-
     db.query('SELECT * FROM user WHERE user_id = ? AND password = MD5(?)', [ this.userId, password ], function (error, rows, fields ){
         if ( error ) return callback( error, false );
 
         if (rows.length == 1) callback( null, true );
-        else callback( null, false );
+        else callback( 'Passordet er ikke riktig', false );
     });
 }
 

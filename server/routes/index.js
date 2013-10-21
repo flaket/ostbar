@@ -18,13 +18,9 @@ module.exports.account = function( req, res ) {
 module.exports.save_account = function( req, res ) {
     var everyone = require('../now').everyone;
 
-    console.log( 'save account', req.user );
-
-    User.loadById(function ( user ){
-        if ( user == null ){
-            return res.json( '200', {
-                error: 'Kunne ikke finne bruker'
-            });
+    User.loadById(function ( error, user ){
+        if ( error ) {
+            return res.render( 'account', { error: error } );
         }
 
         req.checkBody( 'oldpassword', 'oldpassword is required' ).notEmpty();
@@ -44,9 +40,11 @@ module.exports.save_account = function( req, res ) {
             });
         }
 
-        user.checkPassword (function ( correct ){
+        user.checkPassword (function ( error, correct ){
+            if ( error ) return res.render( 'account', { error: error } );
+
             if ( correct ){
-                if (req.body.newpassword != req.body.newpassword2) {
+                if (req.body.newpassword != req.body.newpassword2){
                     return res.render( 'account', {
                         error: '\'Gjenta nytt passord\' stemmer ikke med \'Nytt passord\'',
                         user: req.user
@@ -57,7 +55,7 @@ module.exports.save_account = function( req, res ) {
                     if ( !error && user ){
                         return res.render('account', {
                             message: 'Endringene er lagret',
-                            user: req.user
+                            user: user
                         })
                     } else if ( error ){
                         return res.render('account', {
@@ -70,15 +68,15 @@ module.exports.save_account = function( req, res ) {
                             user: req.user
                         });
                     }
-                }, req.body.newpassword);
+                }, req.body.newpassword );
             } else {
                 return res.render('account', {
-                    error: 'Galt passord',
+                    error: 'Passordet er ikke riktig',
                     user: req.user
                 });
             }
-        }, req.body.oldpassword);
-    }, req.user.userId);
+        }, req.body.oldpassword );
+    }, req.user.userId );
 };
 
 module.exports.login = function( req, res ) {

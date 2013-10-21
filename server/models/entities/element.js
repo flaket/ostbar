@@ -74,7 +74,7 @@ Element.create = function ( callback, elementTypeId, frame ){
     var query = 'INSERT INTO element SET ?';
 
     ElementType.loadById( function ( error, elementType ){
-        if ( error ) callback( error, false );
+        if ( error ) return callback( error, false );
 
         db.query(query, post, function ( error, rows, fields ){
             if ( error ) return callback( error, false );
