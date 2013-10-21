@@ -21,23 +21,20 @@ require('./api')(app);
 // -- routes
 var core_routes = require('./routes/index');
 app.get('/', core_routes.index);
+
 app.get('/account', app.ensureAuthenticated, core_routes.account);
 app.post('/account', app.ensureAuthenticated, core_routes.save_account);
+
 app.get('/login', core_routes.login);
-app.get('/logout', core_routes.logout);
-// app.get('/auth/google', app.passport.authenticate('google', { scope: [
-//             'https://www.googleapis.com/auth/userinfo.profile',
-//             'https://www.googleapis.com/auth/userinfo.email'
-//         ]}), function(req, res){});
-// app.get('/auth/google/callback', app.passport.authenticate('google', { failureRedirect: '/login' }), core_routes.google_callback);
 app.post('/login', passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/login',
-    failureFlash: true } ),
-  function(req, res) {
-    res.redirect('/');
-  });
+    failureFlash: true } ), core_routes.local_callback);
 
+app.get('/logout', core_routes.logout);
+
+app.get('/signup', core_routes.signup);
+app.post('/signup', core_routes.register_user);
 // -- exports
 module.exports = app;
 module.exports.conf = settings;

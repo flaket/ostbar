@@ -111,3 +111,11 @@ module.exports.local_callback = function( req, res ) {
     delete req.session.returnTo;
     res.redirect( url );
 };
+
+module.exports.signup = function ( req, res ){
+    res.render('signup');
+}
+
+module.exports.register_user = function ( req, res ){
+    res.render('login');
+}
