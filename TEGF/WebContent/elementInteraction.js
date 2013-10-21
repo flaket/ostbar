@@ -104,7 +104,7 @@ jQuery(document).ready(function(){
 							title: "type in dialog",
 							buttons:{
 								"Confirm": function(){
-									if(!$(".textarea").val()){
+									if(!$(".dialogText").val()){
 										alert("please type in a dialog");
 									}
 									else{
@@ -112,6 +112,7 @@ jQuery(document).ready(function(){
 											$(target).on("click", dialogFunction);
 											currentDialog.dialogClickActionMade = true;
 										}
+										currentDialog.dialogData = $('.dialogText').val();
 										$(this).dialog("close");
 									}
 								},
@@ -193,8 +194,7 @@ function animationCallback(e) {
 };
 
 function dialogFunction(e){
-	currentDialog.dialogData = $('.textarea').val();
-	console.log(currentDialog.dialogData);
+	console.log(objectList[inList(objectList,e.target)].dialogData);
 }
 
 function animationFunction(e){
@@ -213,7 +213,7 @@ function Dialog(object){
 	this.animationIndex = 0;
 	this.soundChecked = false;
 	
-	this.dialogData = null;
+	this.dialogData = "";
 	this.div = object;
 	
 	this.animationClickActionMade = false;
@@ -253,6 +253,7 @@ function resetCheckBoxes(dialogObject){
 	OnChangeCheckBoxAnimation();
 	OnChangeCheckBoxSound();
 	
+	$(".dialogText").val(dialogObject.dialogData);
 	$("#effectTypes").prop("selectedIndex",dialogObject.animationIndex);
 }
 
