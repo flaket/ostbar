@@ -1,0 +1,21 @@
+<footer>
+  <div class="large-12 columns">
+    <div class="row">
+      <div class="large-6 columns">
+        <p>&copy; Iselinlabs. </p>
+      </div>
+      <div class="large-6 columns">
+        <section class="top-bar-section">
+          <ul class="right">
+            {{#if user}}
+            <li><a href="/game">Mine spill</a></li>
+            <li><a href="/logout">Logg ut</a></li>
+            {{else}}
+            <li><a href="/login">Logg inn</a></li>
+            {{/if}}
+          </ul>
+        </section>
+      </div>
+    </div>
+  </div> 
+</footer>

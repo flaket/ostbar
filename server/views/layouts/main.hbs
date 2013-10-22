@@ -1,9 +1,11 @@
 {{> head}}
   <body>
+    <div class="wrapper">
+      {{> nav}}
 
-    {{> nav}}
-
-    {{{body}}}
+      {{{body}}}
+      <div class="push"></div>
+    </div>
 
     <script src="/js/vendor.js"></script>
     <script src="/js/site.js"></script>
@@ -11,7 +13,8 @@
     <script>
       $(document).foundation();
     </script>
-
-    {{{block "footer"}}}
+    <div class="footer top-bar">
+      {{> footer}}
+    </div>
   </body>
 </html>

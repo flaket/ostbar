@@ -2,26 +2,34 @@
 <section id="login">
     <div class="row">
         <div class="large-12 columns">
-            <h3 class="large-offset-2 small-offset-3">Logg inn</h3>         
-            <form class="custom" action="/login" method="post">
-                <div id="errors" {{#if message}} class="errors" {{/if}}>{{message}}</div>
-                <div class="row listair"></div>
-                <div class="row">
-                    <div class="large-4 large-offset-2 small-6 small-offset-3 left columns">
+            <div class="large-4 large-offset-2 columns">
+                <h3 class="">Logg inn</h3>         
+            
+                <form class="custom" action="/login" method="post">
+                    <div id="message" {{#if message}} class="message" {{/if}}>{{message}}</div>
+                    <div id="error" {{#if error}} class="error" {{/if}}>{{error}}</div>
+                    <div class="row listair"></div>
+                    <div class="row">
                         <input type="text" name="username" placeholder="Brukernavn"/>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="large-4 large-offset-2 small-6 small-offset-3 left columns">
+                    <div class="row">
                         <input type="password" name="password" placeholder="Passord"/>
                     </div>
-                </div>
-                <div class="row listair">
-                    <div class="large-10 large-offset-2 small-6 small-offset-3 columns">
+                    <div class="row listair">
                         <input type="submit" value="Logg inn" class="button small" />
+                        <button form="signup" class="small button">Glemt passord?</button>
                     </div>
-                </div>
-            </form>
+                </form>
+
+                <form id="signup" action="/" methor="get"></form>
+
+                <form action="/signup" method="get">    
+                    <div class="row">
+                        <input type="submit" value="Ny bruker" class="button small" />
+                    </div>
+                </form> 
+
+            </div>
         </div>
     </div>
 </section>

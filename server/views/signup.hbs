@@ -1,27 +1,26 @@
 {{!< main}}
-<section id="login">
+<section id="signup">
     <div class="row">
         <div class="large-12 columns">
-            <h3 class="large-offset-2 small-offset-3">Registrer bruker</h3>         
-            <form class="custom" action="/signup" method="post">
-                <div id="errors" {{#if message}} class="errors" {{/if}}>{{message}}</div>
-                <div class="row listair"></div>
-                <div class="row">
-                    <div class="large-4 large-offset-2 small-6 small-offset-3 left columns">
+            <div class="large-4 large-offset-2 columns">
+                <h3 class="">Ny bruker</h3>
+
+                <form class="custom" action="/signup" method="post">
+                    <div id="message" {{#if message}} class="message" {{/if}}>{{message}}</div>
+                    <div id="error" {{#if error}} class="error" {{/if}}>{{error}}</div>
+                    <div class="row listair"></div>
+                    <div class="row">
                         <input type="text" name="username" placeholder="Brukernavn"/>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="large-4 large-offset-2 small-6 small-offset-3 left columns">
+                    <div class="row">
                         <input type="password" name="password" placeholder="Passord"/>
                     </div>
-                </div>
-                <div class="row listair">
-                    <div class="large-10 large-offset-2 small-6 small-offset-3 columns">
+                    <div class="row listair">
                         <input type="submit" value="Registrer meg" class="button small" />
                     </div>
-                </div>
-            </form>
+                </form>
+                
+            </div>
         </div>
     </div>
 </section>

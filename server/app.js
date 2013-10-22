@@ -35,6 +35,9 @@ app.get('/logout', core_routes.logout);
 
 app.get('/signup', core_routes.signup);
 app.post('/signup', core_routes.register_user);
+
+app.get( '/game', core_routes.mygames );
+
 // -- exports
 module.exports = app;
 module.exports.conf = settings;

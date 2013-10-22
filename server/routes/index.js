@@ -3,23 +3,21 @@ var util = require( 'util' );
 var server = require('../../server');
 
 // core routes - base is /
-module.exports.index = function( req, res ) {
+module.exports.index = function( req, res ){
     res.render('index', {
         user: req.user
     });
 };
 
-module.exports.account = function( req, res ) {
+module.exports.account = function( req, res ){
     res.render( 'account', {
         user: req.user
     });
 };
 
-module.exports.save_account = function( req, res ) {
-    var everyone = require('../now').everyone;
-
+module.exports.save_account = function( req, res ){
     User.loadById(function ( error, user ){
-        if ( error ) {
+        if ( error ){
             return res.render( 'account', { error: error } );
         }
 
@@ -33,7 +31,7 @@ module.exports.save_account = function( req, res ) {
 
         var errors = req.validationErrors();
 
-        if ( errors ) {
+        if ( errors ){
             return res.render( 'account', {
                 error: errors,
                 user: req.user
@@ -79,34 +77,30 @@ module.exports.save_account = function( req, res ) {
     }, req.user.userId );
 };
 
-module.exports.login = function( req, res ) {
+module.exports.login = function( req, res ){
     res.render( 'login', {
         user: req.user,
-        message: req.flash('error')
+        error: req.flash('error')
     });
 };
 
-module.exports.login_failed = function ( err, user, info ) {
-    console.log('custom callback, err is', err);
-    console.log('custom callback, user is', user);
-    console.log('custom callback, info is', info);
-
+module.exports.login_failed = function ( err, user, info ){
     res.render('login', info);
 }
 
-module.exports.logout = function( req, res ) {
+module.exports.logout = function( req, res ){
     req.logout();
     req.session.destroy();
     res.redirect( '/' );
 };
 
-module.exports.google_callback = function( req, res ) {
+module.exports.google_callback = function( req, res ){
     var url = req.session.returnTo || '/';
     delete req.session.returnTo;
     res.redirect( url );
 };
 
-module.exports.local_callback = function( req, res ) {
+module.exports.local_callback = function( req, res ){
     var url = req.session.returnTo || '/';
     delete req.session.returnTo;
     res.redirect( url );
@@ -117,5 +111,34 @@ module.exports.signup = function ( req, res ){
 }
 
 module.exports.register_user = function ( req, res ){
-    res.render('login');
+    req.checkBody( 'username', 'username is required' ).notEmpty();
+    req.checkBody( 'password', 'password is required' ).notEmpty();
+    
+    req.sanitize( 'username' ).xss();
+    req.sanitize( 'password' ).xss();
+    
+    var errors = req.validationErrors();
+
+    if ( errors ){
+        return res.render( 'signup', {
+            error: errors,
+            user: req.user
+        });
+    }
+
+    User.create( function ( error, user ){
+        if ( error ) return res.render( 'signup', { error: error } );
+
+        if ( !user ) return res.render( 'signup', { error: 'Kunne ikke opprette bruker' } );
+        else { 
+            var passport = require( 'passport' );
+            return passport.authenticate( 'local' )( req, res, function (){
+                res.redirect( '/account' );
+            });
+        }
+    }, req.body.username, req.body.password);
+}
+
+module.exports.mygames = function ( req, res ){
+    res.render( 'game', { user: req.user } ); 
 }

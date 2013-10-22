@@ -4689,16 +4689,34 @@ table.vask td.app {
   border: 1px solid #dddddd;
   padding: 1em; }
 
-.errors {
+.error {
   background-color: rgba(255, 0, 0, 0.3);
   border: 1px solid red;
   text-align: center;
   padding-top: 1.5em;
   padding-bottom: 1.5em; }
 
-.messages {
+.message {
   background-color: rgba(0, 255, 0, 0.3);
   border: 1px solid green;
   text-align: center;
   padding-top: 1.5em;
   padding-bottom: 1.5em; }
+
+.footer {
+  background-color: #f2f2f2; }
+
+* {
+  margin: 0; }
+
+html, body {
+  height: 100%; }
+
+.wrapper {
+  min-height: 100%;
+  height: auto !important;
+  height: 100%;
+  margin: 0 auto -4em; }
+
+.footer, .push {
+  height: 4em; }

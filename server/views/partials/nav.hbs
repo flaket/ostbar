@@ -9,17 +9,14 @@
     <section class="top-bar-section">
         <ul class="right">
             {{#if user}}
+            <li><a href="/game">Mine spill</a></li>
             <li class="has-dropdown"><a href="/account">Min brukerkonto</a>
-            <ul class="dropdown">
-                <li><a href="/logout">Logg ut</a></li>
-            </ul>
+                <ul class="dropdown">
+                    <li><a href="/logout">Logg ut</a></li>
+                </ul>
             </li>
             {{else}}
-            <li class="has-dropdown"><a href="/login">Logg in</a>
-            <ul class="dropdown">
-                <li><a href="/signup">Registrer bruker</a></li>
-            </ul>
-            </li>
+            <li><a href="/login">Logg inn</a></li>
             {{/if}}
         </ul>
     </section>
