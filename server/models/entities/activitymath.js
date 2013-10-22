@@ -19,28 +19,28 @@ ActivityMath.prototype = new Entity(  );
 
 ActivityMath.prototype.constructor = ActivityMath;
 
-ActivityMath.loadById = function ( callback, id ){
+ActivityMath.loadById = function ( id, callback ){
     db.query( 'SELECT * FROM activity_math WHERE activity_math_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ) ActivityMath.initWithData( callback, rows[0] );
+        if ( rows.length == 1 ) ActivityMath.initWithData( rows[0], callback );
         else callback( 'Could not load ActivityMath with id ' + id, false );
     });
 }
 
-ActivityMath.loadByActivityId = function ( callback, activityId ){
+ActivityMath.loadByActivityId = function ( activityId, callback ){
     db.query( 'SELECT * FROM activity_math WHERE activity_id = ?', activityId, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ) ActivityMath.initWithData( callback, rows[0] );
+        if ( rows.length == 1 ) ActivityMath.initWithData( rows[0], callback );
         else callback( 'Could not load ActivityMath with activity_id ' + activityId, false );
     });
 }
 
-ActivityMath.initWithData = function ( callback, data ){
+ActivityMath.initWithData = function ( data, callback ){
     async.parallel({
         operators: function ( callback ){
-            MathOperator.loadAllInActivityMath( callback, data.activity_math_id );
+            MathOperator.loadAllInActivityMath( data.activity_math_id, callback );
         }
     },
     function ( error, results ){

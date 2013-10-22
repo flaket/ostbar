@@ -14,7 +14,7 @@ Avatar.prototype = new Entity(  );
 
 Avatar.prototype.constructor = Avatar;
 
-Avatar.loadById = function ( callback, id ){
+Avatar.loadById = function ( id, callback ){
     db.query( 'SELECT * FROM avatar WHERE avatar_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 

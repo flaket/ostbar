@@ -14,7 +14,7 @@ SubjectType.prototype = new Entity();
 
 SubjectType.prototype.constructor = SubjectType;
 
-SubjectType.loadById = function ( callback, id ){
+SubjectType.loadById = function ( id, callback ){
     db.query( 'SELECT * FROM subject_type WHERE subject_type_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 

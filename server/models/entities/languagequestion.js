@@ -22,45 +22,26 @@ LanguageQuestion.prototype = new Entity();
 
 LanguageQuestion.prototype.constructor = LanguageQuestion;
 
-LanguageQuestion.loadById = function ( callback, id ){
+LanguageQuestion.loadById = function ( id, callback ){
     db.query( 'SELECT * FROM language_question WHERE language_question_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ) LanguageQuestion.initWithData( callback, rows[0] );
+        if ( rows.length == 1 ) LanguageQuestion.initWithData( rows[0], callback );
         else callback( 'Could not load LanguageQuestion with id ' + id, false );
     });
 }
 
-LanguageQuestion.loadAllInActivityLanguage = function( callback, activityLanguageId ){
+LanguageQuestion.loadAllInActivityLanguage = function( activityLanguageId, callback ){
     var query = 'SELECT  * FROM language_question WHERE activity_language_id = ?';
 
     db.query( query, activityLanguageId, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        var languageQuestions = new Array();
-        var currentLanguageQuestion = 0;
-
-        async.whilst( 
-            function (){
-                return languageQuestions.length < rows.length;
-            },
-            function ( callback ){
-                LanguageQuestion.initWithData( function ( error, languageQuestion ){
-                    if ( error ) callback( error );
-
-                    languageQuestions.push( languageQuestion );
-                    currentLanguageQuestion++;
-                    callback();
-                }, rows[currentLanguageQuestion] );
-            },
-            function ( error ){
-                callback( error, languageQuestions );
-            }
-         );
+        async.map( rows, LanguageQuestion.initWithData, callback );
     });
 }
 
-LanguageQuestion.initWithData = function ( callback, data ){
+LanguageQuestion.initWithData = function ( data, callback ){
     switch ( data.language_question_type ){
         case 'PICTURE_RECOGNIZE': dataClass = Avatar;
         case 'SOUND_RECOGNIZE': dataClass = Sound;
@@ -68,10 +49,10 @@ LanguageQuestion.initWithData = function ( callback, data ){
 
     async.parallel({
         dataClass: function ( callback ){
-            dataClass.loadById( callback, data.data_id );
+            dataClass.loadById( data.data_id, callback );
         },
         alternatives: function ( callback ){
-            LanguageQuestionAlternative.loadAllInLanguageQuestion( callback, data.language_question_id );
+            LanguageQuestionAlternative.loadAllInLanguageQuestion( data.language_question_id, callback );
         }
     },
     function ( error, results ){

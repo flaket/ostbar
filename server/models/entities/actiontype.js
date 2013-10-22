@@ -8,22 +8,25 @@ function ActionType( data ){
 
     this.actionTypeId = data.action_type_id;
     this.name = data.type;
+    if ( 'data' in data ){
+        this.data = data.data;
+    }
 }
 
 ActionType.prototype = new Entity();
 
 ActionType.prototype.constructor = ActionType;
 
-ActionType.loadById = function ( callback, id ){
+ActionType.loadById = function ( id, callback ){
     db.query( 'SELECT * FROM action_type WHERE action_type_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ) ActionType.initWithData( callback, rows[0] );
+        if ( rows.length == 1 ) ActionType.initWithData( rows[0], callback );
         else callback( 'No objects', false );
     });
 }
 
-ActionType.loadAllInElement = function ( callback, elementId ){
+ActionType.loadAllInElement = function ( elementId, callback ){
     var query = 'SELECT * '
         query += 'FROM element_to_action_type_rel e_to_at_rel LEFT JOIN action_type at ';
         query += 'ON e_to_at_rel.action_type_id = at.action_type_id AND e_to_at_rel.element_id = ? ';
@@ -32,36 +35,11 @@ ActionType.loadAllInElement = function ( callback, elementId ){
     db.query( query, elementId, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        var actionTypes = new Array();
-        var currentActionType = 0;
-
-        async.whilst( 
-            function (){
-                return actionTypes.length < rows.length;
-            },
-            function ( callback ){
-                ActionType.initWithData( function ( error, actionType ){
-                    if ( error ) return callback( error );
-
-                    var buffer = new Buffer( rows[currentActionType].data, 'binary' );
-
-                    actionTypes.push({
-                        actionType: actionType,
-                        data: buffer.toString()
-                    });
-
-                    currentActionType++;
-                    callback();
-                }, rows[currentActionType])
-            },
-            function ( error ){
-                callback( error, actionTypes );
-            }
-        );
+        async.map( rows, ActionType.initWithData, callback);
     });
 }
 
-ActionType.loadAllInElementType = function ( callback, elementTypeId ){
+ActionType.loadAllInElementType = function ( elementTypeId, callback ){
     var query = 'SELECT * ';
         query += 'FROM element_type_to_action_type_rel et_to_at_rel LEFT JOIN action_type at ';
         query += 'ON et_to_at_rel.action_type_id = at.action_type_id AND et_to_at_rel.element_type_id = ? ';
@@ -70,32 +48,16 @@ ActionType.loadAllInElementType = function ( callback, elementTypeId ){
     db.query( query, elementTypeId, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        var actionTypes = new Array();
-        var currentActionType = 0;
-
-        async.whilst(
-            function (){
-                return actionTypes.length < rows.length;
-            },
-            function ( callback ){
-                ActionType.initWithData( function ( error, actionType ){
-                    if ( error ) return callback( error );
-
-                    actionTypes.push( actionType );
-                    currentActionType++;
-                    
-                    callback();
-                }, rows[currentActionType]);
-            },
-            function ( error )
-            {
-                callback( error, actionTypes );
-            }
-        );
+        async.map( rows, ActionType.initWithData, callback);
     });
 }
 
-ActionType.initWithData = function ( callback, data ){
+ActionType.initWithData = function ( data, callback ){
+    if ( 'data' in data ){
+        var buffer = new Buffer( data.data, 'binary' );
+        data.data = buffer.toString();
+    }
+
     var actionType = new ActionType( data );
 
     callback( null, actionType );

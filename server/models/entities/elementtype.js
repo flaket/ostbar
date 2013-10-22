@@ -23,11 +23,11 @@ ElementType.prototype = new Entity();
 
 ElementType.prototype.constructor = ElementType;
 
-ElementType.loadById = function ( callback, id ){
+ElementType.loadById = function ( id, callback ){
     db.query( 'SELECT * FROM element_type WHERE element_type_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ) ElementType.initWithData( callback, rows[0]);
+        if ( rows.length == 1 ) ElementType.initWithData( rows[0], callback);
         else callback( 'Could not load ElementType with id ' + id, false );
     });
 };
@@ -39,44 +39,26 @@ ElementType.loadAll = function ( callback ){
         var elementTypes = new Array();
         var currentElementType = 0;
 
-        async.whilst(
-            function (){
-                return elementTypes.length < rows.length;
-            },
-            function ( callback ){
-                ElementType.initWithData( function ( error, elementType ){
-                    if ( error ) return callback( error );
-
-                    currentElementType++;
-                    elementTypes.push( elementType );
-                    callback();
-                }, rows[currentElementType]);
-            },
-            function ( error ){
-                callback( error, elementTypes );
-            }
-        );
+        async.map( rows, ElementType.initWithData, callback );
     });
 };
 
-ElementType.initWithData = function ( callback, data ){
+ElementType.initWithData = function ( data, callback ){
     async.parallel({
         avatar: function ( callback ){
-            Avatar.loadById( callback, data.avatar_id );
+            Avatar.loadById( data.avatar_id, callback );
         },
         sound: function ( callback ){
-            Sound.loadById( callback, data.sound_id );
+            Sound.loadById( data.sound_id, callback );
         },
         world: function ( callback ){
-            World.loadById( callback, data.world_id );
+            World.loadById( data.world_id, callback );
         },
         allowedActionTypes: function ( callback ){
-            ActionType.loadAllInElementType( callback, data.element_type_id );
+            ActionType.loadAllInElementType( data.element_type_id, callback );
         }
     },
     function ( error, results ){
-
-
         if ( error ) return callback( error, null );
 
         data.avatar = results.avatar;

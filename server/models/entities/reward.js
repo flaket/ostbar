@@ -14,7 +14,7 @@ Reward.prototype = new Entity();
 
 Reward.prototype.constructor = Reward;
 
-Reward.loadById = function ( callback, id ){
+Reward.loadById = function ( id, callback ){
     db.query( 'SELECT * FROM reward WHERE reward_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 

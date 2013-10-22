@@ -27,7 +27,6 @@ app.post('/account', app.ensureAuthenticated, core_routes.save_account);
 
 app.get('/login', core_routes.login);
 app.post('/login', passport.authenticate('local', {
-    successRedirect: '/',
     failureRedirect: '/login',
     failureFlash: true } ), core_routes.local_callback);
 

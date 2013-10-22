@@ -11,7 +11,7 @@ TemplateEntity.prototype = new Entity();
 
 TemplateEntity.prototype.constructor = TemplateEntity;
 
-TemplateEntity.loadById = function ( callback, id ){
+TemplateEntity.loadById = function ( id, callback ){
     db.query( 'SELECT * FROM ... WHERE ... = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 

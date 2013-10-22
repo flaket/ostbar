@@ -15,16 +15,16 @@ QuizQuestionAlternative.prototype = new Entity();
 
 QuizQuestionAlternative.prototype.constructor = QuizQuestionAlternative;
 
-QuizQuestionAlternative.loadById = function ( callback, id ){
+QuizQuestionAlternative.loadById = function ( id, callback ){
     db.query( 'SELECT * FROM quiz_question_alternative WHERE quiz_question_alternative_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ) callback( null, new QuizQuestionAlternative( rows[0] ) );
+        if ( rows.length == 1 ) QuizQuestionAlternative.initWithData( rows[0], callback );
         else callback( 'Could not load QuizQuestionAlternative with id ' + id, false );
     });
 }
 
-QuizQuestionAlternative.loadAllInQuizQuestion = function ( callback, quizQuestionId ){
+QuizQuestionAlternative.loadAllInQuizQuestion = function ( quizQuestionId, callback ){
     var query = 'SELECT * ';
         query += 'FROM quiz_question_alternative ';
         query += 'WHERE quiz_question_id = ?';
@@ -32,27 +32,11 @@ QuizQuestionAlternative.loadAllInQuizQuestion = function ( callback, quizQuestio
     db.query( query, quizQuestionId, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        var quizQuestionAlternatives = new Array();
-        var currentAlternative = 0;
-
-        async.whilst( 
-            function (){
-                return quizQuestionAlternatives.length < rows.length;
-            },
-            function ( callback ){
-                var data = rows[currentAlternative];
-                quizQuestionAlternatives.push( new QuizQuestionAlternative( data ) );
-                currentAlternative++;
-                callback();
-            },
-            function ( error ){
-                callback( error, quizQuestionAlternatives );
-            }
-         );
+        async.map( rows, QuizQuestionAlternative.initWithData, callback );
     });
 }
 
-QuizQuestionAlternative.loadAllCorrectInQuizQuestion = function ( callback, quizQuestionId ){
+QuizQuestionAlternative.loadAllCorrectInQuizQuestion = function ( quizQuestionId, callback ){
     var query = 'SELECT quiz_question_alternative_id ';
         query += 'FROM quiz_question_correct ';
         query += 'WHERE quiz_question_id = ?';
@@ -68,6 +52,10 @@ QuizQuestionAlternative.loadAllCorrectInQuizQuestion = function ( callback, quiz
 
         callback( null, correctAlternatives );
     });
+}
+
+QuizQuestionAlternative.initWithData = function ( data, callback ){
+    callback( null, new QuizQuestionAlternative( data) );
 }
 
 module.exports.QuizQuestionAlternative = QuizQuestionAlternative;

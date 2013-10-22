@@ -16,7 +16,7 @@ module.exports.account = function( req, res ){
 };
 
 module.exports.save_account = function( req, res ){
-    User.loadById(function ( error, user ){
+    User.loadById( req.user.userId, function ( error, user ){
         if ( error ){
             return res.render( 'account', { error: error } );
         }
@@ -38,7 +38,7 @@ module.exports.save_account = function( req, res ){
             });
         }
 
-        user.checkPassword (function ( error, correct ){
+        user.checkPassword( req.body.oldpassword, function ( error, correct ){
             if ( error ) return res.render( 'account', { error: error } );
 
             if ( correct ){
@@ -49,7 +49,7 @@ module.exports.save_account = function( req, res ){
                     });
                 }
                 
-                user.setPassword( function ( error, user ){
+                user.setPassword( req.body.newpassword, function ( error, user ){
                     if ( !error && user ){
                         return res.render('account', {
                             message: 'Endringene er lagret',
@@ -66,18 +66,20 @@ module.exports.save_account = function( req, res ){
                             user: req.user
                         });
                     }
-                }, req.body.newpassword );
+                });
             } else {
                 return res.render('account', {
                     error: 'Passordet er ikke riktig',
                     user: req.user
                 });
             }
-        }, req.body.oldpassword );
-    }, req.user.userId );
+        });
+    });
 };
 
 module.exports.login = function( req, res ){
+    if ( req.isAuthenticated() ) res.redirect('/account');
+
     res.render( 'login', {
         user: req.user,
         error: req.flash('error')
@@ -107,6 +109,8 @@ module.exports.local_callback = function( req, res ){
 };
 
 module.exports.signup = function ( req, res ){
+    if ( req.isAuthenticated() ) res.redirect('/account');
+
     res.render('signup');
 }
 
@@ -126,7 +130,7 @@ module.exports.register_user = function ( req, res ){
         });
     }
 
-    User.create( function ( error, user ){
+    User.create( req.body.username, req.body.password, function ( error, user ){
         if ( error ) return res.render( 'signup', { error: error } );
 
         if ( !user ) return res.render( 'signup', { error: 'Kunne ikke opprette bruker' } );
@@ -136,7 +140,7 @@ module.exports.register_user = function ( req, res ){
                 res.redirect( '/account' );
             });
         }
-    }, req.body.username, req.body.password);
+    });
 }
 
 module.exports.mygames = function ( req, res ){

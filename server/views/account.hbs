@@ -2,10 +2,10 @@
 <section id="account">
     <div class="row">
         <div class="large-12 columns">
-            <h3>User data</h3>
+            <h3>Min Brukerkonto</h3>
             <form class="custom" action="/account" method="POST">
-                <div id="errors" {{#if error}} class="errors" {{/if}}>{{error}}</div>
-                <div id="messages" {{#if message}} class="messages" {{/if}}>{{message}}</div>
+                <div id="error" {{#if error}} class="error" {{/if}}>{{error}}</div>
+                <div id="message" {{#if message}} class="message" {{/if}}>{{message}}</div>
                 <div class="row listair">
                     <div class="large-2 small-3 columns"><label class="right">Bruker-id:</label></div>
                     <div class="large-10 small-9 columns">{{user.userId}}</div>
@@ -16,13 +16,13 @@
                 </div>
                 <div class="row">
                     <div class="large-2 small-3 columns"><label class="right inline">Endre passord:</label></div>
-                    <div class="large-4 small-3 columns left"><input type="password" name="oldpassword" placeholder="Gammelt passord"/></div>
+                    <div class="large-4 small-9 columns left"><input type="password" name="oldpassword" placeholder="Gammelt passord"/></div>
                 </div>
                 <div class="row">
-                    <div class="large-4 large-offset-2 small-3 small-offset-3 columns left"><input type="password" name="newpassword" placeholder="Nytt passord"/></div>
+                    <div class="large-4 large-offset-2 small-9 small-offset-3 columns left"><input type="password" name="newpassword" placeholder="Nytt passord"/></div>
                 </div>
                 <div class="row">
-                    <div class="large-4 large-offset-2 small-3 small-offset-3 columns left"><input type="password" name="newpassword2" placeholder="Gjenta nytt passord"/></div>
+                    <div class="large-4 large-offset-2 small-9 small-offset-3 columns left"><input type="password" name="newpassword2" placeholder="Gjenta nytt passord"/></div>
                 </div>
                 <div class="row listair">
                     <div class="large-2 small-3 columns"><label class="right">Active:</label></div>

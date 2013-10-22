@@ -21,16 +21,16 @@ QuizQuestion.prototype = new Entity();
 
 QuizQuestion.prototype.constructor = QuizQuestion;
 
-QuizQuestion.loadById = function ( callback, id ){
+QuizQuestion.loadById = function ( id, callback ){
     db.query( 'SELECT * FROM quiz_question WHERE quiz_question_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ) QuizQuestion.initWithData( callback, rows[0]);
+        if ( rows.length == 1 ) QuizQuestion.initWithData( rows[0], callback);
         else callback( 'Could not load QuizQuestion with id ' + id, false );
     });
 }
 
-QuizQuestion.loadAllInActivityQuiz = function ( callback, activityQuizId ){
+QuizQuestion.loadAllInActivityQuiz = function ( activityQuizId, callback ){
     var query = 'SELECT * ';
         query += 'FROM quiz_question ';
         query += 'WHERE activity_quiz_id = ?';
@@ -38,39 +38,20 @@ QuizQuestion.loadAllInActivityQuiz = function ( callback, activityQuizId ){
     db.query( query, activityQuizId, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        var quizQuestions = new Array();
-        var currentQuizQuestion = 0;
-
-        async.whilst( 
-            function (){
-                return quizQuestions.length < rows.length;
-            },
-            function ( callback ){
-                QuizQuestion.initWithData( function ( error, quizQuestion ){
-                    if ( error ) return callback( error );
-
-                    quizQuestions.push( quizQuestion );
-                    currentQuizQuestion++;
-                    callback();
-                }, rows[currentQuizQuestion] );
-            },
-            function ( error ){
-                callback( error, quizQuestions );
-            }
-         );
+        async.map( rows, QuizQuestion.initWithData, callback );
     });
 }
 
-QuizQuestion.initWithData = function ( callback, data ){
+QuizQuestion.initWithData = function ( data, callback ){
     async.parallel({
         alternatives: function ( callback ){
-            QuizQuestionAlternative.loadAllInQuizQuestion( callback, data.quiz_question_id );
+            QuizQuestionAlternative.loadAllInQuizQuestion( data.quiz_question_id, callback );
         },
         correctAlternatives: function ( callback ){
-            QuizQuestionAlternative.loadAllCorrectInQuizQuestion( callback, data.quiz_question_id );
+            QuizQuestionAlternative.loadAllCorrectInQuizQuestion( data.quiz_question_id, callback );
         },
         subject: function ( callback ){
-            SubjectType.loadById( callback, data.subject_type_id );
+            SubjectType.loadById( data.subject_type_id, callback );
         }
     },
     function ( error, results ){

@@ -23,45 +23,32 @@ Element.prototype = new Entity();
 
 Element.prototype.constructor = Element;
 
-Element.loadById = function ( callback, id ){
+Element.loadById = function ( id, callback ){
+    if ('element_id' in id){
+        id = id.element_id;
+    }
+
     db.query( 'SELECT * FROM element WHERE element_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ) Element.initWithData( callback, rows[0] );
-        else callback( 'Could not load Element with id ' + id, false );
+        if ( rows.length == 1 ) Element.initWithData( rows[0], callback );
+        else callback( 'Could not load Element with id ' + util.inspect(id, false, null), false );
     });
 };
 
-Element.loadAllInScene = function ( callback, sceneId ){
-    var query = 'SELECT * FROM scene_to_element_rel se_rel WHERE se_rel.scene_id = ?';
+Element.loadAllInScene = function ( sceneId, callback ){
+    var query = 'SELECT element_id FROM scene_to_element_rel se_rel WHERE se_rel.scene_id = ?';
 
     db.query( query, sceneId, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        var elements = new Array();
-        var currentElement = 0;
+        console.log('loading all in scene', sceneId);
 
-        async.whilst( 
-            function (){
-                return elements.length < rows.length;
-            },
-            function ( callback ){
-                Element.loadById( function ( error, element ){
-                    if ( error ) return callback ( error, false );
-
-                    currentElement++;
-                    elements.push( element );
-                    callback();
-                }, rows[currentElement].element_id );
-            },
-            function ( error ){
-                callback( error, elements );
-            }
-         );
+        async.map ( rows, Element.loadById, callback);
     });
 };
 
-Element.create = function ( callback, elementTypeId, frame ){
+Element.create = function ( elementTypeId, frame, callback ){
     var post = {
         element_id: null,
         element_type_id: elementTypeId,
@@ -73,25 +60,25 @@ Element.create = function ( callback, elementTypeId, frame ){
 
     var query = 'INSERT INTO element SET ?';
 
-    ElementType.loadById( function ( error, elementType ){
+    ElementType.loadById( elementTypeId, function ( error, elementType ){
         if ( error ) return callback( error, false );
 
         db.query(query, post, function ( error, rows, fields ){
             if ( error ) return callback( error, false );
             
-            if ( rows.insertId ) Element.loadById( callback, rows.insertId );
+            if ( rows.insertId ) Element.loadById( rows.insertId, callback );
             else return callback( 'Could not create element with data ' + {
                     elementTypeId: elementTypeId,
                     frame: frame
                 }, false );
         });
-    }, elementTypeId);
+    });
 };
 
-Element.initWithData = function ( callback, data ){
+Element.initWithData = function ( data, callback ){
     async.parallel({
         actionTypes: function ( callback ){
-            ActionType.loadAllInElement( callback, data.element_id );
+            ActionType.loadAllInElement( data.element_id, callback );
         }
     },
     function ( error, results ){
@@ -129,7 +116,7 @@ Element.prototype.update = function ( callback ){
     });
 }
 
-Element.prototype.addActionType = function( callback, actionTypeId, data ){
+Element.prototype.addActionType = function( actionTypeId, data, callback ){
     var post = {
         element_id: this.elementId, 
         action_type_id: actionTypeId,
@@ -141,8 +128,8 @@ Element.prototype.addActionType = function( callback, actionTypeId, data ){
     db.query( query, post, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        if ( rows.insertId ) Element.loadById( callback, this.elementId );
-        else return callback( 'Could not add actoin type ' + actionTypeId + ' to element with id ' + this.elementId, false );
+        if ( rows.insertId ) Element.loadById( this.elementId, callback );
+        else return callback( 'Could not add action type ' + actionTypeId + ' to element with id ' + this.elementId, false );
     });
 };
 

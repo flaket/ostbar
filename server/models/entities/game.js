@@ -22,59 +22,36 @@ Game.prototype = new Entity();
 
 Game.prototype.constructor = Game;
 
-Game.loadById = function ( callback, id ){
+Game.loadById = function ( id, callback ){
     db.query( 'SELECT * FROM game WHERE game_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ) Game.initWithData( callback, rows[0] );
+        if ( rows.length == 1 ) Game.initWithData( rows[0], callback );
         else callback( 'Could not load game with id ' + id, false );
     });
 };
 
-Game.loadByIdForUser = function ( callback, gameId, userId ){
+Game.loadByIdForUser = function ( gameId, userId, callback ){
     db.query( 'SELECT * FROM game WHERE game_id = ? AND user_id = ?', [gameId, userId], function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ) Game.initWithData( callback, rows[0] );
+        if ( rows.length == 1 ) Game.initWithData( rows[0], callback );
         else callback( 'Could not load games for user_id ' + user_id, false );
     });
 }
 
-Game.loadAllForUser = function ( callback, userId ){
+Game.loadAllForUser = function ( userId, callback ){
     db.query( 'SELECT * FROM game WHERE user_id = ?', userId, function ( error, rows, fields ){
         if ( error ) return callback ( error, false );
 
-        var games = new Array();
-        var currentGame = 0;
-
-        async.whilst( 
-            function (){
-                return games.length < rows.length;
-            },
-            function ( callback ){
-                Game.initWithData( function ( error, game ){
-                    if ( error ) return callback( error );
-
-                    games.push( game );
-                    currentGame++;
-                    callback();
-                }, rows[currentGame] );
-            },
-            function ( error ){
-                callback( error, games );
-            }
-         );
+        async.map( rows, Game.initWithData, callback );
     });
 }
 
-Game.initWithData = function ( callback, data ){
+Game.initWithData = function ( data, callback ){
     async.parallel({
-        goal: function ( callback ){
-            Goal.loadById( callback, data.goal_id );
-        },
-        initial_scene: function ( callback ){
-            Scene.loadById( callback, data.initial_scene_id );
-        }
+        goal: Goal.loadById.bind( Goal, data.goal_id ),
+        initial_scene: Scene.loadById.bind(Scene, data.initial_scene_id )
     },
     function ( error, results ){
         if ( error ) return callback( error, false );

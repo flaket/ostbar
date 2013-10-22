@@ -12,12 +12,12 @@ var requestError = function ( res, error ){
 
 var standardGETResponse = function ( req, res, Entity ){
     if ( req.params.id ){
-        Entity.loadById( function ( error, entity ){
+        Entity.loadById( req.params.id, function ( error, entity ){
             if ( error ) return requestError( res, error );
 
             if ( entity ) res.send( entity );
             else emptyResponse( res );
-        }, req.params.id );
+        } );
     } else {
         Entity.loadAll( function ( error, entities){
             if ( error ) return requestError( res, error );
@@ -47,20 +47,53 @@ module.exports = function ( app ){
         var Game = models.Game;
 
         if ( req.params.id ){
-            Game.loadByIdForUser( function ( error, game ){
+            Game.loadByIdForUser( req.params.id, req.user.userId, function ( error, game ){
                 if ( error ) return requestError( res, error );
 
                 if ( game ) res.send( game );
                 else emptyResponse( res );
-            }, req.params.id, req.user.userId );
+            });
         } else {
-            Game.loadAllForUser( function ( error, games ){
+            Game.loadAllForUser( req.user.userId, function ( error, games ){
                 if ( error ) return requestError( res, error );
 
                 if ( games ) res.send( games );
                 else emptyResponse( res );
-            }, req.user.userId );
+            });
         }
+    });
+
+    app.get( '/api/activitylanguage/:id', auth, function ( req, res ){
+        var ActivityLanguage = models.ActivityLanguage;
+
+        ActivityLanguage.loadById( req.params.id, function ( error, activityLanguage ){
+            if ( error ) return requestError( res, error );
+
+            if ( activityLanguage ) res.send( activityLanguage );
+            else emptyResponse( res );
+        })
+    });
+
+    app.get( '/api/activitymath/:id', auth, function ( req, res ){
+        var ActivityMath = models.ActivityMath;
+
+        ActivityMath.loadById( req.params.id, function ( error, activityMath ){
+            if ( error ) return requestError( res, error );
+
+            if ( activityMath ) res.send( activityMath );
+            else emptyResponse( res );
+        });
+    });
+
+    app.get( '/api/activityquiz/:id', auth, function ( req, res ){
+        var ActivityQuiz = models.ActivityQuiz;
+
+        ActivityQuiz.loadById( req.params.id, function ( error, activityQuiz ){
+            if ( error ) return requestError( res, error );
+
+            if ( activityQuiz ) res.send( activityQuiz );
+            else emptyResponse( res );
+        });
     });
 
     app.get( '/api/scene/:id?', auth, function ( req, res ){
@@ -97,7 +130,7 @@ module.exports = function ( app ){
         }
 
         if ( req.params.id ){
-            Element.loadById( function ( error, element ){
+            Element.loadById( req.params.id, function ( error, element ){
                 if ( error ) requestError( res, error );
 
                 if ( element ){
@@ -115,14 +148,14 @@ module.exports = function ( app ){
                         else emptyResponse( res );
                     });
                 }
-            }, req.params.id );
+            });
         } else {
-            Element.create( function ( error, createdElement ){
+            Element.create( elementTypeId, frame, function ( error, createdElement ){
                 if ( error ) return requestError( res, error );
 
                 if ( createdElement ) res.send( 201, createdElement );
                 else emptyResponse( res );
-            }, elementTypeId, frame);
+            });
         }
     });
 };

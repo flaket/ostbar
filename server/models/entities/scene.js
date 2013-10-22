@@ -20,7 +20,7 @@ Scene.prototype = new Entity();
 
 Scene.prototype.constructor = Scene;
 
-Scene.loadById = function ( callback, id ){
+Scene.loadById = function ( id, callback ){
     db.query( 'SELECT * FROM scene WHERE scene_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
@@ -29,13 +29,13 @@ Scene.loadById = function ( callback, id ){
 
             async.parallel({
                 backgroundAvatar: function ( callback ){
-                    Avatar.loadById( callback, data.background_avatar_id );
+                    Avatar.loadById( data.background_avatar_id, callback );
                 },
                 elements: function ( callback ){
-                    Element.loadAllInScene( callback, data.scene_id );
+                    Element.loadAllInScene( data.scene_id, callback );
                 },
                 world: function ( callback ){
-                    World.loadById( callback, data.world_id );
+                    World.loadById( data.world_id, callback );
                 }
             },
             function ( error, results ){
