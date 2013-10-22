@@ -1,5 +1,6 @@
 jQuery(document).ready(function(){
 	
+	$("#storylineButton").hide();
 	$(".elements").hide();
 	$(".draggable").tooltip({disabled: true});
 	
@@ -73,7 +74,7 @@ jQuery(document).ready(function(){
 				"Confirm": function(){
 					if(currentDialog.sceneChecked==true){
 						var option = {
-								to: "#customSidebar2",
+								to: "#storylineButton",
 								className: "ui-effects-transfer"
 						};
 						$(target).effect("transfer", option, 500);
@@ -374,7 +375,7 @@ function OnChangeCheckBoxSound(){
 	}
 }
 
-$(function(){
+$(function createNewWorldView(){
 	$("#newWorldDialog").dialog({
 		autoOpen: false,
 		width: 900,
@@ -387,6 +388,25 @@ $(function(){
 	
 	$("#newWorldButton").click(function(){
 		$("#newWorldDialog").dialog("open");
+	});
+});
+
+$(function createStorylineView(){
+	
+	$("#storylineDialog").dialog({
+		autoOpen: false,
+		show: {
+	        effect: "clip",
+	        duration: 300
+		},
+		hide: {
+	      effect: "clip",
+	      duration: 300
+    	}
+	});
+	
+	$("#storylineButton").on("click", function(){
+		$("#storylineDialog").dialog("open");
 	});
 });
 
@@ -403,6 +423,7 @@ $(document).ready(function(){
 		$("#newWorldButton").hide();
 		$(".elements").show();
 		$(".draggable").tooltip({disabled: false});
+		$("#storylineButton").show();
 		$("#newWorldDialog").dialog("close");
 	});
 });
