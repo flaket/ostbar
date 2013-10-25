@@ -73,21 +73,15 @@ jQuery(document).ready(function(){
 			buttons: {
 				"Confirm": function(){
 					if(currentDialog.sceneChecked==true){
+						$(this).dialog("close");
+						
 						var option = {
 								to: "#storylineButton",
 								className: "ui-effects-transfer"
 						};
 						$(target).effect("transfer", option, 500);
-						
-						//make a new scene
-//						var mainFrameClone = $("#mainFrame").clone();
-//						mainFrameClone.css({
-//							"height": "20%"
-//						});
-//						$("#mainFrame").empty();
-//						$("#customSidebar2").html(mainFrameClone);
-//						
-//						$(this).dialog("close");
+
+						saveContentFromMainFrame();
 						
 					};
 					
@@ -95,6 +89,15 @@ jQuery(document).ready(function(){
 					
 					if(currentDialog.activityChecked==true){
 						//make a new activity
+						$(target).on("click", function(){
+							if(name=="Cow"){
+								createCowActivity();
+							}
+							if(name=="Chicken"){
+								createChickenActivity();
+							}
+							
+						});
 					};
 					
 					
@@ -223,7 +226,7 @@ function convertToHtml(e){
 	for (var i = 0; i<temp.length; i++){
 		output += temp[i]+"<br>";
 	}
-	console.log(output)
+	console.log(output);
 	return output;
 }
 
@@ -395,6 +398,8 @@ $(function createStorylineView(){
 	
 	$("#storylineDialog").dialog({
 		autoOpen: false,
+		width: 900,
+		height: 500,
 		show: {
 	        effect: "clip",
 	        duration: 300
@@ -409,6 +414,127 @@ $(function createStorylineView(){
 		$("#storylineDialog").dialog("open");
 	});
 });
+
+
+function saveContentFromMainFrame(){
+	$(".textarea").hide();
+	var cloneOfMainFrame = $("#mainFrame").clone();
+	cloneOfMainFrame.css({"position": "relative"}).addClass("inStoryline").appendTo("#storylineDialog");
+	$("#mainFrame").empty();
+	
+	
+	//trying to make an element inside storyline clickable, when clicked it should be placed on mainframe
+	/*
+	 * problem:
+	 * 		elements are not interactive anymore
+	 * 		elements not placable in mainframe, they are placed in storyline
+	 */
+	$(".inStoryline").on("click", function(e){
+		var target = e.target;
+		$(target).appendTo("#mainFrame");
+		target.removeClass("inStoryline");
+		$("#storylineDialog").dialog("close");
+	});
+}
+
+
+function createCowActivity(){
+	console.log("cow activity");
+	var counter = 0;
+	
+	$(".mathActivity").dialog({
+		rezisable: false,
+		height: 800,
+		width: 1200,
+		position: {
+			my: "center top",
+			at: "center top",
+			of: "#mainFrame"
+		}
+	});
+	
+	var randomNumber1 = Math.floor((Math.random()*10));
+	var randomNumber2 = Math.floor((Math.random()*10));
+	
+	if(randomNumber1>randomNumber2){
+		$(".randomNumber1").text(randomNumber1);
+	}
+	else{
+		$(".randomNumber1").text(randomNumber2);
+	}
+	if(randomNumber2>randomNumber1){
+		$(".randomNumber2").text(randomNumber1);
+	}
+	else{
+		$(".randomNumber2").text(randomNumber2);
+	}
+	
+	var numberOfOperators = 1;
+	var operator = chooseRandomOperator(numberOfOperators);
+	
+	$(".operator").text(operator);
+	
+	$(".equals").text("=");
+	
+}
+
+function checkAnswer(){
+	if($(".answerfield").val() == ""){
+		alert("Please type in a number");
+	}
+	if(!$.isNumeric($(".answerfield").val())){
+		alert("The answer must be a number");
+	};
+	
+	var operator = $(".operator").text(); 
+	var number1 = parseInt($(".randomNumber1").text());
+	var number2 = parseInt($(".randomNumber2").text());
+	
+	var answer = calculateAnswer(number1, number2, operator);
+	console.log(answer);
+	
+	if($(".answerfield").val() == answer){
+		alert("hurra");
+	}
+	else{
+		alert("feil svar");
+	}
+	
+}
+
+function calculateAnswer(param1, param2, operator){
+	if(operator == "+"){
+		return param1 + param2;
+	}
+	if(operator == "-"){
+		return param1 - param2;
+	}
+	if(operator == "*"){
+		return param1 * param2;
+	}
+	if(operator == "/"){
+		return param1 / param2;
+	}
+}
+
+function chooseRandomOperator(possibleNumbersOfOperators){
+	
+	var chosenOperator = '';
+	var choosableOperators = '+-';
+	
+	if(!possibleNumbersOfOperators){
+		possibleNumbersOfOperators = 1;
+	}
+	
+	for(var i=0; i<possibleNumbersOfOperators; i++){
+		chosenOperator += choosableOperators.charAt(Math.floor(Math.random() * choosableOperators.length));
+	}
+	return chosenOperator;
+}
+
+function createChickenActivity(){
+	console.log("chicken activity");
+}
 
 
 $(document).ready(function(){
