@@ -442,10 +442,14 @@ function createCowActivity(){
 	console.log("cow activity");
 	var counter = 0;
 	
+	var Wwidth = $(window).width();
+	var Wheight = $(window).height();
+	
+	
 	$(".mathActivity").dialog({
 		rezisable: false,
-		height: 800,
-		width: 1200,
+		height: Wheight*0.8,
+		width: Wwidth*0.7,
 		position: {
 			my: "center top",
 			at: "center top",
@@ -520,7 +524,7 @@ function calculateAnswer(param1, param2, operator){
 function chooseRandomOperator(possibleNumbersOfOperators){
 	
 	var chosenOperator = '';
-	var choosableOperators = '+-';
+	var choosableOperators = '+-*/';
 	
 	if(!possibleNumbersOfOperators){
 		possibleNumbersOfOperators = 1;
