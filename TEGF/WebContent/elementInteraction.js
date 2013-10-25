@@ -206,7 +206,7 @@ function dialogFunction(e){
 				// return convertToHtml(objectList[inList(objectList,e.target)].dialogData)
 			// }
 	// });
-	$("#writtenText").text(objectList[inList(objectList,e.target)].dialogData);
+	$("#writtenText").val(objectList[inList(objectList,e.target)].dialogData);
 	$(".writtenDialog").dialog({
 		modal: true,
 		buttons: {
