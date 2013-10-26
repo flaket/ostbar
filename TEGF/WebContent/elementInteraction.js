@@ -89,15 +89,38 @@ jQuery(document).ready(function(){
 					
 					if(currentDialog.activityChecked==true){
 						//make a new activity
-						$(target).on("click", function(){
-							if(name=="Cow"){
-								createCowActivity();
-							}
-							if(name=="Chicken"){
-								createChickenActivity();
-							}
+//						$(target).on("click", function(){
+//							if(name=="Cow"){
+//								createCowActivity();
+//							}
+//							if(name=="Chicken"){
+//								createChickenActivity();
+//							}
+//							
+//						});
+						
+						$(".chooseActivityDialog").dialog({
+							position: {
+								my: "center top",
+								at: "center top",
+								of: "#mainFrame"
+							},
+							title: "choose activity type",
+							buttons:{
+								"Math Activity": function(){
+									createMathActivity();
+								},
+								"Language Activity": function(){
+									createLanguageActivity();
+								},
+								"Quiz Activity": function(){
+									
+								},
+						
+							},
 							
 						});
+						
 					};
 					
 					
@@ -437,10 +460,15 @@ function saveContentFromMainFrame(){
 	});
 }
 
+var questionsAnswered = 0;
+var correctAnswers = 0;
 
-function createCowActivity(){
-	console.log("cow activity");
-	var counter = 0;
+function createMathActivity(){
+	$("#numberOfQuestionsAnswered").val(questionsAnswered);
+	$(".chooseActivityDialog").dialog("close");
+
+	console.log("math activity");
+	
 	
 	var Wwidth = $(window).width();
 	var Wheight = $(window).height();
@@ -457,22 +485,55 @@ function createCowActivity(){
 		}
 	});
 	
-	var randomNumber1 = Math.floor((Math.random()*10));
-	var randomNumber2 = Math.floor((Math.random()*10));
+	var randomNumber1 = 0;
+	var randomNumber2 = 0;
 	
-	if(randomNumber1>randomNumber2){
-		$(".randomNumber1").text(randomNumber1);
-	}
-	else{
-		$(".randomNumber1").text(randomNumber2);
-	}
-	if(randomNumber2>randomNumber1){
-		$(".randomNumber2").text(randomNumber1);
-	}
-	else{
-		$(".randomNumber2").text(randomNumber2);
-	}
-	
+	$("#randomNumberButton").click(function createRandomNumber(){
+		var numLow = $("#lownumber").val();
+        var numHigh = $("#highnumber").val();
+        
+        var adjustedHigh = (parseFloat(numHigh) - parseFloat(numLow)) + 1;
+        randomNumber1 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
+        randomNumber2 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
+        
+        console.log("randomNumber1 : " + randomNumber1);
+    	console.log("randomNumber2 : " + randomNumber2);
+    	
+    	if(randomNumber1>randomNumber2){
+    		$(".randomNumber1").text(randomNumber1);
+    	}
+    	else{
+    		$(".randomNumber1").text(randomNumber2);
+    	}
+    	if(randomNumber2>randomNumber1){
+    		$(".randomNumber2").text(randomNumber1);
+    	}
+    	else{
+    		$(".randomNumber2").text(randomNumber2);
+    	}
+    	
+    	$(".question1").css({"display": "none"});
+    	$("#lownumber").css({"display": "none"});
+    	$("#highnumber").css({"display": "none"});
+    	$("#randomNumberButton").css({"display": "none"});
+    	
+    	$("#life1").css({"display": "inline"});
+    	$("#life2").css({"display": "inline"});
+    	$("#life3").css({"display": "inline"});
+    	$(".question2").css({"display": "inline"});
+    	$(".randomNumber1").css({"display": "inline"});
+    	$(".randomNumber2").css({"display": "inline"});
+    	$(".operator").css({"display": "inline"});
+    	$(".equals").css({"display": "inline"});
+    	$(".answer").css({"display": "inline"});
+    	$(".score").css({
+    		"display" : "inline",
+    		"float" : "right",
+    		"margin-top" : "-3%",
+    	});
+    	
+	});
+
 	var numberOfOperators = 1;
 	var operator = chooseRandomOperator(numberOfOperators);
 	
@@ -482,6 +543,7 @@ function createCowActivity(){
 	
 }
 
+var life = 3;
 function checkAnswer(){
 	if($(".answerfield").val() == ""){
 		alert("Please type in a number");
@@ -495,15 +557,90 @@ function checkAnswer(){
 	var number2 = parseInt($(".randomNumber2").text());
 	
 	var answer = calculateAnswer(number1, number2, operator);
-	console.log(answer);
+	console.log("answer is: " + answer);
 	
 	if($(".answerfield").val() == answer){
-		alert("hurra");
-	}
-	else{
-		alert("feil svar");
+		correctAnswers++;
+		$("#correctAnswerSmiley").css({"display": "inline"});
+		
 	}
 	
+	
+	else{
+		$("#wrongAnswerSmiley").css({"display": "inline"});
+		if(life==1){
+			$("#life3").hide("clip");
+			life--;
+			
+			setTimeout(function(){
+				alert("Game over! Restart the activity");
+			}, 1000);
+			
+			setTimeout(function(){
+				
+				questionsAnswered = 0;
+				correctAnswers = 0;
+				life=3;
+				$("#life1").css({"display": "inline"});
+				$("#life2").css({"display": "inline"});
+				$("#life3").css({"display": "inline"});
+				createMathActivity();
+			}, 2000);
+		}
+		else if(life==2){
+			$("#life2").hide("clip");
+			life--;
+		}
+		else if(life==3){
+			$("#life1").hide("clip");
+			life--;
+		}
+		
+	}
+	
+	setTimeout(function(){
+		
+		if(questionsAnswered == 9){
+			$("#numberOfQuestionsAnswered").val(questionsAnswered+1);
+			alert("Du svarte riktig paa " + correctAnswers + " sporsmaal av totalt 10 sporsmaal");
+			$(".mathActivity").dialog("close");
+		}
+		else{
+			questionsAnswered++;
+			getAnotherQuestion();
+			console.log("number of questions: " + questionsAnswered);
+		}
+	}, 800);
+}
+
+function getAnotherQuestion(){
+	$("#correctAnswerSmiley").css({"display": "none"});
+	$("#wrongAnswerSmiley").css({"display": "none"});
+	
+	$(".answerfield").val("");
+	var numLow = $("#lownumber").val();
+    var numHigh = $("#highnumber").val();
+    
+    var adjustedHigh = (parseFloat(numHigh) - parseFloat(numLow)) + 1;
+    randomNumber1 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
+    randomNumber2 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
+    
+    console.log("randomNumber1 : " + randomNumber1);
+	console.log("randomNumber2 : " + randomNumber2);
+    
+	if(randomNumber1>randomNumber2){
+		$(".randomNumber1").text(randomNumber1);
+	}
+	else{
+		$(".randomNumber1").text(randomNumber2);
+	}
+	if(randomNumber2>randomNumber1){
+		$(".randomNumber2").text(randomNumber1);
+	}
+	else{
+		$(".randomNumber2").text(randomNumber2);
+	}
+	createMathActivity();
 }
 
 function calculateAnswer(param1, param2, operator){
@@ -536,8 +673,10 @@ function chooseRandomOperator(possibleNumbersOfOperators){
 	return chosenOperator;
 }
 
-function createChickenActivity(){
-	console.log("chicken activity");
+function createLanguageActivity(){
+	$(".chooseActivityDialog").dialog("close");
+
+	console.log("language activity");
 }
 
 

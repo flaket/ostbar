@@ -86,20 +86,38 @@
 			<textarea class="textarea" id ="writtenText" rows="10" cols="26" disabled></textarea>
 		</div>
 		
+		<div class="chooseActivityDialog">
+		</div>
+		
 		<div class="mathActivity" title="Math activity">
-			<img id="life1" name = "heart" alt="life" src="../resources/heart.png">
-			<img id="life2" name = "heart" alt="life" src="../resources/heart.png">
-			<img id="life3" name = "heart" alt="life" src="../resources/heart.png">
-			<p>What is:</p>
-			<div class="randomNumber1"></div>
-			<div class="operator"></div>
-			<div class="randomNumber2"></div>
-			<div class="equals"></div>
-			<div class="answer">
+			<p class="question1"> Choose random number between: </p>
+			<input type="text" id="lownumber" value="from" />
+			<p class="question1"> and <p>
+			<input type="text" id="highnumber" value="to" />
+			<br>
+			<input type="submit" id="randomNumberButton" value="Generate!" />
+		
+			<img id="life1" name = "heart" alt="life" src="../resources/heart.png" style="display: none;">
+			<img id="life2" name = "heart" alt="life" src="../resources/heart.png" style="display: none;">
+			<img id="life3" name = "heart" alt="life" src="../resources/heart.png" style="display: none;">
+			<div class="score" style="display: none;">
+				Questions answered :
+				<input type="text" id="numberOfQuestionsAnswered" disabled size="2">
+				/
+				<input type="text" id="totalNumberOfQuestions" disabled value="10" size="2">
+			</div>
+			<p class="question2" style="display: none;">What is:</p><br>
+			<div class="randomNumber1" style="display: none;"></div>
+			<div class="operator" style="display: none;"></div>
+			<div class="randomNumber2" style="display: none;"></div>
+			<div class="equals" style="display: none;"></div>
+			<div class="answer" style="display: none;">
 				<input class="answerfield" type="text" name="answer" size="1px" maxlength="2">
-				<button onclick="checkAnswer()"> Submit </button>
+				<button id="answerButton" onclick="checkAnswer()"> Submit </button>
 			</div>
 			<div>
+				<img id="correctAnswerSmiley" name="happySmiley" src="../resources/HappySmiley.png" style="display: none;">
+				<img id="wrongAnswerSmiley" name="sadSmiley" src="../resources/SadSmiley.png" style="display: none;">
 			</div>
 		</div>
 		
