@@ -499,6 +499,7 @@ function createMathActivity(){
         console.log("randomNumber1 : " + randomNumber1);
     	console.log("randomNumber2 : " + randomNumber2);
     	
+    	
     	if(randomNumber1>randomNumber2){
     		$(".randomNumber1").text(randomNumber1);
     	}
@@ -537,7 +538,37 @@ function createMathActivity(){
 	var numberOfOperators = 1;
 	var operator = chooseRandomOperator(numberOfOperators);
 	
-	$(".operator").text(operator);
+	if(operator=='/'){
+		if(randomNumber1>randomNumber2){
+			if(randomNumber1 % randomNumber2 == 0){
+				$(".operator").text(operator);
+			}
+			else{
+				var numLow = $("#lownumber").val();
+			    var numHigh = $("#highnumber").val();
+			    
+			    var adjustedHigh = (parseFloat(numHigh) - parseFloat(numLow)) + 1;
+			    randomNumber1 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
+			    randomNumber2 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
+			    
+				if(randomNumber1>randomNumber2){
+					$(".randomNumber1").text(randomNumber1);
+				}
+				else{
+					$(".randomNumber1").text(randomNumber2);
+				}
+				if(randomNumber2>randomNumber1){
+					$(".randomNumber2").text(randomNumber1);
+				}
+				else{
+					$(".randomNumber2").text(randomNumber2);
+				}
+			}
+		}
+	}
+	else{
+		$(".operator").text(operator);
+	}
 	
 	$(".equals").text("=");
 	
@@ -545,13 +576,6 @@ function createMathActivity(){
 
 var life = 3;
 function checkAnswer(){
-	if($(".answerfield").val() == ""){
-		alert("Please type in a number");
-	}
-	if(!$.isNumeric($(".answerfield").val())){
-		alert("The answer must be a number");
-	};
-	
 	var operator = $(".operator").text(); 
 	var number1 = parseInt($(".randomNumber1").text());
 	var number2 = parseInt($(".randomNumber2").text());
@@ -559,14 +583,20 @@ function checkAnswer(){
 	var answer = calculateAnswer(number1, number2, operator);
 	console.log("answer is: " + answer);
 	
-	if($(".answerfield").val() == answer){
-		correctAnswers++;
-		$("#correctAnswerSmiley").css({"display": "inline"});
-		
+	if($(".answerfield").val() == ""){
+		alert("Please type in a number");
 	}
 	
+	if(!$.isNumeric($(".answerfield").val()) && !$(".answerfield").val()==""){
+		alert("The answer must be a number");
+	}
 	
-	else{
+	if($(".answerfield").val() == answer && !$(".answerfield").val()==""){
+		correctAnswers++;
+		$("#correctAnswerSmiley").css({"display": "inline"});
+	}
+	
+	if(!$(".answerfield").val()==answer && !$(".answerfield").val()==""){
 		$("#wrongAnswerSmiley").css({"display": "inline"});
 		if(life==1){
 			$("#life3").hide("clip");
@@ -605,7 +635,7 @@ function checkAnswer(){
 			alert("Du svarte riktig paa " + correctAnswers + " sporsmaal av totalt 10 sporsmaal");
 			$(".mathActivity").dialog("close");
 		}
-		else{
+		if(!questionsAnswered==9 && !$(".answerfield").val()==""){
 			questionsAnswered++;
 			getAnotherQuestion();
 			console.log("number of questions: " + questionsAnswered);
