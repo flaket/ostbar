@@ -39,9 +39,7 @@ ActivityMath.loadByActivityId = function ( activityId, callback ){
 
 ActivityMath.initWithData = function ( data, callback ){
     async.parallel({
-        operators: function ( callback ){
-            MathOperator.loadAllInActivityMath( data.activity_math_id, callback );
-        }
+        operators: MathOperator.loadAllInActivityMath.bind( MathOperator, data.activity_math_id )
     },
     function ( error, results ){
         if ( error ) return callback( error, false );

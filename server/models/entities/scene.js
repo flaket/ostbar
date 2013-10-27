@@ -28,15 +28,9 @@ Scene.loadById = function ( id, callback ){
             var data = rows[0];
 
             async.parallel({
-                backgroundAvatar: function ( callback ){
-                    Avatar.loadById( data.background_avatar_id, callback );
-                },
-                elements: function ( callback ){
-                    Element.loadAllInScene( data.scene_id, callback );
-                },
-                world: function ( callback ){
-                    World.loadById( data.world_id, callback );
-                }
+                backgroundAvatar: Avatar.loadById.bind( Avatar, data.background_avatar_id ),
+                elements: Element.loadAllInScene.bind( Element, data.scene_id ),
+                world: World.loadById.bind( World, data.world_id )
             },
             function ( error, results ){
                 if ( error ) return callback( error, false );

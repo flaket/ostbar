@@ -1,0 +1,35 @@
+{{!< main}}
+<div class="row">
+  <div class="large-12 columns">
+    <h3>Mine spill</h3>
+    <table class="large-12 columns">
+      <thead>
+          <tr>
+              <td class="top-left">Spill-id</td>
+              <td>Navn</td>
+              <td>Laget</td>
+              <td></td>
+          </tr>
+      </thead>
+      <tbody>
+        {{#each games}}
+        <tr>
+          <td>{{gameId}}</td>
+          <td>{{name}}</td>
+          <td>{{created}}</td>
+          <td><a href="/game/{{gameId}}">Åpne</td>
+        </tr>
+        {{/each}}
+      </tbody>
+      <tfoot>
+        <tr><td colspan="11"></td></tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+<script>
+$( document ).ready( function (){
+  
+})
+</script>

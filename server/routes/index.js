@@ -1,4 +1,5 @@
 var User = require( '../models/entities/user' ).User;
+var Game = require( '../models/entities/game').Game;
 var util = require( 'util' );
 var server = require('../../server');
 
@@ -144,5 +145,28 @@ module.exports.register_user = function ( req, res ){
 }
 
 module.exports.mygames = function ( req, res ){
-    res.render( 'game', { user: req.user } ); 
+
+    if ( req.params.id ){
+        Game.loadByIdForUser( req.params.id, req.user.userId, function ( error, game ){
+            if ( error ){
+                return res.render( 'error', { error: error } );
+            }
+
+            res.render( 'game', {
+                user: req.user,
+                game: game
+            });
+        });
+    } else {
+        Game.loadAllForUser( req.user.userId, function ( error, games ){
+            if ( error ){
+                return res.render( 'error', { error: error } );
+            }
+
+            res.render( 'games', { 
+                user: req.user, 
+                games: games
+            }); 
+        });
+    }
 }

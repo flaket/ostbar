@@ -42,8 +42,6 @@ Element.loadAllInScene = function ( sceneId, callback ){
     db.query( query, sceneId, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        console.log('loading all in scene', sceneId);
-
         async.map ( rows, Element.loadById, callback);
     });
 };
@@ -77,9 +75,7 @@ Element.create = function ( elementTypeId, frame, callback ){
 
 Element.initWithData = function ( data, callback ){
     async.parallel({
-        actionTypes: function ( callback ){
-            ActionType.loadAllInElement( data.element_id, callback );
-        }
+        actionTypes: ActionType.loadAllInElement.bind( ActionType, data.element_id )
     },
     function ( error, results ){
         if ( error ) return callback( error, false );

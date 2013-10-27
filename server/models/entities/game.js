@@ -10,8 +10,9 @@ var Scene   = require( './scene' ).Scene;
 function Game( data ){
     Entity.call( this );
 
-    this.game_id = data.game_id;
+    this.gameId = data.game_id;
     this.userId = data.user_id;
+    this.name = data.name;
     this.initialScene = data.initial_scene;
     this.goal = data.goal;
     this.created = data.created;
@@ -51,7 +52,7 @@ Game.loadAllForUser = function ( userId, callback ){
 Game.initWithData = function ( data, callback ){
     async.parallel({
         goal: Goal.loadById.bind( Goal, data.goal_id ),
-        initial_scene: Scene.loadById.bind(Scene, data.initial_scene_id )
+        initial_scene: Scene.loadById.bind( Scene, data.initial_scene_id )
     },
     function ( error, results ){
         if ( error ) return callback( error, false );

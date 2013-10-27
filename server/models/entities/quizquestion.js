@@ -44,15 +44,9 @@ QuizQuestion.loadAllInActivityQuiz = function ( activityQuizId, callback ){
 
 QuizQuestion.initWithData = function ( data, callback ){
     async.parallel({
-        alternatives: function ( callback ){
-            QuizQuestionAlternative.loadAllInQuizQuestion( data.quiz_question_id, callback );
-        },
-        correctAlternatives: function ( callback ){
-            QuizQuestionAlternative.loadAllCorrectInQuizQuestion( data.quiz_question_id, callback );
-        },
-        subject: function ( callback ){
-            SubjectType.loadById( data.subject_type_id, callback );
-        }
+        alternatives: QuizQuestionAlternative.loadAllInQuizQuestion.bind( QuizQuestionAlternative, data.quiz_question_id ),
+        correctAlternatives: QuizQuestionAlternative.loadAllCorrectInQuizQuestion.bind( QuizQuestionAlternative, data.quiz_question_id ),
+        subject: SubjectType.loadById.bind( SubjectType, data.subject_type_id )
     },
     function ( error, results ){
         if ( error ) return callback( error, false );

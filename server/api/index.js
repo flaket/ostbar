@@ -96,6 +96,17 @@ module.exports = function ( app ){
         });
     });
 
+    app.get( '/api/activity/:id', auth, function ( req, res ){
+        var Activity = models.Activity;
+
+        Activity.loadById( req.params.id, function ( error, activity ){
+            if ( error ) return requestError( res, error );
+
+            if ( activity ) res.send( activity );
+            else emptyResponse( res );
+        });
+    });
+
     app.get( '/api/scene/:id?', auth, function ( req, res ){
         if (!req.params.id) return emptyResponse( res );
 

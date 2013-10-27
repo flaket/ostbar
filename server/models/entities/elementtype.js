@@ -45,18 +45,10 @@ ElementType.loadAll = function ( callback ){
 
 ElementType.initWithData = function ( data, callback ){
     async.parallel({
-        avatar: function ( callback ){
-            Avatar.loadById( data.avatar_id, callback );
-        },
-        sound: function ( callback ){
-            Sound.loadById( data.sound_id, callback );
-        },
-        world: function ( callback ){
-            World.loadById( data.world_id, callback );
-        },
-        allowedActionTypes: function ( callback ){
-            ActionType.loadAllInElementType( data.element_type_id, callback );
-        }
+        avatar: Avatar.loadById.bind( Avatar, data.avatar_id ),
+        sound: Sound.loadById.bind( Sound, data.sound_id ),
+        world: World.loadById.bind( World, data.world_id ),
+        allowedActionTypes: ActionType.loadAllInElementType.bind( ActionType, data.element_type_id )
     },
     function ( error, results ){
         if ( error ) return callback( error, null );

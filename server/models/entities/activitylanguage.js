@@ -37,9 +37,7 @@ ActivityLanguage.loadByActivityId = function ( activityId, callback ){
 
 ActivityLanguage.initWithData = function ( data, callback ) {
     async.parallel({
-        questions: function ( callback ){
-            LanguageQuestion.loadAllInActivityLanguage( data.activity_language_id, callback );
-        }
+        questions: LanguageQuestion.loadAllInActivityLanguage.bind( LanguageQuestion, data.activity_language_id )
     },
     function ( error, results ){
         if ( error ) return callback( error, false );

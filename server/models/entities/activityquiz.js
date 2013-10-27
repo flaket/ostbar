@@ -37,9 +37,7 @@ ActivityQuiz.loadByActivityId = function ( activityId, callback ){
 
 ActivityQuiz.initWithData = function ( data, callback ){
     async.parallel({
-        questions: function ( callback ){
-            QuizQuestion.loadAllInActivityQuiz( data.activity_quiz_id, callback )
-        }
+        questions: QuizQuestion.loadAllInActivityQuiz.bind( QuizQuestion, data.activity_quiz_id )
     },
     function ( error, results ){
         if ( error ) return callback( error, false );

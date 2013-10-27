@@ -21,8 +21,9 @@ Activity.prototype = new Entity();
 
 Activity.prototype.constructor = Activity;
 
-Activity.loadById = function ( callback, id ){
+Activity.loadById = function ( id, callback ){
     db.query( 'SELECT * FROM activity WHERE activity_id = ?', id, function ( error, rows, fields ){
+
         if ( error ) return callback( error, false );
 
         if ( rows.length == 1 ){
@@ -36,12 +37,8 @@ Activity.loadById = function ( callback, id ){
             }
 
             async.parallel({
-                reward: function ( callback ){
-                    Reward.loadById( callback, data.reward_id );
-                },
-                subclass: function ( callback ){
-                    subclass.loadByActivityId( callback, data.activity_id );
-                }
+                reward: Reward.loadById.bind( Reward, data.reward_id ),
+                subclass: subclass.loadByActivityId.bind( subclass, data.activity_id )
             },
             function ( error, results ){
                 if ( error ) return callback ( error, false );
