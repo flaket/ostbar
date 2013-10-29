@@ -1,5 +1,5 @@
 {{!< main}}
-<div class="row">
+<div class="row contentbox">
   <div class="large-12 columns">
     <h3>Mine spill</h3>
     <table class="large-12 columns">
@@ -14,10 +14,26 @@
       <tbody>
         {{#each games}}
         <tr>
-          <td>{{gameId}}</td>
-          <td>{{name}}</td>
-          <td>{{created}}</td>
-          <td><a href="/game/{{gameId}}">Åpne</td>
+          <td>
+            {{gameId}}
+          </td>
+          <td>
+            <div class="control-group">
+              <label for="name" class="control-label">
+                  <p class="text-info">{{name}}<i class="icon-star"></i></p>
+              </label>
+              <input type="text" value="{{name}}" class="edit-input" style="display: none;" />
+              <div class="controls">
+                  <a class="edit" href="#">Rediger</a>
+              </div>
+          </div>
+          </td>
+          <td>
+            {{datetimeformat created}}
+          </td>
+          <td>
+            <a href="/game/{{gameId}}">Åpne <img src="/gfx/action.png" width=16 />
+          </td>
         </tr>
         {{/each}}
       </tbody>
@@ -28,8 +44,44 @@
   </div>
 </div>
 
-<script>
-$( document ).ready( function (){
-  
-})
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+    $('a.edit').click(function () {
+        var outerDiv = $(this).parent().parent();
+        
+        var editSave = this;
+
+        if (editSave.innerHTML == 'Rediger') {
+          editSave.innerHTML = 'Lagre';
+          outerDiv.find('label').hide();
+          outerDiv.find('input[type="text"]').show().focus();
+        } else {
+          $.ajax({ 
+            type: 'POST', 
+            url: '/game/1', 
+            dataType:"json", 
+            data: {
+              someData: 'some data field here'
+            },
+            success: function ( response ){ 
+              if (response.redirect) {
+                window.location.href = response.redirect;
+              } else {
+                console.log('received response', response);
+                editSave.innerHTML = 'Rediger';
+                outerDiv.find( 'label' ).show();
+                outerDiv.find( 'input[type="text"]' ).hide();                  
+              }
+            }, 
+            error: function( xhr, textStatus, errorThrown ) { 
+              alert('Error!  Status = ' + xhr.status); 
+              console.log('textStatus', textStatus);
+              console.log('errorThrown', errorThrown);
+            } 
+          });
+        }
+    });
+});
 </script>

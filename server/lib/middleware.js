@@ -9,13 +9,22 @@ module.exports = {
     //   the request is authenticated (typically via a persistent login session),
     //   the request will proceed.  Otherwise, the user will be redirected to the
     //   login page.
-    ensureAuthenticated: function( req, res, next ){
+    ensureAuthenticated: function ( req, res, next ){
         req.session.returnTo = req.url;
 
-        if (req.isAuthenticated()) next();
+        if ( req.isAuthenticated() ) next();
         else {
             req.flash('info', 'Du må være logget inn for å gjøre dette');
             res.redirect('/login');
         }
-    }
+    },
+
+    ensureAuthenticatedAjax: function ( req, res, next ){
+        req.session.returnTo = req.url;
+
+        if ( req.isAuthenticated() ) next();
+        else {
+            res.send( { redirect: '/login' } );
+        }
+    },
 };

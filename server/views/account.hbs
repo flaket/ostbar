@@ -1,6 +1,6 @@
 {{!< main}}
 <section id="account">
-    <div class="row">
+    <div class="row contentbox">
         <div class="large-12 columns">
             <h3>Min Brukerkonto</h3>
             <form class="custom" action="/account" method="POST">
@@ -25,7 +25,7 @@
                     <div class="large-4 large-offset-2 small-9 small-offset-3 columns left"><input type="password" name="newpassword2" placeholder="Gjenta nytt passord"/></div>
                 </div>
                 <div class="row listair">
-                    <div class="large-2 small-3 columns"><label class="right">Active:</label></div>
+                    <div class="large-2 small-3 columns"><label class="right">Aktiv:</label></div>
                     <div class="large-10 small-9 columns">
                         <input type="checkbox" name="active" value="active" {{#if user.is_active}}checked{{/if}} disabled/>
                         <span class="custom checkbox"></span>
@@ -39,8 +39,8 @@
                     </div>
                 </div>
                 <div class="row listair">
-                    <div class="large-2 small-3 columns"><label class="right">Created:</label></div>
-                    <div class="large-10 small-9 columns">{{user.created}}</div>
+                    <div class="large-2 small-3 columns"><label class="right">Laget:</label></div>
+                    <div class="large-10 small-9 columns">{{datetimeformat user.created}}</div>
                 </div>
                 <div class="row listair">
                     <div class="large-10 large-offset-2 small-9 small-offset-3 columns">

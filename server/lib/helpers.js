@@ -5,7 +5,7 @@ var moment = require('moment');
 module.exports.register = function(hbs) {
     //  usage: {{datetimeformat creation_date format="MMMM YYYY"}}
     hbs.registerHelper('datetimeformat', function(context, options) {
-        var f = options.hash.format || "YYYY-MM-DD HH:mm";
+        var f = options.hash.format || "DD. MMM YYYY[, kl ]HH:mm";
         if (!context) {
             return '';
         }

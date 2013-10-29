@@ -37,6 +37,10 @@ app.post('/signup', core_routes.register_user);
 
 app.get( '/game/:id?', app.ensureAuthenticated, core_routes.mygames );
 
+
+// -- ajax requests
+app.post( '/game/:id?', app.ensureAuthenticatedAjax, core_routes.game_post );
+
 // -- exports
 module.exports = app;
 module.exports.conf = settings;

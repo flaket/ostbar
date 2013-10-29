@@ -145,7 +145,6 @@ module.exports.register_user = function ( req, res ){
 }
 
 module.exports.mygames = function ( req, res ){
-
     if ( req.params.id ){
         Game.loadByIdForUser( req.params.id, req.user.userId, function ( error, game ){
             if ( error ){
@@ -169,4 +168,19 @@ module.exports.mygames = function ( req, res ){
             }); 
         });
     }
+}
+
+module.exports.game_post = function ( req, res ){
+    console.log('post game');
+    console.log('received data', req.body.someData);
+
+    Game.loadByIdForUser( req.params.id, req.user.userId, function ( error, game ){
+        if ( error ){
+            return res.send( { error: error });
+        }
+
+        console.log('loaded game, sending response');
+
+        res.send( { game: game } );
+    });
 }
