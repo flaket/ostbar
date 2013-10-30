@@ -25,5 +25,3 @@ var server = http.createServer(app).listen(app.conf.port, function()
 // -- exports
 module.exports.server = server;
 
-// -- now
-var now = require('./server/now');

@@ -30,8 +30,7 @@
     "express-validator":"",
     "connect-flash": "~0.1.0",
     "connect-redis": "",
-    "mysql": "",
-    "now": ""
+    "mysql": ""
   },
   "devDependencies": {
     "uglify-js": "",
