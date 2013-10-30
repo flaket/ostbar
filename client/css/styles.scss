@@ -14,9 +14,6 @@
 @import "AlteHaasGrotesk";
 @import "Sansation";
 
-// tegf styles
-@import "tegf";
-
 h1, h2, h3 {
     font-family: 'Sansation-Regular';
     color: rgb(28, 28, 28);
@@ -149,23 +146,5 @@ table.vask {
     padding-bottom: 1.5em;
 }
 
-.footer {
-    background-color: #aaa;
-}
-
-* {
-    margin: 0;
-}
-html, body {
-    height: 100%;
-}
-.wrapper {
-    min-height: 100%;
-    height: auto !important;
-    height: 100%;
-    margin: 0 auto -4em;
-}
-
-.footer, .push {
-    height: 4em;
-}
+// tegf styles
+@import "tegf";

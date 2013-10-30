@@ -1,161 +1,159 @@
 {{!< main}}
 
-<script src="/js/elementInteraction.js" type="text/javascript"></script>
+<script src="/js/elementInteraction.js"></script>
 
-<div class="row">
-  <div id="customSidebar">
-    <div class="elements">
-      <img name = "Koala" alt="interactive element1" src="/gfx/Koala.jpg" width = "100" height="150">
-    </div>
+<div id="customSidebar" class="noisy sidebar">
+  <div class="elements">
+    <img name = "Koala" alt="interactive element1" src="/gfx/Koala.jpg" width = "100" height="150">
+  </div>
 
-    <div class ="elements">
-      <img name = "Penguin" alt="interactive element2" src="/gfx/Penguins.jpg" width ="100" height="150">
-    </div>
-    
-    <div class = "elements">
-      <img name = "Cow" alt="interactive element3" src="/gfx/our/Cow element.svg" width ="100" height="150">
-    </div>
-    
-    <div class = "elements">
-      <img name = "Chicken" alt="interactive element4" src="/gfx/our/Chicken element.svg" width ="100" height="150">
+  <div class ="elements">
+    <img name = "Penguin" alt="interactive element2" src="/gfx/Penguins.jpg" width ="100" height="150">
+  </div>
+  
+  <div class = "elements">
+    <img name = "Cow" alt="interactive element3" src="/gfx/our/Cow element.svg" width ="100" height="150">
+  </div>
+  
+  <div class = "elements">
+    <img name = "Chicken" alt="interactive element4" src="/gfx/our/Chicken element.svg" width ="100" height="150">
+  </div>
+</div>
+
+<div id="customSidebar2" class="noisy sidebar">
+  <button id="storylineButton" type="button">Storyline</button>
+  <div id="storylineDialog" title="Storyline">
+  </div>
+</div>
+  
+<div id="mainFrame">
+  <button id="newWorldButton">Create new World</button> <br>
+  <div class="draggable" title="right click an element for options"></div>
+  <div class="dialog">
+    <div class="checkboxes" >
+      <form>
+        <label>
+          <input id="scene" type="checkbox" name="to_scene" onchange="OnChangeCheckBoxScene()">To Scene <br>
+        </label>
+        <label>
+          <input id="activity" type="checkbox" name="to_activity" onchange="OnChangeCheckBoxActivity()">To Activity <br>
+        </label>
+        <label>
+          <input id="dialog" type="checkbox" name="dialog" onchange="OnChangeCheckBoxDialog()">Dialog <br>
+        </label>
+        <label>
+          <input id="pickUp" type="checkbox" name="pick_up" onchange="OnChangeCheckBoxPickUp()">Pick Up <br>
+        </label>
+        <label>
+          <input id="animation" type="checkbox" name="animation" onchange="OnChangeCheckBoxAnimation()">Animation <br>
+        </label>
+          
+        <select name="effects" id="effectTypes" disabled onchange="OnChangeAnimationList()">
+          <option value="blind">Blind</option>
+          <option value="bounce">Bounce</option>
+          <option value="clip">Clip</option>
+          <option value="drop">Drop</option>
+          <option value="explode">Explode</option>
+          <option value="fade">Fade</option>
+          <option value="fold">Fold</option>
+          <option value="highlight">Highlight</option>
+          <option value="puff">Puff</option>
+          <option value="pulsate">Pulsate</option>
+          <option value="shake">Shake</option>
+          <option value="slide">Slide</option>
+        </select> 
+        <input id="button" type="submit" value="Try Effect" disabled> <br>
+        <label>
+          <input id="sound" type="checkbox" name="sound" onchange="OnChangeCheckBoxSound()">Sound <br>
+        </label>
+      </form>
+
     </div>
   </div>
   
-  <div id="customSidebar2">
-    <button id="storylineButton" type="button">Storyline</button>
-    <div id="storylineDialog" title="Storyline">
-    </div>
-  </div>
-    
-  <div id="mainFrame">
-    <button id="newWorldButton">Create new World</button> <br>
-    <div class="draggable" title="right click an element for options"></div>
-    <div class="dialog">
-      <div class="checkboxes" >
-        <form>
-          <label>
-            <input id="scene" type="checkbox" name="to_scene" onchange="OnChangeCheckBoxScene()">To Scene <br>
-          </label>
-          <label>
-            <input id="activity" type="checkbox" name="to_activity" onchange="OnChangeCheckBoxActivity()">To Activity <br>
-          </label>
-          <label>
-            <input id="dialog" type="checkbox" name="dialog" onchange="OnChangeCheckBoxDialog()">Dialog <br>
-          </label>
-          <label>
-            <input id="pickUp" type="checkbox" name="pick_up" onchange="OnChangeCheckBoxPickUp()">Pick Up <br>
-          </label>
-          <label>
-            <input id="animation" type="checkbox" name="animation" onchange="OnChangeCheckBoxAnimation()">Animation <br>
-          </label>
-            
-          <select name="effects" id="effectTypes" disabled onchange="OnChangeAnimationList()">
-            <option value="blind">Blind</option>
-            <option value="bounce">Bounce</option>
-            <option value="clip">Clip</option>
-            <option value="drop">Drop</option>
-            <option value="explode">Explode</option>
-            <option value="fade">Fade</option>
-            <option value="fold">Fold</option>
-            <option value="highlight">Highlight</option>
-            <option value="puff">Puff</option>
-            <option value="pulsate">Pulsate</option>
-            <option value="shake">Shake</option>
-            <option value="slide">Slide</option>
-          </select> 
-          <input id="button" type="submit" value="Try Effect" disabled> <br>
-          <label>
-            <input id="sound" type="checkbox" name="sound" onchange="OnChangeCheckBoxSound()">Sound <br>
-          </label>
-        </form>
-
-      </div>
-    </div>
-    
-    <div class="userInputDialog">
-      <textarea class="textarea" id="dialogText" rows="10" cols="26"></textarea>
-    </div>
-    
-    <div class="writtenDialog" id="writtenDialog">
-      <textarea class="textarea" id ="writtenText" rows="10" cols="26" disabled></textarea>
-    </div>
-    
-    <div class="chooseActivityDialog">
-    </div>
-    
-    <div class="mathActivity" title="Math activity">
-      <p class="question1"> Choose random number between: </p>
-      <input type="text" id="lownumber" value="from" />
-      <p class="question1"> and <p>
-      <input type="text" id="highnumber" value="to" />
-      <br>
-      <input type="submit" id="randomNumberButton" value="Generate!" />
-    
-      <img id="life1" name = "heart" alt="life" src="/gfx/heart.png" style="display: none;">
-      <img id="life2" name = "heart" alt="life" src="/gfx/heart.png" style="display: none;">
-      <img id="life3" name = "heart" alt="life" src="/gfx/heart.png" style="display: none;">
-      <div class="score" style="display: none;">
-        Questions answered :
-        <input type="text" id="numberOfQuestionsAnswered" disabled size="2">
-        /
-        <input type="text" id="totalNumberOfQuestions" disabled value="10" size="2">
-      </div>
-      <p class="question2" style="display: none;">What is:</p><br>
-      <div class="randomNumber1" style="display: none;"></div>
-      <div class="operator" style="display: none;"></div>
-      <div class="randomNumber2" style="display: none;"></div>
-      <div class="equals" style="display: none;"></div>
-      <div class="answer" style="display: none;">
-        <input class="answerfield" type="text" name="answer" size="1px" maxlength="4">
-        <button id="answerButton" onclick="checkAnswer()"> Submit </button>
-      </div>
-      <div>
-        <img id="correctAnswerSmiley" name="happySmiley" src="/gfx/HappySmiley.png" style="display: none;">
-        <img id="wrongAnswerSmiley" name="sadSmiley" src="/gfx/SadSmiley.png" style="display: none;">
-      </div>
-    </div>
-    
-    <div class="languageActivity" title="Language activity">
-    </div>
-    
+  <!-- <div class="userInputDialog">
+    <textarea class="textarea" id="dialogText" rows="10" cols="26"></textarea>
   </div>
   
-  <div id="newWorldDialog" title="Select world">
-    <div class="img-grid">
-      <div class="img-wrapper img-wrapper1">
-        <div class="img-container">
-          <img name = "Farm" alt="farm_bg" src="/gfx/bg1.svg" width ="200" height="200">
-        </div>
+  <div class="writtenDialog" id="writtenDialog">
+    <textarea class="textarea" id ="writtenText" rows="10" cols="26" disabled></textarea>
+  </div>
+  
+  <div class="chooseActivityDialog">
+  </div>
+  
+  <div class="mathActivity" title="Math activity">
+    <p class="question1"> Choose random number between: </p>
+    <input type="text" id="lownumber" value="from" />
+    <p class="question1"> and <p>
+    <input type="text" id="highnumber" value="to" />
+    <br>
+    <input type="submit" id="randomNumberButton" value="Generate!" />
+  
+    <img id="life1" name = "heart" alt="life" src="/gfx/heart.png" style="display: none;">
+    <img id="life2" name = "heart" alt="life" src="/gfx/heart.png" style="display: none;">
+    <img id="life3" name = "heart" alt="life" src="/gfx/heart.png" style="display: none;">
+    <div class="score" style="display: none;">
+      Questions answered :
+      <input type="text" id="numberOfQuestionsAnswered" disabled size="2">
+      /
+      <input type="text" id="totalNumberOfQuestions" disabled value="10" size="2">
+    </div>
+    <p class="question2" style="display: none;">What is:</p><br>
+    <div class="randomNumber1" style="display: none;"></div>
+    <div class="operator" style="display: none;"></div>
+    <div class="randomNumber2" style="display: none;"></div>
+    <div class="equals" style="display: none;"></div>
+    <div class="answer" style="display: none;">
+      <input class="answerfield" type="text" name="answer" size="1px" maxlength="4">
+      <button id="answerButton" onclick="checkAnswer()"> Submit </button>
+    </div>
+    <div>
+      <img id="correctAnswerSmiley" name="happySmiley" src="/gfx/HappySmiley.png" style="display: none;">
+      <img id="wrongAnswerSmiley" name="sadSmiley" src="/gfx/SadSmiley.png" style="display: none;">
+    </div>
+  </div>
+  
+  <div class="languageActivity" title="Language activity">
+  </div> -->
+  
+</div>
+
+<div id="newWorldDialog" title="Select world">
+  <div class="img-grid">
+    <div class="img-wrapper img-wrapper1">
+      <div class="img-container">
+        <img name = "Farm" alt="farm_bg" src="/gfx/bg1.svg" width ="200" height="200">
       </div>
-      
-      <div class="img-wrapper img-wrapper2">
-        <div class="img-container">
-          <img name = "Space" alt="space_bg" src="/gfx/bg2.jpg" width ="200" height="200">
-        </div>
+    </div>
+    
+    <div class="img-wrapper img-wrapper2">
+      <div class="img-container">
+        <img name = "Space" alt="space_bg" src="/gfx/bg2.jpg" width ="200" height="200">
       </div>
-      
-      <div class="img-wrapper img-wrapper3">
-        <div class="img-container">
-          <img name = "Schoolyard" alt="schoolyard_bg" src="/gfx/bg3.jpg" width ="200" height="200">
-        </div>
+    </div>
+    
+    <div class="img-wrapper img-wrapper3">
+      <div class="img-container">
+        <img name = "Schoolyard" alt="schoolyard_bg" src="/gfx/bg3.jpg" width ="200" height="200">
       </div>
-      
-      <div class="img-wrapper img-wrapper4">
-        <div class="img-container">
-          <img name = "Home" alt="home_bg" src="/gfx/bg4.jpg" width ="200" height="200">
-        </div>
+    </div>
+    
+    <div class="img-wrapper img-wrapper4">
+      <div class="img-container">
+        <img name = "Home" alt="home_bg" src="/gfx/bg4.jpg" width ="200" height="200">
       </div>
-      
-      <div class="img-wrapper img-wrapper5">
-        <div class="img-container">
-          <img name = "Snow" alt="snow_bg" src="/gfx/bg5.jpg" width ="200" height="200">
-        </div>
+    </div>
+    
+    <div class="img-wrapper img-wrapper5">
+      <div class="img-container">
+        <img name = "Snow" alt="snow_bg" src="/gfx/bg5.jpg" width ="200" height="200">
       </div>
-      
-      <div class="img-wrapper img-wrapper6">
-        <div class="img-container">
-          <img name = "Kitchen" alt="kitchen_bg" src="/gfx/bg6.jpg" width ="200" height="200">
-        </div>
+    </div>
+    
+    <div class="img-wrapper img-wrapper6">
+      <div class="img-container">
+        <img name = "Kitchen" alt="kitchen_bg" src="/gfx/bg6.jpg" width ="200" height="200">
       </div>
     </div>
   </div>
