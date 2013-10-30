@@ -60,7 +60,7 @@ CREATE TABLE `activity` (
 
 LOCK TABLES `activity` WRITE;
 /*!40000 ALTER TABLE `activity` DISABLE KEYS */;
-INSERT INTO `activity` VALUES (1,'QUIZ',1);
+INSERT INTO `activity` VALUES (1,'MATH',1);
 /*!40000 ALTER TABLE `activity` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -202,7 +202,7 @@ CREATE TABLE `element` (
   `frame_width` double NOT NULL,
   `frame_height` double NOT NULL,
   PRIMARY KEY (`element_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -211,7 +211,7 @@ CREATE TABLE `element` (
 
 LOCK TABLES `element` WRITE;
 /*!40000 ALTER TABLE `element` DISABLE KEYS */;
-INSERT INTO `element` VALUES (1,1,1,1,1,1),(2,2,2,2,2,2),(3,1,3,3,3,3),(4,1,4,4,4,4);
+INSERT INTO `element` VALUES (1,4,101,102,103,104),(12,1,1,2,3,4);
 /*!40000 ALTER TABLE `element` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -300,12 +300,13 @@ DROP TABLE IF EXISTS `game`;
 CREATE TABLE `game` (
   `game_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
   `initial_scene_id` int(11) NOT NULL,
   `goal_id` int(11) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`game_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -314,7 +315,7 @@ CREATE TABLE `game` (
 
 LOCK TABLES `game` WRITE;
 /*!40000 ALTER TABLE `game` DISABLE KEYS */;
-INSERT INTO `game` VALUES (1,1,1,1,'2013-09-23 12:21:07','0000-00-00 00:00:00');
+INSERT INTO `game` VALUES (1,1,'Spill nr 1',1,1,'2013-09-23 12:21:07',NULL),(2,1,'Spill nr 2',1,1,'2013-10-13 14:50:03',NULL);
 /*!40000 ALTER TABLE `game` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -563,7 +564,7 @@ CREATE TABLE `scene_to_element_rel` (
 
 LOCK TABLES `scene_to_element_rel` WRITE;
 /*!40000 ALTER TABLE `scene_to_element_rel` DISABLE KEYS */;
-INSERT INTO `scene_to_element_rel` VALUES (1,1),(1,2),(1,3),(1,4);
+INSERT INTO `scene_to_element_rel` VALUES (1,1),(12,2);
 /*!40000 ALTER TABLE `scene_to_element_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -628,8 +629,9 @@ CREATE TABLE `user` (
   `password` text NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted` int(11) DEFAULT NULL,
-  PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `unique username` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -638,6 +640,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'peter','852fbd08c187f4c237c4243bf3de494b','2013-10-07 11:27:36',NULL),(21,'asdlkj','e0a081c8a7485ad01d0cf0da6b8a34c0','2013-10-21 18:28:52',NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -675,4 +678,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-10-07 13:15:59
+-- Dump completed on 2013-10-30 13:52:04
