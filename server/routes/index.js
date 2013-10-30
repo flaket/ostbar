@@ -81,6 +81,8 @@ module.exports.save_account = function( req, res ){
 module.exports.login = function( req, res ){
     if ( req.isAuthenticated() ) res.redirect('/account');
 
+    console.log('rendering login');
+
     res.render( 'login', {
         user: req.user,
         error: req.flash('error')

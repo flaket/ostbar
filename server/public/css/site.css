@@ -4751,20 +4751,211 @@ table.vask td.app {
   padding-top: 1.5em;
   padding-bottom: 1.5em; }
 
-.footer {
-  background-color: #aaa; }
-
-* {
-  margin: 0; }
-
-html, body {
+/* Have to define the parents height for this to work*/
+html {
   height: 100%; }
 
-.wrapper {
-  min-height: 100%;
-  height: auto !important;
-  height: 100%;
-  margin: 0 auto -4em; }
+body {
+  height: 100%; }
 
-.footer, .push {
-  height: 4em; }
+#customSidebar {
+  width: 11%;
+  height: 85%;
+  float: left;
+  overflow: auto; }
+
+#customSidebar2 {
+  width: 11%;
+  height: 85%;
+  float: right;
+  overflow: hidden; }
+
+.sidebar {
+  background-color: #ffffc0;
+  border: 1px solid gray; }
+
+#mainFrame {
+  background-color: #fff8dc;
+  height: 85%;
+  width: 78%;
+  border: 1px solid gray;
+  overflow: hidden; }
+
+.dialog {
+  width: 85%;
+  height: 100%;
+  overflow: hidden; }
+
+.draggable {
+  width: 100%;
+  height: 100%;
+  overflow: hidden; }
+
+#button {
+  padding: .1em .5em;
+  text-decoration: none; }
+
+#newWorldButton {
+  padding: .5em .5em;
+  margin-left: 40%;
+  margin-top: 20%; }
+
+.img-grid {
+  width: 100%;
+  margin: 0 auto;
+  margin-top: .5%; }
+
+.img-wrapper1 {
+  display: inline-block;
+  width: 50%;
+  position: relative;
+  float: left; }
+
+.img-wrapper1 .img-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0; }
+
+.img-wrapper2 {
+  display: inline-block;
+  width: 50%;
+  position: relative;
+  float: left; }
+
+.img-wrapper2 .img-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0; }
+
+.img-wrapper3 {
+  display: inline-block;
+  width: 50%;
+  position: relative;
+  float: left; }
+
+.img-wrapper3 .img-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0; }
+
+.img-wrapper4 {
+  display: inline-block;
+  width: 50%;
+  position: relative;
+  float: left; }
+
+.img-wrapper4 .img-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0; }
+
+.img-wrapper5 {
+  display: inline-block;
+  width: 50%;
+  position: relative;
+  float: left; }
+
+.img-wrapper5 .img-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0; }
+
+.img-wrapper6 {
+  display: inline-block;
+  width: 50%;
+  position: relative;
+  float: left; }
+
+.img-wrapper6 .img-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0; }
+
+.img-wrapper:after {
+  content: "";
+  padding-top: 100%;
+  display: block; }
+
+.img-wrapper {
+  width: 25%; }
+
+.img-wrapper2 {
+  margin-left: .1%; }
+
+.img-wrapper3 {
+  margin-left: .1%; }
+
+.img-wrapper4 {
+  margin-top: .1%; }
+
+.img-wrapper5 {
+  margin-top: .1%;
+  margin-left: 0.1%; }
+
+.img-wrapper6 {
+  margin-top: .1%;
+  margin-left: 0.1%; }
+
+.ui-effects-transfer {
+  border: 2px dotted gray; }
+
+.textarea {
+  resize: none; }
+
+#storylineButton {
+  font-size: 20px;
+  margin: 30%; }
+
+.question2 {
+  text-align: center;
+  font-size: 64px; }
+
+.question1 {
+  font-size: 16px; }
+
+.randomNumber1 {
+  float: left;
+  margin-left: 5%;
+  font-size: 64px; }
+
+.operator {
+  float: left;
+  margin-left: 5%;
+  font-size: 64px; }
+
+.randomNumber2 {
+  float: left;
+  font-size: 64px;
+  margin-left: 5%; }
+
+.equals {
+  float: left;
+  font-size: 64px;
+  margin-left: 5%; }
+
+.answer {
+  float: left;
+  font-size: 60px;
+  margin-left: 5%; }
+
+#correctAnswerSmiley {
+  float: left;
+  margin-top: 10%;
+  margin-left: -25%; }
+
+#wrongAnswerSmiley {
+  float: left;
+  margin-top: 10%;
+  margin-left: -25%; }
