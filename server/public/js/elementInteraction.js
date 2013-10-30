@@ -17,10 +17,10 @@ jQuery(document).ready(function(){
         connectWith: "#mainFrame",
     });
 
-    $('.mathActivity').hide();
-    $('.dialog').hide();
-    $('.userInputDialog').hide();
-    $('.writtenDialog').hide();
+    // $('.mathActivity').hide();
+    // $('.dialog').hide();
+    // $('.userInputDialog').hide();
+    // $('.writtenDialog').hide();
     
     $("#mainFrame").droppable({
         accept: ".elements",
