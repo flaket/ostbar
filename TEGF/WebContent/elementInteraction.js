@@ -107,7 +107,10 @@ jQuery(document).ready(function(){
 							title: "choose activity type",
 							buttons:{
 								"Math Activity": function(){
-									createMathActivity();
+									var object = new MathActivity();
+									console.log(object);
+									console.log("\n");
+									createMathActivity(object);
 								},
 								"Language Activity": function(){
 									createLanguageActivity();
