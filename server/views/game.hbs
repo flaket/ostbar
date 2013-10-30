@@ -2,5 +2,35 @@
 <div class="row">
   <div class="large-12 columns">
     <h3>{{game.name}}</h3>
+
   </div>
 </div>
+
+<div id="gameIdDiv" style="display: none;">{{game.gameId}}</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+  var gameId = $('#gameIdDiv').html();
+
+  $.ajax({ 
+    type: 'GET', 
+    url: '/api/game/' + gameId, 
+    dataType:"json", 
+    data: { },
+    success: function ( response ){ 
+      if (response.redirect) {
+        window.location.href = response.redirect;
+      } else {
+        // console.log('received response', response);
+      }
+    }, 
+    error: function( xhr, textStatus, errorThrown ){ 
+      alert('Error!  Status = ' + xhr.status); 
+      console.log('textStatus', textStatus);
+      console.log('errorThrown', errorThrown);
+    } 
+  });
+});
+
+</script>
