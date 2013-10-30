@@ -37,7 +37,7 @@ Game.loadByIdForUser = function ( gameId, userId, callback ){
         if ( error ) return callback( error, false );
 
         if ( rows.length == 1 ) Game.initWithData( rows[0], callback );
-        else callback( 'Could not load games for user_id ' + user_id, false );
+        else callback( 'Could not load games for user_id ' + userId, false );
     });
 }
 
