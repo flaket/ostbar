@@ -28,6 +28,7 @@ function createMathActivity(){
         var numHigh = $("#highnumber").val();
         
         var adjustedHigh = (parseFloat(numHigh) - parseFloat(numLow)) + 1;
+		console.log(adjustedHigh);
         randomNumber1 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
         randomNumber2 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
         
@@ -71,9 +72,10 @@ function createMathActivity(){
 	
 	if(operator=='/'){
 		if(randomNumber1 > randomNumber2 || randomNumber1==randomNumber2 || randomNumber2 > randomNumber1 || randomNumber1 != 0 || randomNumber2 != 0){
-			if(randomNumber2 > randomNumber2){
+			if(randomNumber2 > randomNumber1){
+				var temp = randomNumber1;
 				randomNumber1 = randomNumber2;
-				randomNumber2 = randomNumber1;
+				randomNumber2 = temp;
 			}
 			
 			if(randomNumber1 % randomNumber2 == 0){
@@ -92,7 +94,7 @@ function createMathActivity(){
 				$(".randomNumber2").text(randomNumber2);
 			}
 		}
-		$(".operator").text(operator);
+		// $(".operator").text(operator);
 	}
 	else{
 		$(".operator").text(operator);
