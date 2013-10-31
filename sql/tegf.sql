@@ -1,4 +1,4 @@
--- MySQL dump 10.13  Distrib 5.6.14, for osx10.7 (x86_64)
+  -- MySQL dump 10.13  Distrib 5.6.14, for osx10.7 (x86_64)
 --
 -- Host: localhost    Database: tegf
 -- ------------------------------------------------------

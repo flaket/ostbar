@@ -63,4 +63,22 @@ Game.initWithData = function ( data, callback ){
     });
 }
 
+Game.prototype.setName = function ( name, callback ){
+
+    if ( name == null ){
+        return callback( 'Noe gikk galt, kan ikke sette navn = null', false );
+    } else if ( name.length < 3 ){
+        return callback( 'Spillet\'s navn må bestå av tre eller flere bokstaver', false );
+    }
+
+    db.query( 'UPDATE game SET name = ? WHERE game_id = ?', [name, this.gameId], function ( error, rows, fields ){
+        console.log('rows', rows);
+        if ( rows.affectedRows == 1 ){
+            callback( null, true );    
+        } else {
+            callback( null, false );
+        } 
+    });
+}
+
 module.exports.Game = Game;

@@ -22,6 +22,27 @@ module.exports.save_account = function( req, res ){
             return res.render( 'account', { error: error } );
         }
 
+        error = null;
+
+        if ( !req.body.oldpassword ){
+            error = 'Du må skrive inn gammelt passord';
+        } else if ( req.body.oldpassword.length < 6 ){
+            error = 'Gammelt passord består av 6 eller flere tegn';
+        } else if ( !req.body.newpassword || !req.body.newpassword2 ){  
+            error = 'Nytt passord må skrives inn to ganger';
+        } else if ( req.body.newpassword != req.body.newpassword2 ){
+            error = 'Nytt passord må skrives likt begge gangene';
+        } else if ( req.body.newpassword.length < 6 || req.body.newpassword2.length < 6 ){
+            error = 'Nytt passord må bestå av 6 eller flere tegn';
+        }
+
+        if ( error ){
+            return res.render( 'account', {
+                error: error,
+                user: req.user
+            });
+        }
+
         req.checkBody( 'oldpassword', 'oldpassword is required' ).notEmpty();
         req.checkBody( 'newpassword', 'newpassword is required' ).notEmpty();
         req.checkBody( 'newpassword2', 'newpassword2 is required').notEmpty();
@@ -174,15 +195,17 @@ module.exports.mygames = function ( req, res ){
 
 module.exports.game_post = function ( req, res ){
     console.log('post game');
-    console.log('received data', req.body.someData);
+    console.log('received data', req.body);
 
     Game.loadByIdForUser( req.params.id, req.user.userId, function ( error, game ){
         if ( error ){
             return res.send( { error: error });
         }
 
-        console.log('loaded game, sending response');
-
-        res.send( { game: game } );
+        game.setName( req.body.name, function ( error, success ){
+            console.log('success was', success)
+            if ( success ) res.send( { game: game } );
+            else res.send( null );
+        });
     });
 }

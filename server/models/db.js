@@ -6,8 +6,8 @@ DB.getInstance = function(){
     var mysql = require( 'mysql' );
 
     var db = mysql.createConnection({
-        host : 'localhost',
-        user : 'tegf',
+        host     : 'localhost',
+        user     : 'tegf'
     });
 
     db.query('USE tegf', function ( err, rows, fields ){

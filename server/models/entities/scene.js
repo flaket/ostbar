@@ -11,6 +11,7 @@ function Scene( data ){
     Entity.call( this );
 
     this.sceneId = data.scene_id;
+    this.gameId = data.gameId;
     this.world = data.world;
     this.backgroundAvatar = data.backgroundAvatar;
     this.elements = data.elements;
@@ -34,7 +35,7 @@ Scene.loadById = function ( id, callback ){
             },
             function ( error, results ){
                 if ( error ) return callback( error, false );
-
+                
                 data.backgroundAvatar = results.backgroundAvatar;
                 data.elements = results.elements;
                 data.world = results.world;

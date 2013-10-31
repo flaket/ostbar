@@ -1,7 +1,11 @@
 {{!< main}}
 <div class="row contentbox">
   <div class="large-12 columns">
-    <h3>Mine spill</h3>
+    <h3 style="float: left; width: 50%">Mine spill</h3>
+    <br>
+    <div class="button small" style="float: right; vertical-align: bottom;">Nytt spill</div>
+
+    <div id="error"></div>
     <table class="large-12 columns">
       <thead>
           <tr>
@@ -19,12 +23,12 @@
           </td>
           <td>
             <div class="control-group">
-              <label for="name" class="control-label">
-                  <p class="text-info">{{name}}<i class="icon-star"></i></p>
-              </label>
-              <input type="text" value="{{name}}" class="edit-input" style="display: none;" />
-              <div class="controls">
-                  <a class="edit" href="#">Rediger</a>
+              <div class="control-label" style="float: left; width: 70%">
+                  {{name}}
+              </div>
+              <input type="text" value="{{name}}" class="edit-input" style="display: none; float: left; width: 70%;" />
+              <div class="controls" style="float: right; width: 30% text-align: right;">
+                  <a class="editSave" href="#">Rediger</a>
               </div>
           </div>
           </td>
@@ -37,9 +41,6 @@
         </tr>
         {{/each}}
       </tbody>
-      <tfoot>
-        <tr><td colspan="11"></td></tr>
-      </tfoot>
     </table>
   </div>
 </div>
@@ -48,40 +49,52 @@
 
 $(document).ready(function() {
 
-    $('a.edit').click(function () {
-        var outerDiv = $(this).parent().parent();
-        
-        var editSave = this;
+  $('a.editSave').click(function () {
+    var outerDiv = $(this).parent().parent();
+    
+    var editSave = this;
 
-        if (editSave.innerHTML == 'Rediger') {
-          editSave.innerHTML = 'Lagre';
-          outerDiv.find('label').hide();
-          outerDiv.find('input[type="text"]').show().focus();
-        } else {
-          $.ajax({ 
-            type: 'POST', 
-            url: '/game/1', 
-            dataType:"json", 
-            data: {
-              someData: 'some data field here'
-            },
-            success: function ( response ){ 
-              if (response.redirect) {
-                window.location.href = response.redirect;
-              } else {
-                console.log('received response', response);
-                editSave.innerHTML = 'Rediger';
-                outerDiv.find( 'label' ).show();
-                outerDiv.find( 'input[type="text"]' ).hide();                  
-              }
-            }, 
-            error: function( xhr, textStatus, errorThrown ) { 
-              alert('Error!  Status = ' + xhr.status); 
-              console.log('textStatus', textStatus);
-              console.log('errorThrown', errorThrown);
-            } 
-          });
-        }
-    });
+    
+    if (editSave.innerHTML == 'Rediger') {
+      editSave.innerHTML = 'Lagre';
+      outerDiv.find('.control-label').hide();
+      outerDiv.find('input[type="text"]').show().focus();
+    } else {
+      editSave.innerHTML = 'Rediger';
+      outerDiv.find('.control-label').show();
+      outerDiv.find('input[type="text"]').hide();
+
+      var input = outerDiv.find('input');
+
+      $.ajax({ 
+        type: 'POST', 
+        url: '/game/1', 
+        dataType:"json", 
+        data: {
+          name: input.val()
+        },
+        success: function ( response ){ 
+          if (response.redirect) {
+            window.location.href = response.redirect;
+          } else if ( response.error ) {
+            var errorDiv = $('#error');
+            errorDiv.addClass('error');
+            errorDiv.html(response.error);
+          } else {
+            // console.log('received response', response);
+            // editSave.innerHTML = 'Rediger';
+            // outerDiv.find( 'label' ).show();
+            // outerDiv.find( 'input[type="text"]' ).hide();                  
+            location.reload();
+          }
+        }, 
+        error: function( xhr, textStatus, errorThrown ) { 
+          alert('Error!  Status = ' + xhr.status); 
+          console.log('textStatus', textStatus);
+          console.log('errorThrown', errorThrown);
+        } 
+      });
+    }
+  });
 });
 </script>
