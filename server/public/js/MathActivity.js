@@ -34,28 +34,32 @@ function createMathActivity(mathObject){
 	});
 	
 	$("#randomNumberButton").click(function createRandomNumber(){
-		
-		$(".question1").css({"display": "none"});
-		$("#lownumber").css({"display": "none"});
-		$("#highnumber").css({"display": "none"});
-		$("#randomNumberButton").css({"display": "none"});
-		
-		$("#life1").css({"display": "inline"});
-		$("#life2").css({"display": "inline"});
-		$("#life3").css({"display": "inline"});
-		$(".question2").css({"display": "inline"});
-		$(".randomNumber1").css({"display": "inline"});
-		$(".randomNumber2").css({"display": "inline"});
-		$(".operator").css({"display": "inline"});
-		$(".equals").css({"display": "inline"});
-		$(".answer").css({"display": "inline"});
-		$(".score").css({
-			"display" : "inline",
-			"float" : "right",
-			"margin-top" : "-3%",
-		});
+		afterParametersAreSetView();
+		// $(".mathActivity").dialog("close");
 		initializeNewMathActivity(mathObject);
 	});	
+}
+
+function afterParametersAreSetView(){
+	$(".question1").css({"display": "none"});
+	$("#lownumber").css({"display": "none"});
+	$("#highnumber").css({"display": "none"});
+	$("#randomNumberButton").css({"display": "none"});
+	
+	$("#life1").css({"display": "inline"});
+	$("#life2").css({"display": "inline"});
+	$("#life3").css({"display": "inline"});
+	$(".question2").css({"display": "inline"});
+	$(".randomNumber1").css({"display": "inline"});
+	$(".randomNumber2").css({"display": "inline"});
+	$(".operator").css({"display": "inline"});
+	$(".equals").css({"display": "inline"});
+	$(".answer").css({"display": "inline"});
+	$(".score").css({
+		"display" : "inline",
+		"float" : "right",
+		"margin-top" : "-3%",
+	});
 }
 
 function initializeNewMathActivity(mathObject){
