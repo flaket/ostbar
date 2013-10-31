@@ -34,33 +34,33 @@
 	</div>
 	
 	<div id="customSidebar2">
-		<button id="storylineButton" type="button">Storyline</button>
-		<div id="storylineDialog" title="Storyline">
+		<button id="storylineButton" type="button">Historieforløp</button>
+		<div id="storylineDialog" title="Historieforløp">
 		</div>
 		<img class="schoolbagImage" name = "bag" src="../resources/bag.png" width ="150" height="150">
 		<div class="schoolbagDialog" title="elementer som er plukket opp"></div>
 	</div>
 		
 	<div id="mainFrame">
-		<button id="newWorldButton">Create new World</button> <br>
-		<div class="draggable" title="right click an element for options"></div>
+		<button id="newWorldButton">Lag en ny verden</button> <br>
+		<div class="draggable" title="høyreklikk et element for valg"></div>
 		<div class="dialog">
 			<div class="checkboxes" >
 				<form>
 					<label>
-						<input id="scene" type="checkbox" name="to_scene" onchange="OnChangeCheckBoxScene()">To Scene <br>
+						<input id="scene" type="checkbox" name="to_scene" onchange="OnChangeCheckBoxScene()">Til ny scene <br>
 					</label>
 					<label>
-						<input id="activity" type="checkbox" name="to_activity" onchange="OnChangeCheckBoxActivity()">To Activity <br>
+						<input id="activity" type="checkbox" name="to_activity" onchange="OnChangeCheckBoxActivity()">Til ny aktivitet <br>
 					</label>
 					<label>
 						<input id="dialog" type="checkbox" name="dialog" onchange="OnChangeCheckBoxDialog()">Dialog <br>
 					</label>
 					<label>
-						<input id="pickUp" type="checkbox" name="pick_up" onchange="OnChangeCheckBoxPickUp()">Pick Up <br>
+						<input id="pickUp" type="checkbox" name="pick_up" onchange="OnChangeCheckBoxPickUp()">Plukk opp <br>
 					</label>
 					<label>
-						<input id="animation" type="checkbox" name="animation" onchange="OnChangeCheckBoxAnimation()">Animation <br>
+						<input id="animation" type="checkbox" name="animation" onchange="OnChangeCheckBoxAnimation()">Animasjon <br>
 					</label>
 						
 					<select name="effects" id="effectTypes" disabled onchange="OnChangeAnimationList()">
@@ -77,9 +77,9 @@
 						<option value="shake">Shake</option>
 						<option value="slide">Slide</option>
 					</select> 
-					<input id="button" type="submit" value="Try Effect" disabled> <br>
+					<input id="button" type="submit" value="Prøv animasjon" disabled> <br>
 					<label>
-						<input id="sound" type="checkbox" name="sound" onchange="OnChangeCheckBoxSound()">Sound <br>
+						<input id="sound" type="checkbox" name="sound" onchange="OnChangeCheckBoxSound()">Lyd <br>
 					</label>
 				</form>
 
@@ -97,31 +97,31 @@
 		<div class="chooseActivityDialog">
 		</div>
 		
-		<div class="mathActivity" title="Math activity">
-			<p class="question1"> Choose random number between: </p>
-			<input type="text" id="lownumber" value="from" />
-			<p class="question1"> and <p>
-			<input type="text" id="highnumber" value="to" />
+		<div class="mathActivity" title="Matte aktivitet">
+			<p class="question1"> Velg tilfeldige tall mellom: </p>
+			<input type="text" id="lownumber" value="fra" />
+			<p class="question1"> og <p>
+			<input type="text" id="highnumber" value="til" />
 			<br>
-			<input type="submit" id="randomNumberButton" value="Generate!" />
+			<input type="submit" id="randomNumberButton" value="Generer" />
 		
 			<img id="life1" name = "heart" alt="life" src="../resources/heart.png" style="display: none;">
 			<img id="life2" name = "heart" alt="life" src="../resources/heart.png" style="display: none;">
 			<img id="life3" name = "heart" alt="life" src="../resources/heart.png" style="display: none;">
 			<div class="score" style="display: none;">
-				Questions answered :
+				Spørsmål besvart :
 				<input type="text" id="numberOfQuestionsAnswered" disabled size="2">
 				/
 				<input type="text" id="totalNumberOfQuestions" disabled value="10" size="2">
 			</div>
-			<p class="question2" style="display: none;">What is:</p><br>
+			<p class="question2" style="display: none;">Hva er:</p><br>
 			<div class="randomNumber1" style="display: none;"></div>
 			<div class="operator" style="display: none;"></div>
 			<div class="randomNumber2" style="display: none;"></div>
 			<div class="equals" style="display: none;"></div>
 			<div class="answer" style="display: none;">
 				<input class="answerfield" type="text" name="answer" size="1px" maxlength="4">
-				<button id="answerButton" onclick="checkAnswer()"> Submit </button>
+				<button id="answerButton" onclick="checkAnswer()"> Sjekk svar </button>
 			</div>
 			<div>
 				<img id="correctAnswerSmiley" name="happySmiley" src="../resources/HappySmiley.png" style="display: none;">
@@ -129,7 +129,7 @@
 			</div>
 		</div>
 		
-		<div class="languageActivity" title="Language activity">
+		<div class="languageActivity" title="Språk aktivitet">
 		</div>
 		
 	</div>
