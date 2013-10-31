@@ -8,8 +8,9 @@ DB.getInstance = function(){
     var db = mysql.createConnection({
         host : 'localhost',
         user : 'tegf',
+        password : '123123'
     });
-
+    
     db.query('USE tegf', function ( err, rows, fields ){
         if (err) throw err;
     });
