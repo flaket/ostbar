@@ -93,7 +93,7 @@ jQuery(document).ready(function(){
 			},
 			modal: true,
 			buttons: {
-				"Confirm": function(){
+				"Bekreft": function(){
 					if(currentDialog.sceneChecked==true){
 						$(this).dialog("close");
 						
@@ -129,16 +129,16 @@ jQuery(document).ready(function(){
 							},
 							title: "choose activity type",
 							buttons:{
-								"Math Activity": function(){
+								"Matte aktivitet": function(){
 									var object = new MathActivity();
 									console.log(object);
 									console.log("\n");
 									createMathActivity(object);
 								},
-								"Language Activity": function(){
+								"Språk aktivitet": function(){
 									createLanguageActivity();
 								},
-								"Quiz Activity": function(){
+								"Quiz aktivitet": function(){
 									
 								},
 						
@@ -155,7 +155,7 @@ jQuery(document).ready(function(){
 						$(".userInputDialog").dialog({
 							title: "type in dialog",
 							buttons:{
-								"Confirm": function(){
+								"Bekreft": function(){
 									if(!$("#dialogText").val()){
 										alert("please type in a dialog");
 									}
@@ -168,7 +168,7 @@ jQuery(document).ready(function(){
 										$(this).dialog("close");
 									}
 								},
-								Cancel: function(){
+								"Avbryt": function(){
 									$(this).dialog("close");
 									objectList[index] = previousVersionDialog;
 									currentDialog = previousVersionDialog;
@@ -216,12 +216,12 @@ jQuery(document).ready(function(){
 					
 					$(this).dialog("close");
 				},
-				Cancel: function(){
+				"Avbryt": function(){
 					$(this).dialog("close");
 					objectList[index] = previousVersionDialog;
 					currentDialog = previousVersionDialog;
 				},
-				"Delete": function(){
+				"Slett": function(){
 					$('input[type=checkbox]').attr('checked', false);
 					$("#effectTypes").attr("disabled", true);
 					$("#button").attr("disabled", true);
