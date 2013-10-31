@@ -497,7 +497,6 @@ function createLanguageActivity(){
 }
 
 $(document).ready(function(){
-	test();
 	$(".img-grid").on("dblclick", "img", function(e){
 		var imgUrl = e.target.getAttribute('src');
 		$("#mainFrame").css({
