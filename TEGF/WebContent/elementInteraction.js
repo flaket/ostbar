@@ -135,7 +135,7 @@ jQuery(document).ready(function(){
 									console.log("\n");
 									createMathActivity(object);
 								},
-								"Språk aktivitet": function(){
+								"SprÃ¥k aktivitet": function(){
 									createLanguageActivity();
 								},
 								"Quiz aktivitet": function(){
