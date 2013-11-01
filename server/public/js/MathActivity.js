@@ -9,8 +9,8 @@ function MathActivity(){
 		$("#life1").css({"display": "inline"});
 		$("#life2").css({"display": "inline"});
 		$("#life3").css({"display": "inline"});	
-		$("#numberOfQuestionsAnswered").val("0");
 	}
+	$(".numberOfQuestionsAnswered").text("0");
 }
 
 var currentMathObject = null;
@@ -21,6 +21,8 @@ function createMathActivity(mathObject){
 	
 	var Wwidth = $(window).width();
 	var Wheight = $(window).height();
+	
+	// beforeParametersAreSetView();
 	
 	$(".mathActivity").dialog({
 		rezisable: false,
@@ -40,6 +42,25 @@ function createMathActivity(mathObject){
 	});	
 }
 
+function beforeParametersAreSetView(){
+	$(".question1").css({"display": "block"});
+	$("#lownumber").css({"display": "block"});
+	$("#highnumber").css({"display": "block"});
+	$("#randomNumberButton").css({"display": "block"});
+	
+	$("#life1").css({"display": "none"});
+	$("#life2").css({"display": "none"});
+	$("#life3").css({"display": "none"});
+	$(".question2").css({"display": "none"});
+	$(".randomNumber1").css({"display": "none"});
+	$(".randomNumber2").css({"display": "none"});
+	$(".operator").css({"display": "none"});
+	$(".equals").css({"display": "none"});
+	$(".answer").css({"display": "none"});
+	$(".score").css({"display" : "none"});
+}
+
+
 function afterParametersAreSetView(){
 	$(".question1").css({"display": "none"});
 	$("#lownumber").css({"display": "none"});
@@ -56,10 +77,12 @@ function afterParametersAreSetView(){
 	$(".equals").css({"display": "inline"});
 	$(".answer").css({"display": "inline"});
 	$(".score").css({
-		"display" : "inline",
+		"display" : "block",
 		"float" : "right",
-		"margin-top" : "-3%",
+		"margin-top" : "-10%",
 	});
+	$(".questionsAnsweredText").text("Spørsmål besvart: (");
+	$(".totalNumberOfQuestions").text(") / 10");
 }
 
 function initializeNewMathActivity(mathObject){
@@ -117,11 +140,9 @@ function checkAnswer(){
 			}
 		}
 		
-		console.log("you should not be here");
-		
 		setTimeout(function(){
 			if(currentMathObject.questionsAnswered == 9){
-				$("#numberOfQuestionsAnswered").val(currentMathObject.questionsAnswered+1);
+				$(".numberOfQuestionsAnswered").text(currentMathObject.questionsAnswered+1);
 				alert("Du svarte riktig paa " + currentMathObject.correctAnswers + " sporsmaal av totalt 10 sporsmaal");
 				$(".mathActivity").dialog("close");
 			}
@@ -174,7 +195,7 @@ function setRandomValues(){
 
 
 function createQuestion(){
-	$("#numberOfQuestionsAnswered").val(currentMathObject.questionsAnswered);
+	$(".numberOfQuestionsAnswered").text(currentMathObject.questionsAnswered);
 	
 	console.log(currentMathObject);
 	

@@ -130,10 +130,22 @@ jQuery(document).ready(function(){
 							title: "choose activity type",
 							buttons:{
 								"Matte aktivitet": function(){
-									var object = new MathActivity();
-									console.log(object);
-									console.log("\n");
-									createMathActivity(object);
+									if(currentDialog.activityObject == null){
+										currentDialog.activityIndex = 0;
+										var mathObject = new MathActivity();
+										currentDialog.activityObject = mathObject;
+										console.log("new mathobject");
+										console.log(currentDialog);
+										console.log("\n");
+									}
+									else if(currentDialog.activityObject!=null && currentDialog.activityIndex == 0){
+										var mathObject = new MathActivity();
+										currentDialog.activityObject = mathObject;
+										console.log("refresh math object");
+										console.log(currentDialog);
+										console.log("\n");
+									}
+									createMathActivity(mathObject);
 								},
 								"Språk aktivitet": function(){
 									createLanguageActivity();
@@ -301,6 +313,9 @@ function Dialog(object){
 	
 	this.dialogData = "";
 	this.div = object;
+	
+	this.activityObject = null;
+	this.activityIndex = -1;
 	
 	this.animationClickActionMade = false;
 	this.dialogClickActionMade = false;

@@ -97,10 +97,10 @@
     <img id="life2" name = "heart" alt="life" src="/gfx/heart.png" style="display: none;">
     <img id="life3" name = "heart" alt="life" src="/gfx/heart.png" style="display: none;">
     <div class="score" style="display: none;">
-      Spørsmål besvart :
-      <input type="text" id="numberOfQuestionsAnswered" disabled size="2">
-      /
-      <input type="text" id="totalNumberOfQuestions" disabled value="10" size="2">
+      <div class="questionsAnsweredText" style="float:left"></div>
+      <div class="numberOfQuestionsAnswered" style="float:left"></div>
+	  <div class="totalNumberOfQuestions" style="float: left"></div>
+      <!--<input type="text" id="totalNumberOfQuestions" disabled value="10" size="1">-->
     </div>
     <p class="question2" style="display: none;">Hva er:</p><br>
     <div class="randomNumber1" style="display: none;"></div>
@@ -108,7 +108,7 @@
     <div class="randomNumber2" style="display: none;"></div>
     <div class="equals" style="display: none;"></div>
     <div class="answer" style="display: none;">
-      <input class="answerfield" type="text" name="answer" size="1px" maxlength="4">
+      <input class="answerfield" type="text" name="answer" size="2" maxlength="4" placeholder="svaret">
       <button id="answerButton" onclick="checkAnswer()"> Sjekk svar </button>
     </div>
     <div>
