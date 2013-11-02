@@ -4920,7 +4920,7 @@ body {
 
 .question2 {
   text-align: center;
-  font-size: 64px; }
+  font-size: 50px; }
 
 .question1 {
   font-size: 16px; }
@@ -4928,34 +4928,34 @@ body {
 .randomNumber1 {
   float: left;
   margin-left: 5%;
-  font-size: 64px; }
+  font-size: 50px; }
 
 .operator {
   float: left;
   margin-left: 5%;
-  font-size: 64px; }
+  font-size: 50px; }
 
 .randomNumber2 {
   float: left;
-  font-size: 64px;
+  font-size: 50px;
   margin-left: 5%; }
 
 .equals {
   float: left;
-  font-size: 64px;
+  font-size: 50px;
   margin-left: 5%; }
 
 .answer {
   float: left;
-  font-size: 60px;
+  font-size: 30px;
   margin-left: 5%; }
 
 #correctAnswerSmiley {
   float: left;
   margin-top: 10%;
-  margin-left: -25%; }
+  margin-left: 1%; }
 
 #wrongAnswerSmiley {
   float: left;
   margin-top: 10%;
-  margin-left: -25%; }
+  margin-left: 2%; }
