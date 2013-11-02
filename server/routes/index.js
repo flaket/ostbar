@@ -208,4 +208,19 @@ module.exports.game_post = function ( req, res ){
             else res.send( null );
         });
     });
-}
+};
+
+module.exports.new_game = function ( req, res ){
+    Game.create( req.user.userId, 'Bogus', function ( error, game ){
+        if ( error ) {
+            return res.render( 'games', {
+                error: error,
+                game: null
+            });
+        }
+
+        res.render( 'game', {
+            game: game
+        });
+    });
+};

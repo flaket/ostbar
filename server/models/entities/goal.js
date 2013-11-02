@@ -15,6 +15,8 @@ Goal.prototype = new Entity();
 Goal.prototype.constructor = Goal;
 
 Goal.loadById = function ( id, callback ){
+    if ( id == null ) return callback( null, false );
+
     db.query( 'SELECT * FROM goal WHERE goal_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 

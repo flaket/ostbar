@@ -3,9 +3,11 @@
   <div class="large-12 columns">
     <h3 style="float: left; width: 50%">Mine spill</h3>
     <br>
-    <div class="button small" style="float: right; vertical-align: bottom;">Nytt spill</div>
+    <form action="/game" method="POST">
+      <input type="submit" value="Nytt spill" class="button small" />
+    </form>
 
-    <div id="error"></div>
+    <div id="error" {{#if error}} class="error" {{/if}}>{{error}}</div>
     <table class="large-12 columns">
       <thead>
           <tr>
@@ -17,28 +19,28 @@
       </thead>
       <tbody>
         {{#each games}}
-        <tr>
-          <td>
-            {{gameId}}
-          </td>
-          <td>
-            <div class="control-group">
-              <div class="control-label" style="float: left; width: 70%">
-                  {{name}}
-              </div>
-              <input type="text" value="{{name}}" class="edit-input" style="display: none; float: left; width: 70%;" />
-              <div class="controls" style="float: right; width: 30% text-align: right;">
-                  <a class="editSave" href="#">Rediger</a>
-              </div>
-          </div>
-          </td>
-          <td>
-            {{datetimeformat created}}
-          </td>
-          <td>
-            <a href="/game/{{gameId}}">Åpne <img src="/gfx/action.png" width=16 />
-          </td>
-        </tr>
+          <tr>
+            <td id="game-id">
+              {{gameId}}
+            </td>
+            <td>
+              <div class="control-group">
+                <div class="control-label" style="float: left; width: 70%">
+                    {{name}}
+                </div>
+                <input type="text" value="{{name}}" class="edit-input" style="display: none; float: left; width: 70%;" />
+                <div class="controls" style="float: right; width: 30% text-align: right;">
+                    <a class="editSave" href="#">Rediger</a>
+                </div>
+            </div>
+            </td>
+            <td>
+              {{datetimeformat created}}
+            </td>
+            <td>
+              <a href="/game/{{gameId}}">Åpne <img src="/gfx/action.png" width=16 />
+            </td>
+          </tr>
         {{/each}}
       </tbody>
     </table>
@@ -65,10 +67,12 @@ $(document).ready(function() {
       outerDiv.find('input[type="text"]').hide();
 
       var input = outerDiv.find('input');
+      var row = outerDiv.parent().parent();
+      var gameId = parseInt(row.find('#game-id').html());
 
       $.ajax({ 
         type: 'POST', 
-        url: '/game/1', 
+        url: '/game/' + gameId, 
         dataType:"json", 
         data: {
           name: input.val()
@@ -80,11 +84,7 @@ $(document).ready(function() {
             var errorDiv = $('#error');
             errorDiv.addClass('error');
             errorDiv.html(response.error);
-          } else {
-            // console.log('received response', response);
-            // editSave.innerHTML = 'Rediger';
-            // outerDiv.find( 'label' ).show();
-            // outerDiv.find( 'input[type="text"]' ).hide();                  
+          } else {                
             location.reload();
           }
         }, 

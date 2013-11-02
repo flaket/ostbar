@@ -63,6 +63,15 @@ Game.initWithData = function ( data, callback ){
     });
 }
 
+Game.create = function ( userId, name, callback ){
+    db.query( 'INSERT INTO game VALUES (NULL, ?, ?, NULL, NULL, CURRENT_TIMESTAMP, NULL)', [userId, name], function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        if ( rows.insertId ) Game.loadById( rows.insertId, callback );
+        else callback( 'Kunne ikke opprette nytt spill', false );
+    });
+}
+
 Game.prototype.setName = function ( name, callback ){
 
     if ( name == null ){

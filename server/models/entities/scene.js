@@ -22,6 +22,8 @@ Scene.prototype = new Entity();
 Scene.prototype.constructor = Scene;
 
 Scene.loadById = function ( id, callback ){
+    if ( id == null ) return callback( null, false );
+
     db.query( 'SELECT * FROM scene WHERE scene_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 

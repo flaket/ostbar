@@ -1,10 +1,9 @@
-$.getScript("MathActivity.js");
-
 jQuery(document).ready(function(){
 	
 	$("#storylineButton").hide();
 	$(".elements").hide();
 	$(".draggable").tooltip({disabled: true});
+	$(".schoolbagImage").hide();
 	
 	$(".elements").draggable({
 		revert:"invalid",
@@ -13,6 +12,28 @@ jQuery(document).ready(function(){
 		containment:"document",
 		connectWith: "#mainFrame",
 	});
+	
+	$(".schoolbagImage").on("click", function(){
+		$(".schoolbagDialog").dialog({
+			resizable: false,
+			show: {
+				effect: "blind",
+				duration: 500
+			},
+			hide: {
+				effect: "blind",
+				duration: 500
+			},
+			position: {
+				my: "center center",
+				at: "center center",
+				of: "#mainFrame"
+		},
+			height: $(window).width()*0.3,
+			width: $(window).width()*0.5,
+		});
+	});
+
 	
 	$("#mainFrame").droppable({
 		accept: ".elements",
@@ -26,6 +47,8 @@ jQuery(document).ready(function(){
 			}).removeClass("ui-draggable").toggleClass("element");
 		}
 	});
+	
+	
 	
 	$(".draggable").on("contextmenu rightclick",".element",function(e){
 		e.preventDefault();
@@ -70,7 +93,7 @@ jQuery(document).ready(function(){
 			},
 			modal: true,
 			buttons: {
-				"Confirm": function(){
+				"Bekreft": function(){
 					if(currentDialog.sceneChecked==true){
 						$(this).dialog("close");
 						
@@ -78,7 +101,7 @@ jQuery(document).ready(function(){
 								to: "#storylineButton",
 								className: "ui-effects-transfer"
 						};
-						$(target).effect("transfer", option, 500);
+						$(target).effect("transfer", option, 1000);
 
 						saveContentFromMainFrame();
 						
@@ -106,16 +129,16 @@ jQuery(document).ready(function(){
 							},
 							title: "choose activity type",
 							buttons:{
-								"Math Activity": function(){
+								"Matte aktivitet": function(){
 									var object = new MathActivity();
 									console.log(object);
 									console.log("\n");
 									createMathActivity(object);
 								},
-								"Language Activity": function(){
+								"Språk aktivitet": function(){
 									createLanguageActivity();
 								},
-								"Quiz Activity": function(){
+								"Quiz aktivitet": function(){
 									
 								},
 						
@@ -132,7 +155,7 @@ jQuery(document).ready(function(){
 						$(".userInputDialog").dialog({
 							title: "type in dialog",
 							buttons:{
-								"Confirm": function(){
+								"Bekreft": function(){
 									if(!$("#dialogText").val()){
 										alert("please type in a dialog");
 									}
@@ -145,7 +168,7 @@ jQuery(document).ready(function(){
 										$(this).dialog("close");
 									}
 								},
-								Cancel: function(){
+								"Avbryt": function(){
 									$(this).dialog("close");
 									objectList[index] = previousVersionDialog;
 									currentDialog = previousVersionDialog;
@@ -162,7 +185,12 @@ jQuery(document).ready(function(){
 					
 					if(currentDialog.pickUpChecked){
 						//make an element pickable
-						
+						$(this).dialog("close");
+						var option = {
+								to: ".schoolbagImage",
+								className: "ui-effects-transfer"
+						};
+						$(target).effect("transfer", option, 1000);
 					};
 					
 					
@@ -188,12 +216,12 @@ jQuery(document).ready(function(){
 					
 					$(this).dialog("close");
 				},
-				Cancel: function(){
+				"Avbryt": function(){
 					$(this).dialog("close");
 					objectList[index] = previousVersionDialog;
 					currentDialog = previousVersionDialog;
 				},
-				"Delete": function(){
+				"Slett": function(){
 					$('input[type=checkbox]').attr('checked', false);
 					$("#effectTypes").attr("disabled", true);
 					$("#button").attr("disabled", true);
@@ -479,6 +507,7 @@ $(document).ready(function(){
 		});
 		$("#newWorldButton").hide();
 		$(".elements").show();
+		$(".schoolbagImage").show();
 		$(".draggable").tooltip({disabled: false});
 		$("#storylineButton").show();
 		$("#newWorldDialog").dialog("close");
