@@ -15,6 +15,8 @@ World.prototype = new Entity();
 World.prototype.constructor = World;
 
 World.loadById = function ( id, callback ){
+    if ( id == null ) return callback( null, false );
+    
     db.query( 'SELECT * FROM world WHERE world_id = ?', id, function ( error, rows, fields ){
         if ( error ) callback( error, false );
 

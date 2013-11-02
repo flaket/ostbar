@@ -22,6 +22,8 @@ QuizQuestion.prototype = new Entity();
 QuizQuestion.prototype.constructor = QuizQuestion;
 
 QuizQuestion.loadById = function ( id, callback ){
+    if ( id == null ) return callback( null, false );
+
     db.query( 'SELECT * FROM quiz_question WHERE quiz_question_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
@@ -31,6 +33,8 @@ QuizQuestion.loadById = function ( id, callback ){
 }
 
 QuizQuestion.loadAllInActivityQuiz = function ( activityQuizId, callback ){
+    if ( activityQuizId == null ) return callback( null, false );
+
     var query = 'SELECT * ';
         query += 'FROM quiz_question ';
         query += 'WHERE activity_quiz_id = ?';
@@ -43,6 +47,8 @@ QuizQuestion.loadAllInActivityQuiz = function ( activityQuizId, callback ){
 }
 
 QuizQuestion.initWithData = function ( data, callback ){
+    if ( data == null ) return callback( null, false );
+
     async.parallel({
         alternatives: QuizQuestionAlternative.loadAllInQuizQuestion.bind( QuizQuestionAlternative, data.quiz_question_id ),
         correctAlternatives: QuizQuestionAlternative.loadAllCorrectInQuizQuestion.bind( QuizQuestionAlternative, data.quiz_question_id ),

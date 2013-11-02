@@ -48,4 +48,17 @@ Scene.loadById = function ( id, callback ){
     });
 }
 
+Scene.create = function ( gameId, worldId, backgroundAvatarId, callback ){
+    if ( gameId == null || worldId == null || backgroundAvatarId == null ){
+        return callback( null, false );
+    }
+
+    db.query( 'INSERT INTO scene VALUES (NULL, ?, ?, ?)', [gameId, worldId, backgroundAvatarId], function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        if ( rows.insertId ) Scene.loadById( rows.insertId, callback );
+        else callback( null, false );
+    });
+}
+
 module.exports.Scene = Scene;

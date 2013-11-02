@@ -15,6 +15,8 @@ Sound.prototype = new Entity();
 Sound.prototype.constructor = Sound;
 
 Sound.loadById = function ( id, callback ){
+    if ( id == null ) return callback( null, false );
+
     db.query( 'SELECT * FROM sound WHERE sound_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 

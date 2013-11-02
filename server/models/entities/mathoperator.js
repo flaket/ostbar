@@ -15,6 +15,8 @@ MathOperator.prototype = new Entity();
 MathOperator.prototype.constructor = MathOperator;
 
 MathOperator.loadById = function ( id, callback ){
+    if ( id == null ) return callback( null, false );
+
     db.query( 'SELECT * FROM math_operator WHERE math_operator_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
@@ -24,6 +26,8 @@ MathOperator.loadById = function ( id, callback ){
 }
 
 MathOperator.loadAllInActivityMath = function ( activityMathId, callback ){
+    if ( activityMathId == null ) return callback( null, false );
+
     var query = 'SELECT * '
         query += 'FROM activity_math_to_math_operator_rel am_to_mo_rel LEFT JOIN math_operator mo ';
         query += 'ON am_to_mo_rel.math_operator_id = mo.math_operator_id AND am_to_mo_rel.activity_math_id = ?';
@@ -36,6 +40,8 @@ MathOperator.loadAllInActivityMath = function ( activityMathId, callback ){
 }
 
 MathOperator.initWithData = function ( data, callback ){
+    if ( data == null ) return callback( null, false );
+
     callback( null, new MathOperator( data ) );
 }
 

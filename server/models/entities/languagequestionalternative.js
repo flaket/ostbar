@@ -16,6 +16,8 @@ LanguageQuestionAlternative.prototype = new Entity();
 LanguageQuestionAlternative.prototype.constructor = LanguageQuestionAlternative;
 
 LanguageQuestionAlternative.loadById = function ( id, callback ){
+    if ( id == null ) return callback( null, false );
+
     db.query( 'SELECT * FROM language_question_alternative WHERE language_question_alternative_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
@@ -25,6 +27,8 @@ LanguageQuestionAlternative.loadById = function ( id, callback ){
 }
 
 LanguageQuestionAlternative.loadAllInLanguageQuestion = function ( languageQuestionId, callback ){
+    if ( languageQuestionId == null ) return callback( null, false );
+
     var query = 'SELECT * FROM language_question_alternative WHERE language_question_id = ?';
     
     db.query( query, languageQuestionId, function ( error, rows, fields ){
@@ -35,6 +39,8 @@ LanguageQuestionAlternative.loadAllInLanguageQuestion = function ( languageQuest
 }
 
 LanguageQuestionAlternative.initWithData = function ( data, callback ){
+    if ( data == null ) return callback( null, false );
+
     callback( null, new LanguageQuestionAlternative( data ) );
 }
 

@@ -24,6 +24,8 @@ Game.prototype = new Entity();
 Game.prototype.constructor = Game;
 
 Game.loadById = function ( id, callback ){
+    if ( id == null ) return callback( null, false );
+
     db.query( 'SELECT * FROM game WHERE game_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
@@ -33,6 +35,8 @@ Game.loadById = function ( id, callback ){
 };
 
 Game.loadByIdForUser = function ( gameId, userId, callback ){
+    if ( gameId == null || userId == null ) return callback( null, false );
+
     db.query( 'SELECT * FROM game WHERE game_id = ? AND user_id = ?', [gameId, userId], function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
@@ -42,6 +46,8 @@ Game.loadByIdForUser = function ( gameId, userId, callback ){
 }
 
 Game.loadAllForUser = function ( userId, callback ){
+    if ( userId == null ) return callback( null, false );
+
     db.query( 'SELECT * FROM game WHERE user_id = ?', userId, function ( error, rows, fields ){
         if ( error ) return callback ( error, false );
 
@@ -50,6 +56,8 @@ Game.loadAllForUser = function ( userId, callback ){
 }
 
 Game.initWithData = function ( data, callback ){
+    if ( data == null ) return callback( null, false );
+
     async.parallel({
         goal: Goal.loadById.bind( Goal, data.goal_id ),
         initial_scene: Scene.loadById.bind( Scene, data.initial_scene_id )
@@ -64,6 +72,8 @@ Game.initWithData = function ( data, callback ){
 }
 
 Game.create = function ( userId, name, callback ){
+    if ( userId == null || name == null ) return callback( null, false );
+
     db.query( 'INSERT INTO game VALUES (NULL, ?, ?, NULL, NULL, CURRENT_TIMESTAMP, NULL)', [userId, name], function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 

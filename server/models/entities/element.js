@@ -24,9 +24,9 @@ Element.prototype = new Entity();
 Element.prototype.constructor = Element;
 
 Element.loadById = function ( id, callback ){
-    if ('element_id' in id){
-        id = id.element_id;
-    }
+    if ( id == null ) return callback( null, false );
+
+    if (!(typeof id == 'number') && 'element_id' in id) id = id.element_id;
 
     db.query( 'SELECT * FROM element WHERE element_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
@@ -37,6 +37,8 @@ Element.loadById = function ( id, callback ){
 };
 
 Element.loadAllInScene = function ( sceneId, callback ){
+    if ( sceneId == null ) return callback( null, false );
+
     var query = 'SELECT element_id FROM scene_to_element_rel se_rel WHERE se_rel.scene_id = ?';
 
     db.query( query, sceneId, function ( error, rows, fields ){
@@ -46,7 +48,12 @@ Element.loadAllInScene = function ( sceneId, callback ){
     });
 };
 
-Element.create = function ( elementTypeId, frame, callback ){
+Element.create = function ( elementTypeId, frame, sceneId, callback ){
+    if ( elementTypeId == null || frame == null || sceneId == null){
+        console.log('an argument is null', elementTypeId, frame, sceneId);
+        return callback( null, false );
+    }
+
     var post = {
         element_id: null,
         element_type_id: elementTypeId,
@@ -58,22 +65,24 @@ Element.create = function ( elementTypeId, frame, callback ){
 
     var query = 'INSERT INTO element SET ?';
 
-    ElementType.loadById( elementTypeId, function ( error, elementType ){
+    db.query(query, post, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
+        
+        if ( rows.insertId ){
+            var elementId = rows.insertId;
 
-        db.query(query, post, function ( error, rows, fields ){
-            if ( error ) return callback( error, false );
-            
-            if ( rows.insertId ) Element.loadById( rows.insertId, callback );
-            else return callback( 'Could not create element with data ' + {
-                    elementTypeId: elementTypeId,
-                    frame: frame
-                }, false );
-        });
+            db.query( 'INSERT INTO scene_to_element_rel VALUES (?, ?)', [sceneId, elementId], function ( error, rows, fields){
+                if ( error ) return callback ( error, false );
+
+                Element.loadById( elementId, callback );
+            });
+        } else return callback( null, false );
     });
 };
 
 Element.initWithData = function ( data, callback ){
+    if ( data == null ) return callback( null, false );
+
     async.parallel({
         actionTypes: ActionType.loadAllInElement.bind( ActionType, data.element_id )
     },
@@ -113,6 +122,8 @@ Element.prototype.update = function ( callback ){
 }
 
 Element.prototype.addActionType = function( actionTypeId, data, callback ){
+    if ( actionTypeId == null || data == null ) return callback( null, false );
+
     var post = {
         element_id: this.elementId, 
         action_type_id: actionTypeId,

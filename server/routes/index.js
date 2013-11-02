@@ -102,8 +102,6 @@ module.exports.save_account = function( req, res ){
 module.exports.login = function( req, res ){
     if ( req.isAuthenticated() ) res.redirect('/account');
 
-    console.log('rendering login');
-
     res.render( 'login', {
         user: req.user,
         error: req.flash('error')
@@ -194,15 +192,12 @@ module.exports.mygames = function ( req, res ){
 }
 
 module.exports.game_post = function ( req, res ){
-    console.log('post game');
-    console.log('received data', req.body);
-
     Game.loadByIdForUser( req.params.id, req.user.userId, function ( error, game ){
         if ( error ){
             return res.send( { error: error });
         }
 
-        game.setName( req.body.name, function ( error, success ){
+        game.setName( req.query.name, function ( error, success ){
             console.log('success was', success)
             if ( success ) res.send( { game: game } );
             else res.send( null );
