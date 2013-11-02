@@ -30,6 +30,8 @@ Developers howto
 * Compile sass on file changes: ``make watch``
 * Restart cluster on file changes: ``nodemon cluster``
 
+* Export current mysql database: mysqldump -h localhost -u root -p tegf > sql/tegf.sql
+
 Bugs? Contributions?
 --------------------
 

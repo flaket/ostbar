@@ -1,4 +1,4 @@
-  -- MySQL dump 10.13  Distrib 5.6.14, for osx10.7 (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.14, for osx10.7 (x86_64)
 --
 -- Host: localhost    Database: tegf
 -- ------------------------------------------------------
@@ -202,7 +202,7 @@ CREATE TABLE `element` (
   `frame_width` double NOT NULL,
   `frame_height` double NOT NULL,
   PRIMARY KEY (`element_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -211,7 +211,7 @@ CREATE TABLE `element` (
 
 LOCK TABLES `element` WRITE;
 /*!40000 ALTER TABLE `element` DISABLE KEYS */;
-INSERT INTO `element` VALUES (1,4,101,102,103,104),(12,1,1,2,3,4);
+INSERT INTO `element` VALUES (1,4,101,102,103,104),(12,1,1,2,3,4),(14,1,111,222,333,4444);
 /*!40000 ALTER TABLE `element` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -301,12 +301,12 @@ CREATE TABLE `game` (
   `game_id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `initial_scene_id` int(11) NOT NULL,
-  `goal_id` int(11) NOT NULL,
+  `initial_scene_id` int(11) DEFAULT NULL,
+  `goal_id` int(11) DEFAULT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`game_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -315,7 +315,7 @@ CREATE TABLE `game` (
 
 LOCK TABLES `game` WRITE;
 /*!40000 ALTER TABLE `game` DISABLE KEYS */;
-INSERT INTO `game` VALUES (1,1,'Spill nr 1',1,1,'2013-09-23 12:21:07',NULL),(2,1,'Spill nr 2',1,1,'2013-10-13 14:50:03',NULL);
+INSERT INTO `game` VALUES (1,1,'Spill nr 1',1,1,'2013-09-23 12:21:07',NULL),(2,1,'Spill nr 2',1,1,'2013-10-13 14:50:03',NULL),(4,1,'Spill nr 3',NULL,NULL,'2013-10-31 15:23:20',NULL),(5,1,'Spill nr 4',NULL,NULL,'2013-10-31 15:24:04',NULL),(6,1,'Spill nr 5',NULL,NULL,'2013-10-31 15:25:50',NULL);
 /*!40000 ALTER TABLE `game` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -528,10 +528,11 @@ DROP TABLE IF EXISTS `scene`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `scene` (
   `scene_id` int(11) NOT NULL AUTO_INCREMENT,
+  `game_id` int(11) DEFAULT NULL,
   `world_id` int(11) NOT NULL,
   `background_avatar_id` int(11) NOT NULL,
   PRIMARY KEY (`scene_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -540,7 +541,7 @@ CREATE TABLE `scene` (
 
 LOCK TABLES `scene` WRITE;
 /*!40000 ALTER TABLE `scene` DISABLE KEYS */;
-INSERT INTO `scene` VALUES (1,1,1),(2,2,2);
+INSERT INTO `scene` VALUES (1,1,1,1),(2,2,2,2),(4,1,1,1);
 /*!40000 ALTER TABLE `scene` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -564,7 +565,7 @@ CREATE TABLE `scene_to_element_rel` (
 
 LOCK TABLES `scene_to_element_rel` WRITE;
 /*!40000 ALTER TABLE `scene_to_element_rel` DISABLE KEYS */;
-INSERT INTO `scene_to_element_rel` VALUES (1,1),(12,2);
+INSERT INTO `scene_to_element_rel` VALUES (1,1),(4,14),(12,2);
 /*!40000 ALTER TABLE `scene_to_element_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -678,4 +679,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-10-30 13:52:04
+-- Dump completed on 2013-11-02 19:27:02
