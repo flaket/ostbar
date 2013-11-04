@@ -19,6 +19,8 @@ User.prototype = new Entity();
 User.prototype.constructor = User;
 
 User.loadById = function ( id, callback ){
+    if ( id == null ) return callback( null, false );
+
     db.query( 'SELECT * FROM user WHERE user_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback ( error, false );
 
@@ -28,6 +30,8 @@ User.loadById = function ( id, callback ){
 };
 
 User.loadByUsername = function ( username, callback ){
+    if ( username == null ) return callback( null, false );
+
     db.query( 'SELECT * FROM user WHERE username = ?', username, function ( error, rows, fields ){   
         if ( error ) return callback( error, false );
 
@@ -50,7 +54,9 @@ User.loginWithUsernameAndPassword = function ( username, password, callback ){
 };
 
 User.create = function ( username, password, callback ){
-    if ( username.length < 6 ) return callback( 'Username must be 6 or more characters', false );
+    if (username == null) return callback( 'username cannot be null', false );
+    else if (password == null) return callback( 'password cannot be null', false );
+    else if ( username.length < 6 ) return callback( 'Username must be 6 or more characters', false );
     else if ( password.length < 6 ) return callback( 'Password must be 6 or more characters', false );
 
     db.query( 'INSERT INTO user VALUES (NULL, ?, MD5(?), NOW(), NULL)', [ username, password ], function ( error, rows, fields){
@@ -64,8 +70,8 @@ User.create = function ( username, password, callback ){
 };
 
 User.prototype.setPassword = function ( password, callback ){
+    if ( password == null ) return callback( null, false );
     if ( password.length < 6 ) return callback( 'Passordet må være minst 6 tegn', false);
-
 
     db.query('UPDATE user SET password = MD5(?) WHERE user_id = ?', [ password, this.userId ], function ( error, rows, fields ){
         if ( error ) return callback( error, false );
@@ -76,6 +82,8 @@ User.prototype.setPassword = function ( password, callback ){
 }
 
 User.prototype.checkPassword = function ( password, callback ){
+    if ( password == null ) return callback( null, false );
+
     db.query('SELECT * FROM user WHERE user_id = ? AND password = MD5(?)', [ this.userId, password ], function (error, rows, fields ){
         if ( error ) return callback( error, false );
 

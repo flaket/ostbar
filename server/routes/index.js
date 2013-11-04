@@ -22,6 +22,27 @@ module.exports.save_account = function( req, res ){
             return res.render( 'account', { error: error } );
         }
 
+        error = null;
+
+        if ( !req.body.oldpassword ){
+            error = 'Du må skrive inn gammelt passord';
+        } else if ( req.body.oldpassword.length < 6 ){
+            error = 'Gammelt passord består av 6 eller flere tegn';
+        } else if ( !req.body.newpassword || !req.body.newpassword2 ){  
+            error = 'Nytt passord må skrives inn to ganger';
+        } else if ( req.body.newpassword != req.body.newpassword2 ){
+            error = 'Nytt passord må skrives likt begge gangene';
+        } else if ( req.body.newpassword.length < 6 || req.body.newpassword2.length < 6 ){
+            error = 'Nytt passord må bestå av 6 eller flere tegn';
+        }
+
+        if ( error ){
+            return res.render( 'account', {
+                error: error,
+                user: req.user
+            });
+        }
+
         req.checkBody( 'oldpassword', 'oldpassword is required' ).notEmpty();
         req.checkBody( 'newpassword', 'newpassword is required' ).notEmpty();
         req.checkBody( 'newpassword2', 'newpassword2 is required').notEmpty();
@@ -80,8 +101,6 @@ module.exports.save_account = function( req, res ){
 
 module.exports.login = function( req, res ){
     if ( req.isAuthenticated() ) res.redirect('/account');
-
-    console.log('rendering login');
 
     res.render( 'login', {
         user: req.user,
@@ -173,16 +192,30 @@ module.exports.mygames = function ( req, res ){
 }
 
 module.exports.game_post = function ( req, res ){
-    console.log('post game');
-    console.log('received data', req.body.someData);
-
     Game.loadByIdForUser( req.params.id, req.user.userId, function ( error, game ){
         if ( error ){
             return res.send( { error: error });
         }
 
-        console.log('loaded game, sending response');
-
-        res.send( { game: game } );
+        game.setName( req.query.name, function ( error, success ){
+            console.log('success was', success)
+            if ( success ) res.send( { game: game } );
+            else res.send( null );
+        });
     });
-}
+};
+
+module.exports.new_game = function ( req, res ){
+    Game.create( req.user.userId, 'Bogus', function ( error, game ){
+        if ( error ) {
+            return res.render( 'games', {
+                error: error,
+                game: null
+            });
+        }
+
+        res.render( 'game', {
+            game: game
+        });
+    });
+};

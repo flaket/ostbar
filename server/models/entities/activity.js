@@ -22,6 +22,8 @@ Activity.prototype = new Entity();
 Activity.prototype.constructor = Activity;
 
 Activity.loadById = function ( id, callback ){
+    if ( id == null ) callback( null, false );
+
     db.query( 'SELECT * FROM activity WHERE activity_id = ?', id, function ( error, rows, fields ){
 
         if ( error ) return callback( error, false );

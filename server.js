@@ -4,10 +4,10 @@ var app = require('./server/app'),
 
 // -- database
 var mysql = require('mysql');
-app.db = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'peterringset',
-});
+// app.db = mysql.createConnection({
+//   host     : 'localhost',
+//   user     : 'peterringset'
+// });
 
 // -- handle node exceptions
 process.on('uncaughtException', function(err){
@@ -24,4 +24,3 @@ var server = http.createServer(app).listen(app.conf.port, function()
 
 // -- exports
 module.exports.server = server;
-

@@ -11,6 +11,7 @@ function Scene( data ){
     Entity.call( this );
 
     this.sceneId = data.scene_id;
+    this.gameId = data.gameId;
     this.world = data.world;
     this.backgroundAvatar = data.backgroundAvatar;
     this.elements = data.elements;
@@ -21,6 +22,8 @@ Scene.prototype = new Entity();
 Scene.prototype.constructor = Scene;
 
 Scene.loadById = function ( id, callback ){
+    if ( id == null ) return callback( null, false );
+
     db.query( 'SELECT * FROM scene WHERE scene_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
@@ -34,7 +37,7 @@ Scene.loadById = function ( id, callback ){
             },
             function ( error, results ){
                 if ( error ) return callback( error, false );
-
+                
                 data.backgroundAvatar = results.backgroundAvatar;
                 data.elements = results.elements;
                 data.world = results.world;
@@ -42,6 +45,19 @@ Scene.loadById = function ( id, callback ){
             });
         }
         else callback( 'Could not load Scene with id ' + id, false );
+    });
+}
+
+Scene.create = function ( gameId, worldId, backgroundAvatarId, callback ){
+    if ( gameId == null || worldId == null || backgroundAvatarId == null ){
+        return callback( null, false );
+    }
+
+    db.query( 'INSERT INTO scene VALUES (NULL, ?, ?, ?)', [gameId, worldId, backgroundAvatarId], function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        if ( rows.insertId ) Scene.loadById( rows.insertId, callback );
+        else callback( null, false );
     });
 }
 

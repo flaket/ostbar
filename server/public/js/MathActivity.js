@@ -197,14 +197,6 @@ function getAnotherQuestion(){
 }
 
 function setRandomValues(){
-	// var numLow = $("#lownumber").val();
-    // var numHigh = $("#highnumber").val();
-	
-	// if(numLow>numHigh){
-		// var temp = numLow;
-		// numLow = numHigh;
-		// numHigh = temp;
-	// }
 	
 	var numLow = currentMathObject.lowestNumber;
 	var numHigh = currentMathObject.highestNumber;

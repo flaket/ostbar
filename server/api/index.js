@@ -29,7 +29,7 @@ var standardGETResponse = function ( req, res, Entity ){
 }
 
 module.exports = function ( app ){
-    var auth = app.ensureAuthenticated;
+    var auth = app.ensureAuthenticatedAjax;
 
     app.get( '/api/', auth, function ( req, res ){
         emptyResponse( res );
@@ -113,8 +113,38 @@ module.exports = function ( app ){
         standardGETResponse( req, res, models.Scene );
     });
 
+    app.post( '/api/scene/:id?', auth, function ( req, res ){
+        var Scene = models.Scene;
+
+        if ( req.params.id ) return res.send( { error: 'not implemented' } );
+
+        req.assert( 'game_id', 'game_id (int) is required' ).isInt();
+        req.assert( 'world_id', 'world_id (int) is required' ).isInt();
+        req.assert( 'background_avatar_id', 'background_avatar_id (int) is required' ).isInt();
+
+        req.sanitize( 'game_id' ).toInt();
+        req.sanitize( 'world_id' ).toInt();
+        req.sanitize( 'background_avatar_id' ).toInt();
+
+        var errors = req.validationErrors();
+
+        if ( errors ) return res.send( { error: errors } );
+
+        var game_id                 = req.query.game_id,
+            world_id                = req.query.world_id,
+            background_avatar_id    = req.query.background_avatar_id;
+
+        Scene.create( game_id, world_id, background_avatar_id, function ( error, scene ){
+            if ( error ) res.send( { error: error } );
+
+            if ( scene ) res.send( { scene: scene } );
+            else emptyResponse( res );
+        });
+    });
+
     app.post( '/api/element/:id?', auth, function ( req, res ){
-        var Element = models.Element;
+        var Element = models.Element,
+            Scene = models.Scene;
 
         req.assert( 'element_type_id', 'element_type_id (int) is required' ).isInt();
         req.assert( 'frame_x', 'frame_x (float) is required' ).isFloat();
@@ -128,17 +158,22 @@ module.exports = function ( app ){
         req.sanitize( 'frame_width' ).xss();
         req.sanitize( 'frame_height' ).xss();
         
+        if ( !req.params.id ){
+            req.assert( 'scene_id', 'scene_id (int) is required' ).isInt();
+            req.sanitize( 'scene_id').toInt();
+        }
+
         var errors = req.validationErrors();
 
         if ( errors ) return res.send( { error: errors } );
 
-        var elementTypeId = req.query.element_type_id;
-        var frame = {
-            x: req.query.frame_x,
-            y: req.query.frame_y,
-            width: req.query.frame_width,
-            height: req.query.frame_height
-        }
+        var elementTypeId = req.query.element_type_id,
+            frame = {
+                x: req.query.frame_x,
+                y: req.query.frame_y,
+                width: req.query.frame_width,
+                height: req.query.frame_height
+            }
 
         if ( req.params.id ){
             Element.loadById( req.params.id, function ( error, element ){
@@ -161,7 +196,9 @@ module.exports = function ( app ){
                 }
             });
         } else {
-            Element.create( elementTypeId, frame, function ( error, createdElement ){
+            var sceneId = req.query.scene_id;
+
+            Element.create( elementTypeId, frame, sceneId, function ( error, createdElement ){
                 if ( error ) return requestError( res, error );
 
                 if ( createdElement ) res.send( 201, createdElement );

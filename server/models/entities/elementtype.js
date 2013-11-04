@@ -24,6 +24,8 @@ ElementType.prototype = new Entity();
 ElementType.prototype.constructor = ElementType;
 
 ElementType.loadById = function ( id, callback ){
+    if ( id == null ) return callback( null, false );
+
     db.query( 'SELECT * FROM element_type WHERE element_type_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
@@ -44,6 +46,8 @@ ElementType.loadAll = function ( callback ){
 };
 
 ElementType.initWithData = function ( data, callback ){
+    if ( data == null ) return callback( null, false );
+
     async.parallel({
         avatar: Avatar.loadById.bind( Avatar, data.avatar_id ),
         sound: Sound.loadById.bind( Sound, data.sound_id ),

@@ -18,6 +18,8 @@ ActivityLanguage.prototype = new Entity(  );
 ActivityLanguage.prototype.constructor = ActivityLanguage;
 
 ActivityLanguage.loadById = function ( id, callback ){
+    if ( id == null ) callback( null, false );
+
     db.query( 'SELECT * FROM activity_language WHERE activity_language_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
@@ -27,6 +29,8 @@ ActivityLanguage.loadById = function ( id, callback ){
 }
 
 ActivityLanguage.loadByActivityId = function ( activityId, callback ){
+    if ( activityId == null ) callback( null, false );
+
     db.query( 'SELECT * FROM activity_language WHERE activity_id = ?', activityId, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
@@ -36,6 +40,8 @@ ActivityLanguage.loadByActivityId = function ( activityId, callback ){
 }
 
 ActivityLanguage.initWithData = function ( data, callback ) {
+    if ( data == null ) callback( null, false );
+
     async.parallel({
         questions: LanguageQuestion.loadAllInActivityLanguage.bind( LanguageQuestion, data.activity_language_id )
     },

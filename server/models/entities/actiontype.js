@@ -18,6 +18,8 @@ ActionType.prototype = new Entity();
 ActionType.prototype.constructor = ActionType;
 
 ActionType.loadById = function ( id, callback ){
+    if ( id == null ) return callback( null, false );
+
     db.query( 'SELECT * FROM action_type WHERE action_type_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
@@ -27,6 +29,8 @@ ActionType.loadById = function ( id, callback ){
 }
 
 ActionType.loadAllInElement = function ( elementId, callback ){
+    if ( elementId == null ) return callback( null, false );
+
     var query = 'SELECT * '
         query += 'FROM element_to_action_type_rel e_to_at_rel LEFT JOIN action_type at ';
         query += 'ON e_to_at_rel.action_type_id = at.action_type_id AND e_to_at_rel.element_id = ? ';
@@ -40,6 +44,8 @@ ActionType.loadAllInElement = function ( elementId, callback ){
 }
 
 ActionType.loadAllInElementType = function ( elementTypeId, callback ){
+    if ( elementTypeId == null ) return callback( null, false );
+
     var query = 'SELECT * ';
         query += 'FROM element_type_to_action_type_rel et_to_at_rel LEFT JOIN action_type at ';
         query += 'ON et_to_at_rel.action_type_id = at.action_type_id AND et_to_at_rel.element_type_id = ? ';
@@ -53,6 +59,8 @@ ActionType.loadAllInElementType = function ( elementTypeId, callback ){
 }
 
 ActionType.initWithData = function ( data, callback ){
+    if ( data == null ) callback( null, false );
+
     if ( 'data' in data ){
         var buffer = new Buffer( data.data, 'binary' );
         data.data = buffer.toString();

@@ -24,6 +24,8 @@ Game.prototype = new Entity();
 Game.prototype.constructor = Game;
 
 Game.loadById = function ( id, callback ){
+    if ( id == null ) return callback( null, false );
+
     db.query( 'SELECT * FROM game WHERE game_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
@@ -33,6 +35,8 @@ Game.loadById = function ( id, callback ){
 };
 
 Game.loadByIdForUser = function ( gameId, userId, callback ){
+    if ( gameId == null || userId == null ) return callback( null, false );
+
     db.query( 'SELECT * FROM game WHERE game_id = ? AND user_id = ?', [gameId, userId], function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
@@ -42,6 +46,8 @@ Game.loadByIdForUser = function ( gameId, userId, callback ){
 }
 
 Game.loadAllForUser = function ( userId, callback ){
+    if ( userId == null ) return callback( null, false );
+
     db.query( 'SELECT * FROM game WHERE user_id = ?', userId, function ( error, rows, fields ){
         if ( error ) return callback ( error, false );
 
@@ -50,6 +56,8 @@ Game.loadAllForUser = function ( userId, callback ){
 }
 
 Game.initWithData = function ( data, callback ){
+    if ( data == null ) return callback( null, false );
+
     async.parallel({
         goal: Goal.loadById.bind( Goal, data.goal_id ),
         initial_scene: Scene.loadById.bind( Scene, data.initial_scene_id )
@@ -60,6 +68,35 @@ Game.initWithData = function ( data, callback ){
         data.goal = results.goal;
         data.initial_scene = results.initial_scene;
         callback(null,  new Game( data ) );
+    });
+}
+
+Game.create = function ( userId, name, callback ){
+    if ( userId == null || name == null ) return callback( null, false );
+
+    db.query( 'INSERT INTO game VALUES (NULL, ?, ?, NULL, NULL, CURRENT_TIMESTAMP, NULL)', [userId, name], function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        if ( rows.insertId ) Game.loadById( rows.insertId, callback );
+        else callback( 'Kunne ikke opprette nytt spill', false );
+    });
+}
+
+Game.prototype.setName = function ( name, callback ){
+
+    if ( name == null ){
+        return callback( 'Noe gikk galt, kan ikke sette navn = null', false );
+    } else if ( name.length < 3 ){
+        return callback( 'Spillet\'s navn må bestå av tre eller flere bokstaver', false );
+    }
+
+    db.query( 'UPDATE game SET name = ? WHERE game_id = ?', [name, this.gameId], function ( error, rows, fields ){
+        console.log('rows', rows);
+        if ( rows.affectedRows == 1 ){
+            callback( null, true );    
+        } else {
+            callback( null, false );
+        } 
     });
 }
 

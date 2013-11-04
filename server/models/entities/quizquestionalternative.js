@@ -16,6 +16,8 @@ QuizQuestionAlternative.prototype = new Entity();
 QuizQuestionAlternative.prototype.constructor = QuizQuestionAlternative;
 
 QuizQuestionAlternative.loadById = function ( id, callback ){
+    if ( id == null ) return callback( null, false );
+
     db.query( 'SELECT * FROM quiz_question_alternative WHERE quiz_question_alternative_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
@@ -25,6 +27,8 @@ QuizQuestionAlternative.loadById = function ( id, callback ){
 }
 
 QuizQuestionAlternative.loadAllInQuizQuestion = function ( quizQuestionId, callback ){
+    if ( quizQuestionId == null ) return callback( null, false );
+
     var query = 'SELECT * ';
         query += 'FROM quiz_question_alternative ';
         query += 'WHERE quiz_question_id = ?';
@@ -37,6 +41,8 @@ QuizQuestionAlternative.loadAllInQuizQuestion = function ( quizQuestionId, callb
 }
 
 QuizQuestionAlternative.loadAllCorrectInQuizQuestion = function ( quizQuestionId, callback ){
+    if ( quizQuestionId == null ) return callback( null, false );
+
     var query = 'SELECT quiz_question_alternative_id ';
         query += 'FROM quiz_question_correct ';
         query += 'WHERE quiz_question_id = ?';
@@ -55,6 +61,8 @@ QuizQuestionAlternative.loadAllCorrectInQuizQuestion = function ( quizQuestionId
 }
 
 QuizQuestionAlternative.initWithData = function ( data, callback ){
+    if ( data == null ) return callback( null, false );
+
     callback( null, new QuizQuestionAlternative( data) );
 }
 

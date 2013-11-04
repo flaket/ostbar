@@ -23,6 +23,8 @@ LanguageQuestion.prototype = new Entity();
 LanguageQuestion.prototype.constructor = LanguageQuestion;
 
 LanguageQuestion.loadById = function ( id, callback ){
+    if ( id == null ) return callback( null, false );
+
     db.query( 'SELECT * FROM language_question WHERE language_question_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
@@ -32,6 +34,8 @@ LanguageQuestion.loadById = function ( id, callback ){
 }
 
 LanguageQuestion.loadAllInActivityLanguage = function( activityLanguageId, callback ){
+    if ( activityLanguageId == null ) return callback( null, false );
+
     var query = 'SELECT  * FROM language_question WHERE activity_language_id = ?';
 
     db.query( query, activityLanguageId, function ( error, rows, fields ){
@@ -42,6 +46,8 @@ LanguageQuestion.loadAllInActivityLanguage = function( activityLanguageId, callb
 }
 
 LanguageQuestion.initWithData = function ( data, callback ){
+    if ( data == null ) return callback( null, false );
+
     switch ( data.language_question_type ){
         case 'PICTURE_RECOGNIZE': dataClass = Avatar;
         case 'SOUND_RECOGNIZE': dataClass = Sound;

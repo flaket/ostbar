@@ -20,6 +20,8 @@ ActivityMath.prototype = new Entity(  );
 ActivityMath.prototype.constructor = ActivityMath;
 
 ActivityMath.loadById = function ( id, callback ){
+    if ( id == null ) callback( null, false );
+
     db.query( 'SELECT * FROM activity_math WHERE activity_math_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
@@ -29,6 +31,8 @@ ActivityMath.loadById = function ( id, callback ){
 }
 
 ActivityMath.loadByActivityId = function ( activityId, callback ){
+    if ( activityId == null ) return callback( null, false );
+
     db.query( 'SELECT * FROM activity_math WHERE activity_id = ?', activityId, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
@@ -38,6 +42,8 @@ ActivityMath.loadByActivityId = function ( activityId, callback ){
 }
 
 ActivityMath.initWithData = function ( data, callback ){
+    if ( data == null ) return callback( null, false );
+
     async.parallel({
         operators: MathOperator.loadAllInActivityMath.bind( MathOperator, data.activity_math_id )
     },
