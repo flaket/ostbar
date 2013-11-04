@@ -1,28 +1,74 @@
 function MathActivity(){
 	this.questionsAnswered = 0;
 	this.correctAnswers = 0;
+	
+	this.lowestNumber = 0;
+	this.highestNumber = 0;
+	
 	this.randomNumber1 = 0;
 	this.randomNumber2 = 0;
+	
 	this.life = 3;
 	
-	if(currentMathObject !=null){
-		$("#life1").css({"display": "inline"});
-		$("#life2").css({"display": "inline"});
-		$("#life3").css({"display": "inline"});	
-	}
-	$(".numberOfQuestionsAnswered").text("0");
+	resetScore();
 }
 
 var currentMathObject = null;
 
+function createNewMathActivity(mathObject){
+	
+	currentMathObject = mathObject;
+	
+	beforeParametersAreSetView();
+	initializeMathDialog();
+	
+	$("#randomNumberButton").click(function createRandomNumber(){
+		afterParametersAreSetView();
+		// $(".mathActivity").dialog("close");
+		
+		var numLow = $("#lownumber").val();
+		var numHigh = $("#highnumber").val();
+		
+		if(numLow>numHigh){
+			var temp = numLow;
+			numLow = numHigh;
+			numHigh = temp;
+		}
+		
+		currentMathObject.lowestNumber = numLow;
+		currentMathObject.highestNumber = numHigh;
+		
+		initializeNewMathActivity();
+	});	
+}
+
+function resetScore(){
+	if(currentMathObject !=null){
+		$("#life1").css({"display": "inline"});
+		$("#life2").css({"display": "inline"});
+		$("#life3").css({"display": "inline"});
+	}
+	$(".numberOfQuestionsAnswered").text("0");
+}
+
 function createMathActivity(mathObject){
+	currentMathObject = mathObject;
+	
+	currentMathObject.questionsAnswered = 0;
+	currentMathObject.correctAnswers = 0;
+	
+	resetScore();
+	
+	initializeMathDialog();
+	initializeNewMathActivity();
+}
+
+function initializeMathDialog(){
 	$(".chooseActivityDialog").dialog("close");
 	console.log("math activity");
 	
 	var Wwidth = $(window).width();
 	var Wheight = $(window).height();
-	
-	// beforeParametersAreSetView();
 	
 	$(".mathActivity").dialog({
 		rezisable: false,
@@ -35,17 +81,13 @@ function createMathActivity(mathObject){
 		}
 	});
 	
-	$("#randomNumberButton").click(function createRandomNumber(){
-		afterParametersAreSetView();
-		// $(".mathActivity").dialog("close");
-		initializeNewMathActivity(mathObject);
-	});	
+	currentMathObject.life = 3;
 }
 
 function beforeParametersAreSetView(){
 	$(".question1").css({"display": "block"});
-	$("#lownumber").css({"display": "block"});
-	$("#highnumber").css({"display": "block"});
+	$("#lownumber").val("").css({"display": "block"});
+	$("#highnumber").val("").css({"display": "block"});
 	$("#randomNumberButton").css({"display": "block"});
 	
 	$("#life1").css({"display": "none"});
@@ -59,7 +101,6 @@ function beforeParametersAreSetView(){
 	$(".answer").css({"display": "none"});
 	$(".score").css({"display" : "none"});
 }
-
 
 function afterParametersAreSetView(){
 	$(".question1").css({"display": "none"});
@@ -79,14 +120,13 @@ function afterParametersAreSetView(){
 	$(".score").css({
 		"display" : "block",
 		"float" : "right",
-		"margin-top" : "-10%",
+		"margin-top" : "-5%",
 	});
 	$(".questionsAnsweredText").text("Spørsmål besvart: (");
 	$(".totalNumberOfQuestions").text(") / 10");
 }
 
-function initializeNewMathActivity(mathObject){
-	currentMathObject = mathObject;
+function initializeNewMathActivity(){
 	setRandomValues();
 	createQuestion();
 }
@@ -117,18 +157,10 @@ function checkAnswer(){
 				currentMathObject.life--;
 				
 				setTimeout(function(){
-					alert("Game over! Restart the activity");
+					alert("Du klarte ikke svare riktig på nok regnestykker. Prøv igjen!");
 					$(".mathActivity").dialog("close");
 				}, 1000);
 				
-				// setTimeout(function(){
-					// var newObject = new MathActivity();
-					// console.log("\n");
-					// console.log(newObject);
-					// console.log("\n");
-					// initializeNewMathActivity(newObject);
-					// done = true;
-				// }, 1000);
 			}
 			else if(currentMathObject.life==2){
 				$("#life2").hide("clip");
@@ -165,20 +197,25 @@ function getAnotherQuestion(){
 }
 
 function setRandomValues(){
-	var numLow = $("#lownumber").val();
-    var numHigh = $("#highnumber").val();
+	// var numLow = $("#lownumber").val();
+    // var numHigh = $("#highnumber").val();
 	
-	if(numLow>numHigh){
-		var temp = numLow;
-		numLow = numHigh;
-		numHigh = temp;
-	}
+	// if(numLow>numHigh){
+		// var temp = numLow;
+		// numLow = numHigh;
+		// numHigh = temp;
+	// }
+	
+	var numLow = currentMathObject.lowestNumber;
+	var numHigh = currentMathObject.highestNumber;
 	
 	var adjustedHigh = (parseFloat(numHigh) - parseFloat(numLow)) + 1;
 	
     currentMathObject.randomNumber1 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
     currentMathObject.randomNumber2 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
     
+	console.log(currentMathObject);
+	
 	if(currentMathObject.randomNumber1>currentMathObject.randomNumber2){
 		$(".randomNumber1").text(currentMathObject.randomNumber1);
 	}
