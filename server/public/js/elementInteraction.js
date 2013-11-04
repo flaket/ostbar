@@ -33,7 +33,6 @@ jQuery(document).ready(function(){
 			width: $(window).width()*0.5,
 		});
 	});
-
 	
 	$("#mainFrame").droppable({
 		accept: ".elements",
@@ -44,10 +43,9 @@ jQuery(document).ready(function(){
 				"left": ui.offset.left
 			}).appendTo(".draggable").draggable({
 				containment:"parent"
-			}).removeClass("ui-draggable").toggleClass("element");
+			}).removeClass("ui-draggable").toggleClass("element").children().children().resizable();
 		}
 	});
-	
 	
 	
 	$(".draggable").on("contextmenu rightclick",".element",function(e){
@@ -130,7 +128,7 @@ jQuery(document).ready(function(){
 							title: "choose activity type",
 							buttons:{
 								"Matte aktivitet": function(){
-									if(currentDialog.activityObject == null || currentDialog.activityIndex != 0){
+									if(currentDialog.activityObject == null || currentDialog.activityIndex != 0){ //must change..
 										currentDialog.activityIndex = 0;
 										var mathObject = new MathActivity();
 										console.log(objectList);
@@ -140,12 +138,13 @@ jQuery(document).ready(function(){
 										console.log("\n");
 										createNewMathActivity(mathObject);
 									}
-									else if(currentDialog.activityObject!=null && currentDialog.activityIndex == 0){
+									else if(currentDialog.activityObject!=null && currentDialog.activityIndex == 0){ // must change..
 										console.log("refresh math object");
 										console.log(currentDialog);
 										console.log("\n");
 										createMathActivity(currentDialog.activityObject);
 									}
+									$(target).on("click", mathActivityFunction);
 								},
 								"Språk aktivitet": function(){
 									createLanguageActivity();
@@ -262,6 +261,11 @@ function animationCallback(e) {
 	}, 1000 );
 };
 
+function mathActivityFunction(){
+	createMathActivity(currentDialog.activityObject);
+}
+
+
 function dialogFunction(e){
 	console.log(objectList[inList(objectList,e.target)].dialogData);
 	// $(e.target).tipsy({
@@ -280,7 +284,6 @@ function dialogFunction(e){
 			}
 		}
 	}).siblings(".ui-dialog-titlebar").hide();
-	// $("#writtenDialog");
 }
 
 function convertToHtml(e){
@@ -302,11 +305,16 @@ function animationFunction(e){
 var currentDialog = null;
 var objectList = [];
 
+
+
+
 var sceneList = [];
 
 function Scene(){
 	this.elementList = []; // = objectList 
 }
+
+
 
 
 function Dialog(object){

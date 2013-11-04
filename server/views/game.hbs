@@ -89,9 +89,9 @@
     <p class="question1"> Velg ett nummer mellom: </p>
     <input type="text" id="lownumber" placeholder="fra" />
     <p class="question1"> og <p>
-    <input type="text" id="highnumber" placeholder="til" />
+    <input type="text" id="highnumber" placeholder="til" onkeypress="submitInputNumbers(event)"/>
     <br>
-    <input type="submit" id="randomNumberButton" value="Generer!" />
+    <input type="submit" id="inputValueButton" value="Generer!" />
   
     <img id="life1" name = "heart" alt="life" src="/gfx/heart.png" style="display: none;">
     <img id="life2" name = "heart" alt="life" src="/gfx/heart.png" style="display: none;">
@@ -108,7 +108,7 @@
     <div class="randomNumber2" style="display: none;"></div>
     <div class="equals" style="display: none;"></div>
     <div class="answer" style="display: none;">
-      <input class="answerfield" type="text" name="answer" size="2" maxlength="4" placeholder="svaret">
+      <input class="answerField" id="answerField" type="text" name="answer" size="2" maxlength="4" placeholder="svaret" onkeypress="submitAnswer(event)">
       <button id="answerButton" onclick="checkAnswer()"> Sjekk svar </button>
     </div>
     <div>
