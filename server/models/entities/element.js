@@ -26,7 +26,7 @@ Element.prototype.constructor = Element;
 Element.loadById = function ( id, callback ){
     if ( id == null ) return callback( null, false );
 
-    if (!(typeof id == 'number') && 'element_id' in id) id = id.element_id;
+    if ( id.element_id ) id = id.element_id;
 
     db.query( 'SELECT * FROM element WHERE element_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
