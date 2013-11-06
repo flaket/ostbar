@@ -128,7 +128,14 @@ jQuery(document).ready(function(){
 							title: "choose activity type",
 							buttons:{
 								"Matte aktivitet": function(){
-									if(currentDialog.activityObject == null || currentDialog.activityIndex != 0){ //must change..
+									if(currentDialog.activityObject == null || currentDialog.activityIndex != 0){
+										if(currentDialog.activityIndex > -1){
+											if(currentDialog.activityIndex == 1)
+												$(target).off("click", languageActivityFunction);
+											if(currentDialog.activityIndex == 2)
+												$(target).off("click", quizActivityFunction);
+											currentDialog.activityClickActionMade = false;
+										}
 										currentDialog.activityIndex = 0;
 										var mathObject = new MathActivity();
 										console.log(objectList);
@@ -138,13 +145,16 @@ jQuery(document).ready(function(){
 										console.log("\n");
 										createNewMathActivity(mathObject);
 									}
-									else if(currentDialog.activityObject!=null && currentDialog.activityIndex == 0){ // must change..
+									else if(currentDialog.activityObject!=null && currentDialog.activityIndex == 0){
 										console.log("refresh math object");
 										console.log(currentDialog);
 										console.log("\n");
 										createMathActivity(currentDialog.activityObject);
 									}
-									$(target).on("click", mathActivityFunction);
+									if(!currentDialog.activityClickActionMade && currentDialog.activityIndex == 0){
+										$(target).on("click", mathActivityFunction);
+										currentDialog.activityClickActionMade = true;
+									}
 								},
 								"Språk aktivitet": function(){
 									createLanguageActivity();
@@ -158,7 +168,15 @@ jQuery(document).ready(function(){
 						});
 						
 					};
-					
+					if(!currentDialog.activityChecked){
+						if(currentDialog.activityIndex == 0)
+							$(target).off("click", mathActivityFunction);
+						if(currentDialog.activityIndex == 1)
+							$(target).off("click", languageActivityFunction);
+						if(currentDialog.activityIndex == 2)
+							$(target).off("click", quizActivityFunction);
+						currentDialog.activityClickActionMade = false;
+					}
 					
 					
 					if(currentDialog.dialogChecked==true){
@@ -261,8 +279,16 @@ function animationCallback(e) {
 	}, 1000 );
 };
 
-function mathActivityFunction(){
-	createMathActivity(currentDialog.activityObject);
+function mathActivityFunction(e){
+	createMathActivity(objectList[inList(objectList,e.target)].activityObject);
+}
+
+function languageActivityFunction(){
+	//dummy
+}
+
+function quizActivityFunction(){
+	//dummy
 }
 
 
@@ -334,6 +360,7 @@ function Dialog(object){
 	
 	this.animationClickActionMade = false;
 	this.dialogClickActionMade = false;
+	this.activityClickActionMade = false;
 }
 
 function inList(arr,obj){
@@ -520,6 +547,37 @@ function saveContentFromMainFrame(){
 	});
 }
 
+//pseudo
+function saveElements(){
+
+//access width and height, x and y:
+// var div = currentDialog.div;
+// console.log(currentDialog.div.offsetParent.offsetParent.offsetLeft); //x
+// console.log(currentDialog.div.offsetParent.offsetParent.offsetTop); //y
+
+// console.log(currentDialog.div.offsetParent.offsetParent.offsetHeight); //height
+// console.log(currentDialog.div.offsetParent.offsetParent.offsetTop); //width
+
+	// for(var i = 0; i < objectList.length, i++){
+		// $.ajax({
+			// type: "POST",
+			// url: "/api/element/",
+			// data: {
+				// element_type_id: 1,
+				// frame_x : 0,
+				// frame_y : 0,
+				// frame_width: 0,
+				// frame_height : 0,
+				// scene_id: 2
+			// },
+			// success: function (response) {console.log(response)},
+			// dataType: "json"
+		// });
+		
+	// }
+}
+
+
 function createLanguageActivity(){
 	$(".chooseActivityDialog").dialog("close");
 
@@ -543,4 +601,3 @@ $(document).ready(function(){
 		$("#newWorldDialog").dialog("close");
 	});
 });
-

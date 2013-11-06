@@ -241,7 +241,6 @@ function setRandomValues(){
 function createQuestion(){
 	$(".numberOfQuestionsAnswered").text(currentMathObject.questionsAnswered);
 	
-	console.log(currentMathObject);
 	
 	var numberOfOperators = 1;
 	var operator = chooseRandomOperator(numberOfOperators);
