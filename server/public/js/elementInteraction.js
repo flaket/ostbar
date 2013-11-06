@@ -600,4 +600,31 @@ $(document).ready(function(){
 		$("#storylineButton").show();
 		$("#newWorldDialog").dialog("close");
 	});
+	
+	
+	//insert (funker atm)
+	$.ajax({
+		type: "POST",
+		url: "/api/element/?scene_id=50&element_type_id=1&frame_x=10&frame_y=10&frame_width=100&frame_height=100",
+		success: function (response) {console.log(response)},
+		dataType: "json"
+	});
+	
+	
+	
+	//update (funker ikke)
+	$.ajax({
+		type: "POST",
+		url: "/api/element/15", //også prøvd med /element_id=15", /element_id" + 15. 
+		data: {
+			element_type_id: "2",
+			frame_x: "1",
+			frame_y: "1",
+			frame_width: "100",
+			frame_height: "100",
+			scene_id: "50",
+		},
+		success: function (response) {console.log(response)},
+		dataType: "json"
+	});
 });
