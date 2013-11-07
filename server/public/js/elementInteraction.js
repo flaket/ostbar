@@ -74,6 +74,8 @@ jQuery(document).ready(function(){
 		console.log(currentDialog);
 		console.log(objectList);
 		
+		saveElements();
+		
 		var previousVersionDialog = $.extend(true,{},currentDialog); // copy
 		
 		resetCheckBoxes(currentDialog);
@@ -294,6 +296,7 @@ var sceneList = [];
 
 function Scene(){
 	this.elementList = []; // = objectList
+	this.scene_id = -1
 }
 
 
@@ -302,7 +305,6 @@ function saveContentFromMainFrame(){
 	var cloneOfMainFrame = $("#mainFrame").clone();
 	cloneOfMainFrame.css({"position": "relative"}).addClass("inStoryline").appendTo("#storylineDialog");
 	$("#mainFrame").empty();
-	
 	
 	//trying to make an element inside storyline clickable, when clicked it should be placed on mainframe
 	/*
@@ -327,24 +329,48 @@ function saveElements(){
 // console.log(currentDialog.div.offsetParent.offsetParent.offsetTop); //y
 
 // console.log(currentDialog.div.offsetParent.offsetParent.offsetHeight); //height
-// console.log(currentDialog.div.offsetParent.offsetParent.offsetTop); //width
+// console.log(currentDialog.div.offsetParent.offsetParent.offsetWidth); //width
 
 	// for(var i = 0; i < objectList.length, i++){
-		// $.ajax({
-			// type: "POST",
-			// url: "/api/element/",
-			// data: {
-				// element_type_id: 1,
-				// frame_x : 0,
-				// frame_y : 0,
-				// frame_width: 0,
-				// frame_height : 0,
-				// scene_id: 2
-			// },
-			// success: function (response) {console.log(response)},
-			// dataType: "json"
-		// });
-		
+		var temp = objectList[i];
+		if (temp.element_id < 0){
+			$.ajax({
+				type: "POST",
+				url: "/api/element/?",
+				data: {
+					element_type_id: "1",
+					frame_x : temp.div.offsetParent.offsetParent.offsetLeft,
+					frame_y : temp.div.offsetParent.offsetParent.offsetTop,
+					frame_width: temp.div.offsetParent.offsetParent.offsetWidth,
+					frame_height : temp.div.offsetParent.offsetParent.offsetHeight,
+					scene_id: "2"
+				},
+				success: function (response) {
+					console.log(response);
+					temp.element_id = response.elementId;
+				},
+				dataType: "json"
+			});
+		}
+		else{
+			$.ajax({
+				type: "POST",
+				url: "/api/element/"  +temp.element_id,
+				data: {
+					element_type_id: "1",
+					frame_x : temp.div.offsetParent.offsetParent.offsetLeft,
+					frame_y : temp.div.offsetParent.offsetParent.offsetTop,
+					frame_width: temp.div.offsetParent.offsetParent.offsetWidth,
+					frame_height : temp.div.offsetParent.offsetParent.offsetHeight,
+					scene_id: "2"
+				},
+				success: function (response) {
+					console.log(response);
+					temp.element_id = response.elementId;
+				},
+				dataType: "json"
+			});
+		}
 	// }
 }
 
@@ -366,15 +392,4 @@ $(document).ready(function(){
 		$("#newWorldDialog").dialog("close");
 	});
 	
-	$.ajax({
-		type: "POST",
-		url: "/api/scene/?",
-		data: {
-			world_id: 1,
-			game_id: 1,
-			background_avatar_id: 1,
-		},
-		success: function (response) {console.log(response)},
-		dataType: "json"
-	});
 });
