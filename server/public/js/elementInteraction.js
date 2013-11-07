@@ -320,7 +320,7 @@ jQuery(document).ready(function(){
 			setupAfterCallsReturns();
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('elementtype error:', textStatus, errorThrown);
+			console.log('get scenetype error:', textStatus, errorThrown);
 		},
 		dataType: "json"
 	});
@@ -401,8 +401,6 @@ function choseSceneFromSceneChooser() {
 			}
 		}
 
-		console.log('currentSceneType', currentSceneType);
-
 		if ( currentSceneType != null ){
 			$.ajax({
 				type: "POST",
@@ -413,9 +411,6 @@ function choseSceneFromSceneChooser() {
 					is_initial_scene: true
 				},
 				success: function ( response ){
-
-					console.log('post scene', response);
-
 					sceneList.push(response);
 					currentScene = response;
 
@@ -434,7 +429,7 @@ function choseSceneFromSceneChooser() {
 					$("#newWorldDialog").dialog("close");
 				},
 				error: function ( jqXHR, textStatus, errorThrown ){
-					console.log('create scene error:', jqXHR, textStatus, errorThrown);
+					console.log('post scene error:', jqXHR, textStatus, errorThrown);
 				},
 				dataType: "json" 
 			});
@@ -464,7 +459,6 @@ function saveContentFromMainFrame(){
 
 //pseudo
 function saveElements(){
-
 	//May need more stuff here
 
 	//Save call for database
