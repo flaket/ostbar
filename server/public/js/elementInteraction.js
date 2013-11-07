@@ -267,21 +267,38 @@ jQuery(document).ready(function(){
 		return false;
 	});
 
-	// $.ajax({
-	// 	type: "GET",
-	// 	url: "/api/scenetype",
-	// 	success: function ( response ){
-	// 		if ( response.redirect ){
-	// 			window.location.href = response.redirect;
-	// 		} else {
-	// 			var sidebar = $('#customSidebar');
-	// 		}
-	// 	},
-	// 	error: function ( jqXHR, textStatus, errorThrown ){
-	// 		console.log('elementtype error:', textStatus, errorThrown);
-	// 	},
-	// 	dataType: "json"
-	// });
+	$.ajax({
+		type: "GET",
+		url: "/api/scenetype",
+		success: function ( response ){
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+
+				sceneTypes = response;
+
+				var newWorldDialog = $("#newWorldDialog"),
+					imageGrid = newWorldDialog.find('.img-grid');
+				
+				var html = '';
+				for ( key in response ){
+					var scenetype = response[key];
+					var div = '<div class="img-wrapper img-wrapper1"><div class="img-container">';
+					div += '<img name="' + scenetype.scenetypeId + '" src="' + scenetype.backgroundAvatar.url + '" width ="200" height="200">';
+					div += '</div></div>';
+
+					html += div;
+				}
+				imageGrid.html(html);
+			}
+
+			setupSceneChooser();
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('elementtype error:', textStatus, errorThrown);
+		},
+		dataType: "json"
+	});
 });
 
 
@@ -290,6 +307,8 @@ var currentDialog = null;
 var objectList = [];
 
 var sceneList = [];
+var currentScenetype = null;
+var sceneTypes = null;
 
 function Scene(){
 	this.elementList = []; // = objectList 
@@ -347,9 +366,11 @@ function saveElements(){
 	// }
 }
 
-
-$(document).ready(function(){
+function setupSceneChooser() {
 	$(".img-grid").on("dblclick", "img", function(e){
+		var scenetypeId = e.target.getAttribute('name');
+
+		
 		var imgUrl = e.target.getAttribute('src');
 		$("#mainFrame").css({
 			"background-image": "url('"+ imgUrl + "')",
@@ -363,20 +384,5 @@ $(document).ready(function(){
 		$(".draggable").tooltip({disabled: false});
 		$("#storylineButton").show();
 		$("#newWorldDialog").dialog("close");
-	});
-	
-	$.ajax({
-		type: "POST",
-		url: "/api/element/23",
-		data: {
-			element_type_id: "1",
-			frame_x: "5",
-			frame_y: "5",
-			frame_width: "100",
-			frame_height: "100",
-			scene_id: "100",
-		},
-		success: function (response) {console.log(response)},
-		dataType: "json"
-	});
-});
+	});	
+}

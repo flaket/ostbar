@@ -174,7 +174,7 @@ CREATE TABLE `avatar` (
   `avatar_id` int(11) NOT NULL AUTO_INCREMENT,
   `url` varchar(50) NOT NULL,
   PRIMARY KEY (`avatar_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -183,7 +183,7 @@ CREATE TABLE `avatar` (
 
 LOCK TABLES `avatar` WRITE;
 /*!40000 ALTER TABLE `avatar` DISABLE KEYS */;
-INSERT INTO `avatar` VALUES (1,'p1.png'),(2,'p2.svg'),(3,'p3.tiff');
+INSERT INTO `avatar` VALUES (1,'/gfx/bg1.svg'),(2,'/gfx/bg2.jpg'),(3,'/gfx/bg3.jpg'),(4,'/gfx/bg4.jpg'),(5,'/gfx/bg5.jpg'),(6,'/gfx/bg6.jpg');
 /*!40000 ALTER TABLE `avatar` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -540,7 +540,7 @@ CREATE TABLE `scene` (
 
 LOCK TABLES `scene` WRITE;
 /*!40000 ALTER TABLE `scene` DISABLE KEYS */;
-INSERT INTO `scene` VALUES (1,1,1),(5,1,1),(6,123,1);
+INSERT INTO `scene` VALUES (1,1,1),(5,1,1);
 /*!40000 ALTER TABLE `scene` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -580,7 +580,7 @@ CREATE TABLE `scenetype` (
   `background_avatar_id` int(11) NOT NULL,
   `world_id` int(11) NOT NULL,
   PRIMARY KEY (`scenetype_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -589,7 +589,7 @@ CREATE TABLE `scenetype` (
 
 LOCK TABLES `scenetype` WRITE;
 /*!40000 ALTER TABLE `scenetype` DISABLE KEYS */;
-INSERT INTO `scenetype` VALUES (1,1,1);
+INSERT INTO `scenetype` VALUES (1,1,1),(2,2,2),(3,3,3),(4,4,4),(5,5,5),(6,6,6);
 /*!40000 ALTER TABLE `scenetype` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -680,7 +680,7 @@ CREATE TABLE `world` (
   `world_id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   PRIMARY KEY (`world_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -689,7 +689,7 @@ CREATE TABLE `world` (
 
 LOCK TABLES `world` WRITE;
 /*!40000 ALTER TABLE `world` DISABLE KEYS */;
-INSERT INTO `world` VALUES (1,'En bondegård'),(2,'I verdensrommet');
+INSERT INTO `world` VALUES (1,'Bondegård'),(2,'Verdensrommet'),(3,'Skolegården'),(4,'Hjemme'),(5,'Snøverden'),(6,'Kjøkkenet');
 /*!40000 ALTER TABLE `world` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -702,4 +702,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-11-07 13:15:09
+-- Dump completed on 2013-11-07 14:17:14
