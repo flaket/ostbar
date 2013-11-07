@@ -130,28 +130,29 @@ module.exports = function ( app ){
         standardGETResponse( req, res, models.Scene );
     });
 
+    app.get( '/api/scenetype/:id?', auth, function ( req, res ){
+        standardGETResponse( req, res, models.SceneType );
+    });
+
     app.post( '/api/scene/:id?', auth, function ( req, res ){
         var Scene = models.Scene;
 
         if ( req.params.id ) return res.send( { error: 'not implemented' } );
 
         req.checkBody( 'game_id', 'game_id (int) is required' ).isInt();
-        req.checkBody( 'world_id', 'world_id (int) is required' ).isInt();
-        req.checkBody( 'background_avatar_id', 'background_avatar_id (int) is required' ).isInt();
-
+        req.checkBody( 'scenetype_id', 'scenetype_id (int) is required' ).isInt();
+        
         req.sanitize( 'game_id' ).toInt();
-        req.sanitize( 'world_id' ).toInt();
-        req.sanitize( 'background_avatar_id' ).toInt();
-
+        req.sanitize( 'scenetype_id' ).toInt();
+        
         var errors = req.validationErrors();
 
         if ( errors ) return res.send( { error: errors } );
 
         var game_id                 = req.body.game_id,
-            world_id                = req.body.world_id,
-            background_avatar_id    = req.body.background_avatar_id;
+            scenetype_id            = req.body.scenetype_id;
 
-        Scene.create( game_id, world_id, background_avatar_id, function ( error, scene ){
+        Scene.create( scenetype_id, game_id, function ( error, scene ){
             if ( error ) res.send( { error: error } );
 
             if ( scene ) res.send( { scene: scene } );
