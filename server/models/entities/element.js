@@ -50,7 +50,6 @@ Element.loadAllInScene = function ( sceneId, callback ){
 
 Element.create = function ( elementTypeId, frame, sceneId, callback ){
     if ( elementTypeId == null || frame == null || sceneId == null){
-        console.log('an argument is null', elementTypeId, frame, sceneId);
         return callback( null, false );
     }
 
