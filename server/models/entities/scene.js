@@ -3,17 +3,15 @@ var DB      = require( '../db' );
 var db      = DB.instance;
 var async   = require( 'async' );
 
-var Avatar  = require( './avatar' ).Avatar;
-var World   = require( './world' ).World;
 var Element = require( './element' ).Element;
+var SceneType = require( './scenetype' ).SceneType;
 
 function Scene( data ){
     Entity.call( this );
 
     this.sceneId = data.scene_id;
     this.gameId = data.gameId;
-    this.world = data.world;
-    this.backgroundAvatar = data.backgroundAvatar;
+    this.sceneType = data.sceneType;
     this.elements = data.elements;
 }
 
@@ -42,12 +40,12 @@ Scene.loadAllInGame = function ( gameId, callback ){
     });
 }
 
-Scene.create = function ( gameId, worldId, backgroundAvatarId, callback ){
-    if ( gameId == null || worldId == null || backgroundAvatarId == null ){
+Scene.create = function ( scenetype_id, gameId, callback ){
+    if ( gameId == null || scenetype_id == null ){
         return callback( null, false );
     }
 
-    db.query( 'INSERT INTO scene VALUES (NULL, ?, ?, ?)', [gameId, worldId, backgroundAvatarId], function ( error, rows, fields ){
+    db.query( 'INSERT INTO scene VALUES (NULL, ?, ?)', [scenetype_id, gameId], function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
         if ( rows.insertId ) Scene.loadById( rows.insertId, callback );
@@ -59,16 +57,14 @@ Scene.initWithData = function ( data, callback ){
     if ( data == null ) return callback( null, false );
 
     async.parallel({
-        backgroundAvatar: Avatar.loadById.bind( Avatar, data.background_avatar_id ),
-        elements: Element.loadAllInScene.bind( Element, data.scene_id ),
-        world: World.loadById.bind( World, data.world_id )
+        sceneType: SceneType.loadById.bind( SceneType, data.scenetype_id ),
+        elements: Element.loadAllInScene.bind( Element, data.scene_id )
     },
     function ( error, results ){
         if ( error ) return callback( error, false );
         
-        data.backgroundAvatar = results.backgroundAvatar;
+        data.sceneType = results.sceneType;
         data.elements = results.elements;
-        data.world = results.world;
         callback( null, new Scene( data ) );  
     });
 }

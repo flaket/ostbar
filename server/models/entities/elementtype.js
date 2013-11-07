@@ -38,9 +38,6 @@ ElementType.loadAll = function ( callback ){
     db.query( 'SELECT * FROM element_type', function ( error, rows, fields ){
         if (error) return callback( error, false );
 
-        var elementTypes = new Array();
-        var currentElementType = 0;
-
         async.map( rows, ElementType.initWithData, callback );
     });
 };

@@ -6,7 +6,6 @@ function World( data ){
     Entity.call( this );
 
     this.worldId = data.world_id;
-    this.world = data.world;
     this.title = data.title;
 }
 
