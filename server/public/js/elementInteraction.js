@@ -266,6 +266,18 @@ jQuery(document).ready(function(){
 		runAnimationEffect(currentDialog);
 		return false;
 	});
+
+	$.ajax({
+		type: "GET",
+		url: "/api/elementtype",
+		success: function ( response ){
+			console.log('elementtype:', response)
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('elementtype error:', textStatus, errorThrown);
+		},
+		dataType: "json"
+	});
 });
 
 
@@ -442,5 +454,19 @@ $(document).ready(function(){
 		$(".draggable").tooltip({disabled: false});
 		$("#storylineButton").show();
 		$("#newWorldDialog").dialog("close");
+	});
+	
+	$.ajax({
+		type: "POST",
+		url: "/api/element/2",
+		data: {
+			element_type_id: "2",
+			frame_x: "5",
+			frame_y: "5",
+			frame_width: "100",
+			frame_height: "100",
+		},
+		success: function (response) {console.log(response)},
+		dataType: "json"
 	});
 });

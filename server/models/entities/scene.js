@@ -27,24 +27,18 @@ Scene.loadById = function ( id, callback ){
     db.query( 'SELECT * FROM scene WHERE scene_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        if ( rows.length == 1 ){
-            var data = rows[0];
-
-            async.parallel({
-                backgroundAvatar: Avatar.loadById.bind( Avatar, data.background_avatar_id ),
-                elements: Element.loadAllInScene.bind( Element, data.scene_id ),
-                world: World.loadById.bind( World, data.world_id )
-            },
-            function ( error, results ){
-                if ( error ) return callback( error, false );
-                
-                data.backgroundAvatar = results.backgroundAvatar;
-                data.elements = results.elements;
-                data.world = results.world;
-                callback( null, new Scene( data ) );  
-            });
-        }
+        if ( rows.length == 1 ) Scene.initWithData( rows[0], callback );
         else callback( 'Could not load Scene with id ' + id, false );
+    });
+}
+
+Scene.loadAllInGame = function ( gameId, callback ){
+    if ( gameId == null ) return callback( null, false );
+
+    db.query('SELECT * FROM scene WHERE game_id = ?', gameId, function ( error, rows, fields ){
+        if ( error ) callback( error, false );
+
+        async.map( rows, Scene.initWithData, callback );
     });
 }
 
@@ -58,6 +52,24 @@ Scene.create = function ( gameId, worldId, backgroundAvatarId, callback ){
 
         if ( rows.insertId ) Scene.loadById( rows.insertId, callback );
         else callback( null, false );
+    });
+}
+
+Scene.initWithData = function ( data, callback ){
+    if ( data == null ) return callback( null, false );
+
+    async.parallel({
+        backgroundAvatar: Avatar.loadById.bind( Avatar, data.background_avatar_id ),
+        elements: Element.loadAllInScene.bind( Element, data.scene_id ),
+        world: World.loadById.bind( World, data.world_id )
+    },
+    function ( error, results ){
+        if ( error ) return callback( error, false );
+        
+        data.backgroundAvatar = results.backgroundAvatar;
+        data.elements = results.elements;
+        data.world = results.world;
+        callback( null, new Scene( data ) );  
     });
 }
 

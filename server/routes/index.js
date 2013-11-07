@@ -193,12 +193,16 @@ module.exports.mygames = function ( req, res ){
 
 module.exports.game_post = function ( req, res ){
     Game.loadByIdForUser( req.params.id, req.user.userId, function ( error, game ){
+        console.log('error:', error);
+
         if ( error ){
             return res.send( { error: error });
         }
 
-        game.setName( req.query.name, function ( error, success ){
-            console.log('success was', success)
+        req.checkBody('name', 'name (string) is required').notEmpty();
+
+        game.setName( req.body.name, function ( error, success ){
+            console.log('game setName', error, success);
             if ( success ) res.send( { game: game } );
             else res.send( null );
         });
