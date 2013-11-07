@@ -10,23 +10,27 @@
 @import "../vendor/foundation/foundation";
 
 // fonts
-@import "NEORD";
+/*@import "NEORD";
 @import "AlteHaasGrotesk";
-@import "Sansation";
+@import "Sansation";*/
+@import url(http://fonts.googleapis.com/css?family=Raleway:400,200,700);
 
 h1, h2, h3 {
-    font-family: 'Sansation-Regular';
-    color: rgb(28, 28, 28);
+    font-family: 'Raleway', sans-serif;
+    font-weight: 200;
+    color: rgba(28, 28, 28, 0.7);
 }
 
 h4, h5, h6 {
-    font-family: 'Sansation-Regular';
-    color: rgb(28, 28, 28);
+    font-family: 'Raleway', sans-serif;
+    font-weight: 400;
+    color: rgba(28, 28, 28, 0.9);
 }
 
-.top-bar .name h1 a {
-    font-family: 'Sansation-Light';
-}
+/*.top-bar .name h1 a {
+    font-family: 'Raleway', sans-serif;
+    font-weight: 400;
+}*/
 
 // our styles
 .button {
