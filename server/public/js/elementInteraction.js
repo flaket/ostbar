@@ -285,10 +285,11 @@ jQuery(document).ready(function(){
 var currentDialog = null;
 var objectList = [];
 
+var currentScene = null;
 var sceneList = [];
 
 function Scene(){
-	this.elementList = []; // = objectList 
+	this.elementList = []; // = objectList
 }
 
 
@@ -363,14 +364,11 @@ $(document).ready(function(){
 	
 	$.ajax({
 		type: "POST",
-		url: "/api/element/23",
+		url: "/api/scene/?",
 		data: {
-			element_type_id: "1",
-			frame_x: "5",
-			frame_y: "5",
-			frame_width: "100",
-			frame_height: "100",
-			scene_id: "100",
+			world_id: 1,
+			game_id: 1,
+			background_avatar_id: 1,
 		},
 		success: function (response) {console.log(response)},
 		dataType: "json"
