@@ -269,21 +269,21 @@ jQuery(document).ready(function(){
 		return false;
 	});
 
-	// $.ajax({
-	// 	type: "GET",
-	// 	url: "/api/scenetype",
-	// 	success: function ( response ){
-	// 		if ( response.redirect ){
-	// 			window.location.href = response.redirect;
-	// 		} else {
-	// 			var sidebar = $('#customSidebar');
-	// 		}
-	// 	},
-	// 	error: function ( jqXHR, textStatus, errorThrown ){
-	// 		console.log('elementtype error:', textStatus, errorThrown);
-	// 	},
-	// 	dataType: "json"
-	// });
+	$.ajax({
+		type: "GET",
+		url: "/api/elementtype",
+		success: function ( response ){
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				var sidebar = $('#customSidebar');
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('elementtype error:', textStatus, errorThrown);
+		},
+		dataType: "json"
+	});
 });
 
 
@@ -323,15 +323,13 @@ function saveContentFromMainFrame(){
 //pseudo
 function saveElements(){
 
-//access width and height, x and y:
-// var div = currentDialog.div;
-// console.log(currentDialog.div.offsetParent.offsetParent.offsetLeft); //x
-// console.log(currentDialog.div.offsetParent.offsetParent.offsetTop); //y
+	//May need more stuff here
 
-// console.log(currentDialog.div.offsetParent.offsetParent.offsetHeight); //height
-// console.log(currentDialog.div.offsetParent.offsetParent.offsetWidth); //width
 
-	// for(var i = 0; i < objectList.length, i++){
+
+	
+	//Save call for database
+	for(var i = 0; i < objectList.length; i++){
 		var temp = objectList[i];
 		if (temp.element_id < 0){
 			$.ajax({
@@ -371,7 +369,7 @@ function saveElements(){
 				dataType: "json"
 			});
 		}
-	// }
+	}
 }
 
 
