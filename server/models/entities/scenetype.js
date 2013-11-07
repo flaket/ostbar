@@ -50,8 +50,6 @@ SceneType.initWithData = function ( data, callback ){
         data.world = results.world;
         data.backgroundAvatar = results.backgroundAvatar;
 
-        console.log('initing with data', data);
-
         callback( null, new SceneType( data ));
     });
 };

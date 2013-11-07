@@ -267,21 +267,21 @@ jQuery(document).ready(function(){
 		return false;
 	});
 
-	$.ajax({
-		type: "GET",
-		url: "/api/elementtype",
-		success: function ( response ){
-			if ( response.redirect ){
-				window.location.href = response.redirect;
-			} else {
-				var sidebar = $('#customSidebar');
-			}
-		},
-		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('elementtype error:', textStatus, errorThrown);
-		},
-		dataType: "json"
-	});
+	// $.ajax({
+	// 	type: "GET",
+	// 	url: "/api/scenetype",
+	// 	success: function ( response ){
+	// 		if ( response.redirect ){
+	// 			window.location.href = response.redirect;
+	// 		} else {
+	// 			var sidebar = $('#customSidebar');
+	// 		}
+	// 	},
+	// 	error: function ( jqXHR, textStatus, errorThrown ){
+	// 		console.log('elementtype error:', textStatus, errorThrown);
+	// 	},
+	// 	dataType: "json"
+	// });
 });
 
 
