@@ -439,6 +439,7 @@ function choseSceneFromSceneChooser() {
 				success: function ( response ){
 					sceneList.push(response);
 					currentScene = response;
+					currentGame.initialSceneId = currentScene.sceneId;
 
 					var imgUrl = currentSceneType.backgroundAvatar.url;
 					$("#mainFrame").css({
