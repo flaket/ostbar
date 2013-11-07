@@ -149,7 +149,7 @@ jQuery(document).ready(function(){
 										console.log("refresh math object");
 										console.log(currentDialog);
 										console.log("\n");
-										createMathActivity(currentDialog.activityObject);
+										createNewMathActivity(currentDialog.activityObject);
 									}
 									if(!currentDialog.activityClickActionMade && currentDialog.activityIndex == 0){
 										$(target).on("click", mathActivityFunction);
