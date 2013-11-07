@@ -42,7 +42,6 @@ module.exports = function ( app ){
     });
 
     app.get( '/api/element/:id?', function ( req, res ){
-        console.log( '!!! REMOVE ELEMENT GET !!!' );
         standardGETResponse( req, res, models.Element );
     });
 
@@ -136,6 +135,7 @@ module.exports = function ( app ){
 
     app.post( '/api/scene/:id?', auth, function ( req, res ){
         var Scene = models.Scene;
+        var Game = models.Game;
 
         if ( req.params.id ) return res.send( { error: 'not implemented' } );
 
@@ -144,7 +144,8 @@ module.exports = function ( app ){
         
         req.sanitize( 'game_id' ).toInt();
         req.sanitize( 'scenetype_id' ).toInt();
-        
+        req.sanitize( 'is_initial_scene').toBoolean();
+
         var errors = req.validationErrors();
 
         if ( errors ) return res.send( { error: errors } );
@@ -155,14 +156,29 @@ module.exports = function ( app ){
         Scene.create( scenetype_id, game_id, function ( error, scene ){
             if ( error ) res.send( { error: error } );
 
-            if ( scene ) res.send( { scene: scene } );
+            if ( scene ){
+                if ( req.body.is_initial_scene ){
+                    Game.loadById( game_id, function ( error, game ){
+                        if ( error ) return res.send( { error: error } );
+
+                        if ( game ){
+                            game.setInitialSceneId( scene.sceneId, function ( error, success ){
+                                if ( error ) return res.send( { error: error } );
+
+                                if ( success ) return res.send( { scene: scene } );
+                                else return requestError( res, 'Kunne ikke sette initialSceneId på game' + game_id);
+                            });
+                        } else return requestError( res, 'Kunne ikke sette initialSceneId, fordi det ikke eksisterer' );
+                    });
+                } else {
+                    res.send( { scene: scene } );
+                }
+            }
             else emptyResponse( res );
         });
     });
 
-    app.post( '/api/element/:id?/:method?', function ( req, res ){
-        console.log('!!! PUT BACK AUTH IN ELEMENT POST !!!');
-
+    app.post( '/api/element/:id?/:method?', auth, function ( req, res ){
         var Element = models.Element,
             Scene = models.Scene;
 

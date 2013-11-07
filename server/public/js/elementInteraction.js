@@ -2,7 +2,7 @@ var initialCallsReturned = 0;
 var initialCallsShouldReturn = 2;
 
 var currentDialog = null;
-var objectList = [];
+var currentObjectList = null;
 
 var currentScene = null;
 var sceneList = [];
@@ -11,6 +11,10 @@ var sceneTypes = null;
 
 var currentGame = null;
 var gameId = 0;
+
+function ObjectList(){
+	this.objectList = [];
+}
 
 jQuery(document).ready(function(){
 	
@@ -73,12 +77,12 @@ jQuery(document).ready(function(){
 		if(currentDialog == null){
 			var dia = new Dialog(target);
 			currentDialog = dia;
-			objectList.push(dia);
+			currentObjectList.objectList.push(dia);
 		}
 		else if(currentDialog.div != target){
-			var index = inList(objectList,target);
+			var index = inList(currentObjectList.objectList,target);
 			if(index>=0){
-				currentDialog = objectList[index];
+				currentDialog = currentObjectList.objectList[index];
 			}
 			else{
 				var dia = new Dialog(target);
@@ -88,7 +92,9 @@ jQuery(document).ready(function(){
 			}
 		}
 		console.log(currentDialog);
-		console.log(objectList);
+		console.log(currentObjectList);
+		console.log(currentScene);
+		console.log(sceneList);
 		
 		saveElements();
 		
@@ -96,7 +102,7 @@ jQuery(document).ready(function(){
 		
 		resetCheckBoxes(currentDialog);
 		
-		var index = inList(objectList,target);
+		var index = inList(currentObjectList.objectList,target);
 		
 		// a new dialog should me made for each element, and should remember check boxes checked 
 		$(".dialog").dialog({
@@ -156,7 +162,7 @@ jQuery(document).ready(function(){
 										}
 										currentDialog.activityIndex = 0;
 										var mathObject = new MathActivity();
-										console.log(objectList);
+										console.log(currentObjectList.objectList);
 										currentDialog.activityObject = mathObject;
 										console.log("new mathobject");
 										console.log(currentDialog);
@@ -243,7 +249,7 @@ jQuery(document).ready(function(){
 								},
 								"Avbryt": function(){
 									$(this).dialog("close");
-									objectList[index] = previousVersionDialog;
+									currentObjectList.objectList[index] = previousVersionDialog;
 									currentDialog = previousVersionDialog;
 								}
 							}
@@ -291,14 +297,14 @@ jQuery(document).ready(function(){
 				},
 				"Avbryt": function(){
 					$(this).dialog("close");
-					objectList[index] = previousVersionDialog;
+					currentObjectList.objectList[index] = previousVersionDialog;
 					currentDialog = previousVersionDialog;
 				},
 				"Slett": function(){
 					$('input[type=checkbox]').attr('checked', false);
 					$("#effectTypes").attr("disabled", true);
 					$("#button").attr("disabled", true);
-					objectList.splice(index,1); //removes from the list
+					currentObjectList.objectList.splice(index,1); //removes from the list
 					$(parent).remove();
 					$(this).dialog("close");
 				}
@@ -340,7 +346,7 @@ jQuery(document).ready(function(){
 			setupAfterCallsReturns();
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('elementtype error:', textStatus, errorThrown);
+			console.log('get scenetype error:', textStatus, errorThrown);
 		},
 		dataType: "json"
 	});
@@ -359,23 +365,21 @@ jQuery(document).ready(function(){
 				} else {
 					$("#newWorldButton").hide();
 
-					console.log(currentGame);
-
 					if (currentGame.initialSceneId != null){
-						console.log('has initial scene id', currentGame.initialSceneId);
-
 						for ( key in currentGame.scenes ){
 							var scene = currentGame.scenes[key];
+							scene.objectList = new ObjectList();
+							sceneList.push(scene);
 							if ( scene.sceneId == currentGame.initialSceneId ){
 								currentScene = scene;
-								break;
+								currentObjectList = currentScene.objectList;
 							}
 						}
-
-						initialCallsReturned++;
-						setupAfterCallsReturns();
 					}
 				}
+
+				initialCallsReturned++;
+				setupAfterCallsReturns();
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
@@ -385,6 +389,7 @@ jQuery(document).ready(function(){
 });
 
 function setupAfterCallsReturns() {
+	console.log(currentScene);
 	if ( initialCallsReturned == initialCallsShouldReturn ){
 		if ( currentScene != null ){
 
@@ -403,12 +408,12 @@ function setupAfterCallsReturns() {
 			$(".draggable").tooltip({disabled: false});
 			$("#storylineButton").show();
 		} else {
-			setupSceneChooser();
+			choseSceneFromSceneChooser();
 		}
 	}
 }
 
-function setupSceneChooser() {
+function choseSceneFromSceneChooser() {
 	$(".img-grid").on("dblclick", "img", function(e){
 		var sceneTypeId = e.target.getAttribute('name');
 
@@ -428,7 +433,8 @@ function setupSceneChooser() {
 				url: "/api/scene",
 				data: {
 					game_id: gameId,
-					scenetype_id: currentSceneType.sceneTypeId
+					scenetype_id: currentSceneType.sceneTypeId,
+					is_initial_scene: true
 				},
 				success: function ( response ){
 					sceneList.push(response);
@@ -449,19 +455,13 @@ function setupSceneChooser() {
 					$("#newWorldDialog").dialog("close");
 				},
 				error: function ( jqXHR, textStatus, errorThrown ){
-					console.log('create scene error:', jqXHR, textStatus, errorThrown);
+					console.log('post scene error:', jqXHR, textStatus, errorThrown);
 				},
 				dataType: "json" 
 			});
 		}
 	});	
 }
-
-function Scene(){
-	this.elementList = []; // = objectList
-	this.scene_id = -1
-}
-
 
 function saveContentFromMainFrame(){
 	$(".textarea").hide();
@@ -485,12 +485,11 @@ function saveContentFromMainFrame(){
 
 //pseudo
 function saveElements(){
-
 	//May need more stuff here
 
 	//Save call for database
-	for(var i = 0; i < objectList.length; i++){
-		var temp = objectList[i];
+	for(var i = 0; i < currentObjectList.objectList.length; i++){
+		var temp = currentObjectList.objectList[i];
 		if (temp.element_id < 0){
 			$.ajax({
 				type: "POST",
@@ -501,11 +500,15 @@ function saveElements(){
 					frame_y : temp.div.offsetParent.offsetParent.offsetTop,
 					frame_width: temp.div.offsetParent.offsetParent.offsetWidth,
 					frame_height : temp.div.offsetParent.offsetParent.offsetHeight,
-					scene_id: "2"
+					scene_id: currentScene.sceneId,
 				},
 				success: function (response) {
-					console.log(response);
-					temp.element_id = response.elementId;
+					if ( response.redirect ){
+						window.location.href = response.redirect;
+					} else {
+						console.log(response);
+						temp.element_id = response.elementId;
+					}
 				},
 				dataType: "json"
 			});
@@ -520,11 +523,14 @@ function saveElements(){
 					frame_y : temp.div.offsetParent.offsetParent.offsetTop,
 					frame_width: temp.div.offsetParent.offsetParent.offsetWidth,
 					frame_height : temp.div.offsetParent.offsetParent.offsetHeight,
-					scene_id: "2"
+					scene_id: currentScene.sceneId,
 				},
 				success: function (response) {
-					console.log(response);
-					temp.element_id = response.elementId;
+					if ( response.redirect ){
+						window.location.href = response.redirect;
+					} else {
+						console.log(response);
+					}
 				},
 				dataType: "json"
 			});

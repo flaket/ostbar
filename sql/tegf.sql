@@ -202,7 +202,7 @@ CREATE TABLE `element` (
   `frame_width` double NOT NULL,
   `frame_height` double NOT NULL,
   PRIMARY KEY (`element_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -211,7 +211,7 @@ CREATE TABLE `element` (
 
 LOCK TABLES `element` WRITE;
 /*!40000 ALTER TABLE `element` DISABLE KEYS */;
-INSERT INTO `element` VALUES (1,4,101,102,103,104),(2,2,5,5,100,100);
+INSERT INTO `element` VALUES (1,4,101,102,103,104),(2,2,5,5,100,100),(3,1,0,0,1140,722),(4,1,0,0,1140,782);
 /*!40000 ALTER TABLE `element` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -315,7 +315,7 @@ CREATE TABLE `game` (
 
 LOCK TABLES `game` WRITE;
 /*!40000 ALTER TABLE `game` DISABLE KEYS */;
-INSERT INTO `game` VALUES (1,1,'Spill nr 1',1,1,'2013-09-23 12:21:07',NULL),(2,1,'Spill nr 2',1,1,'2013-10-13 14:50:03',NULL),(4,1,'Spill nr 3',NULL,NULL,'2013-10-31 15:23:20',NULL),(5,1,'Spill nr 4',NULL,NULL,'2013-10-31 15:24:04',NULL),(6,1,'Spill nr 5',NULL,NULL,'2013-10-31 15:25:50',NULL);
+INSERT INTO `game` VALUES (1,1,'Spill nr 1',NULL,NULL,'2013-09-23 12:21:07',NULL),(2,1,'Spill nr 2',1,NULL,'2013-10-13 14:50:03',NULL),(4,1,'Spill nr 3',NULL,NULL,'2013-10-31 15:23:20',NULL),(5,1,'Spill nr 4',NULL,NULL,'2013-10-31 15:24:04',NULL),(6,1,'Spill nr 5',NULL,NULL,'2013-10-31 15:25:50',NULL);
 /*!40000 ALTER TABLE `game` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -531,7 +531,7 @@ CREATE TABLE `scene` (
   `scenetype_id` int(11) NOT NULL,
   `game_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`scene_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -540,7 +540,7 @@ CREATE TABLE `scene` (
 
 LOCK TABLES `scene` WRITE;
 /*!40000 ALTER TABLE `scene` DISABLE KEYS */;
-INSERT INTO `scene` VALUES (1,1,1),(5,1,1);
+INSERT INTO `scene` VALUES (1,6,2);
 /*!40000 ALTER TABLE `scene` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -564,7 +564,7 @@ CREATE TABLE `scene_to_element_rel` (
 
 LOCK TABLES `scene_to_element_rel` WRITE;
 /*!40000 ALTER TABLE `scene_to_element_rel` DISABLE KEYS */;
-INSERT INTO `scene_to_element_rel` VALUES (1,1),(1,2);
+INSERT INTO `scene_to_element_rel` VALUES (1,1),(1,2),(2,3),(2,4);
 /*!40000 ALTER TABLE `scene_to_element_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -702,4 +702,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-11-07 14:17:14
+-- Dump completed on 2013-11-07 16:01:45
