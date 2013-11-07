@@ -174,7 +174,7 @@ CREATE TABLE `avatar` (
   `avatar_id` int(11) NOT NULL AUTO_INCREMENT,
   `url` varchar(50) NOT NULL,
   PRIMARY KEY (`avatar_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -183,7 +183,7 @@ CREATE TABLE `avatar` (
 
 LOCK TABLES `avatar` WRITE;
 /*!40000 ALTER TABLE `avatar` DISABLE KEYS */;
-INSERT INTO `avatar` VALUES (1,'p1.png'),(2,'p2.svg'),(3,'p3.tiff');
+INSERT INTO `avatar` VALUES (1,'/gfx/bg1.svg'),(2,'/gfx/bg2.jpg'),(3,'/gfx/bg3.jpg'),(4,'/gfx/bg4.jpg'),(5,'/gfx/bg5.jpg'),(6,'/gfx/bg6.jpg');
 /*!40000 ALTER TABLE `avatar` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -202,7 +202,7 @@ CREATE TABLE `element` (
   `frame_width` double NOT NULL,
   `frame_height` double NOT NULL,
   PRIMARY KEY (`element_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -211,7 +211,7 @@ CREATE TABLE `element` (
 
 LOCK TABLES `element` WRITE;
 /*!40000 ALTER TABLE `element` DISABLE KEYS */;
-INSERT INTO `element` VALUES (1,4,101,102,103,104),(12,1,1,2,3,4),(14,1,111,222,333,4444);
+INSERT INTO `element` VALUES (1,4,101,102,103,104),(2,2,5,5,100,100);
 /*!40000 ALTER TABLE `element` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -236,7 +236,7 @@ CREATE TABLE `element_to_action_type_rel` (
 
 LOCK TABLES `element_to_action_type_rel` WRITE;
 /*!40000 ALTER TABLE `element_to_action_type_rel` DISABLE KEYS */;
-INSERT INTO `element_to_action_type_rel` VALUES (1,2,'1'),(2,3,'x');
+INSERT INTO `element_to_action_type_rel` VALUES (1,2,'1'),(1,4,'123'),(2,3,'x');
 /*!40000 ALTER TABLE `element_to_action_type_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -528,11 +528,10 @@ DROP TABLE IF EXISTS `scene`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `scene` (
   `scene_id` int(11) NOT NULL AUTO_INCREMENT,
+  `scenetype_id` int(11) NOT NULL,
   `game_id` int(11) DEFAULT NULL,
-  `world_id` int(11) NOT NULL,
-  `background_avatar_id` int(11) NOT NULL,
   PRIMARY KEY (`scene_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -541,7 +540,7 @@ CREATE TABLE `scene` (
 
 LOCK TABLES `scene` WRITE;
 /*!40000 ALTER TABLE `scene` DISABLE KEYS */;
-INSERT INTO `scene` VALUES (1,1,1,1),(2,2,2,2),(4,1,1,1);
+INSERT INTO `scene` VALUES (1,1,1),(5,1,1);
 /*!40000 ALTER TABLE `scene` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -565,8 +564,33 @@ CREATE TABLE `scene_to_element_rel` (
 
 LOCK TABLES `scene_to_element_rel` WRITE;
 /*!40000 ALTER TABLE `scene_to_element_rel` DISABLE KEYS */;
-INSERT INTO `scene_to_element_rel` VALUES (1,1),(4,14),(12,2);
+INSERT INTO `scene_to_element_rel` VALUES (1,1),(1,2);
 /*!40000 ALTER TABLE `scene_to_element_rel` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `scenetype`
+--
+
+DROP TABLE IF EXISTS `scenetype`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `scenetype` (
+  `scenetype_id` int(11) NOT NULL AUTO_INCREMENT,
+  `background_avatar_id` int(11) NOT NULL,
+  `world_id` int(11) NOT NULL,
+  PRIMARY KEY (`scenetype_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `scenetype`
+--
+
+LOCK TABLES `scenetype` WRITE;
+/*!40000 ALTER TABLE `scenetype` DISABLE KEYS */;
+INSERT INTO `scenetype` VALUES (1,1,1),(2,2,2),(3,3,3),(4,4,4),(5,5,5),(6,6,6);
+/*!40000 ALTER TABLE `scenetype` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -654,10 +678,9 @@ DROP TABLE IF EXISTS `world`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `world` (
   `world_id` int(11) NOT NULL AUTO_INCREMENT,
-  `world` enum('FARM','SPACE') NOT NULL,
   `title` varchar(255) NOT NULL,
   PRIMARY KEY (`world_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -666,7 +689,7 @@ CREATE TABLE `world` (
 
 LOCK TABLES `world` WRITE;
 /*!40000 ALTER TABLE `world` DISABLE KEYS */;
-INSERT INTO `world` VALUES (1,'FARM','En bondegård'),(2,'SPACE','I verdensrommet');
+INSERT INTO `world` VALUES (1,'Bondegård'),(2,'Verdensrommet'),(3,'Skolegården'),(4,'Hjemme'),(5,'Snøverden'),(6,'Kjøkkenet');
 /*!40000 ALTER TABLE `world` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -679,4 +702,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-11-02 19:27:02
+-- Dump completed on 2013-11-07 14:17:14

@@ -49,6 +49,9 @@ module.exports.Reward   = Reward;
 var Scene               = require('./entities/scene').Scene;
 module.exports.Scene    = Scene;
 
+var SceneType           = require( './entities/scenetype').SceneType;
+module.exports.SceneType = SceneType;
+
 var Sound               = require('./entities/sound').Sound;
 module.exports.Sound    = Sound;
 

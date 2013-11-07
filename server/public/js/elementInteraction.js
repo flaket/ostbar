@@ -1,5 +1,21 @@
+var initialCallsReturned = 0;
+var initialCallsShouldReturn = 2;
+
+var currentDialog = null;
+var objectList = [];
+
+var currentScene = null;
+var sceneList = [];
+
+var sceneTypes = null;
+
+var currentGame = null;
+var gameId = 0;
+
 jQuery(document).ready(function(){
 	
+	gameId = parseInt($('#gameIdDiv').html());
+
 	$("#storylineButton").hide();
 	$(".elements").hide();
 	$(".draggable").tooltip({disabled: true});
@@ -43,7 +59,7 @@ jQuery(document).ready(function(){
 				"left": ui.offset.left
 			}).appendTo(".draggable").draggable({
 				containment:"parent"
-			}).removeClass("ui-draggable").toggleClass("element").children().children().resizable();
+			}).removeClass("ui-draggable").toggleClass("element");
 		}
 	});
 	
@@ -73,6 +89,8 @@ jQuery(document).ready(function(){
 		}
 		console.log(currentDialog);
 		console.log(objectList);
+		
+		saveElements();
 		
 		var previousVersionDialog = $.extend(true,{},currentDialog); // copy
 		
@@ -149,7 +167,7 @@ jQuery(document).ready(function(){
 										console.log("refresh math object");
 										console.log(currentDialog);
 										console.log("\n");
-										createMathActivity(currentDialog.activityObject);
+										createNewMathActivity(currentDialog.activityObject);
 									}
 									if(!currentDialog.activityClickActionMade && currentDialog.activityIndex == 0){
 										$(target).on("click", mathActivityFunction);
@@ -269,26 +287,153 @@ jQuery(document).ready(function(){
 
 	$.ajax({
 		type: "GET",
-		url: "/api/elementtype",
+		url: "/api/scenetype",
 		success: function ( response ){
-			console.log('elementtype:', response)
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+
+				sceneTypes = response;
+
+				var newWorldDialog = $("#newWorldDialog"),
+					imageGrid = newWorldDialog.find('.img-grid');
+				
+				var html = '';
+				for ( key in response ){
+					var scenetype = response[key];
+					var div = '<div class="img-wrapper img-wrapper1"><div class="img-container">';
+					div += '<img name="' + scenetype.sceneTypeId + '" src="' + scenetype.backgroundAvatar.url + '" width ="200" height="200">';
+					div += '</div></div>';
+
+					html += div;
+				}
+				imageGrid.html(html);
+			}
+
+			initialCallsReturned++;
+			setupAfterCallsReturns();
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
 			console.log('elementtype error:', textStatus, errorThrown);
 		},
 		dataType: "json"
 	});
+
+	$.ajax({
+		type: "GET",
+		url: '/api/game/' + gameId,
+		success: function ( response ){
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				currentGame = response;
+				if ( currentGame.scenes.length == 0){
+					$("#newWorldButton").show();
+
+				} else {
+					$("#newWorldButton").hide();
+
+					console.log(currentGame);
+
+					if (currentGame.initialSceneId != null){
+						console.log('has initial scene id', currentGame.initialSceneId);
+
+						for ( key in currentGame.scenes ){
+							var scene = currentGame.scenes[key];
+							if ( scene.sceneId == currentGame.initialSceneId ){
+								currentScene = scene;
+								break;
+							}
+						}
+
+						initialCallsReturned++;
+						setupAfterCallsReturns();
+					}
+				}
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('get game error:', textStatus, errorThrown);	
+		}
+	});
 });
 
+function setupAfterCallsReturns() {
+	if ( initialCallsReturned == initialCallsShouldReturn ){
+		if ( currentScene != null ){
 
+			currentSceneType = currentScene.sceneType;
 
-var currentDialog = null;
-var objectList = [];
+			var imgUrl = currentSceneType.backgroundAvatar.url;
+			$("#mainFrame").css({
+				"background-image": "url('"+ imgUrl + "')",
+				"background-repeat": "no-repeat",
+				"background-position": "center",
+				"background-size": "cover"
+			});
 
-var sceneList = [];
+			$(".elements").show();
+			$(".schoolbagImage").show();
+			$(".draggable").tooltip({disabled: false});
+			$("#storylineButton").show();
+		} else {
+			setupSceneChooser();
+		}
+	}
+}
+
+function setupSceneChooser() {
+	$(".img-grid").on("dblclick", "img", function(e){
+		var sceneTypeId = e.target.getAttribute('name');
+
+		var currentSceneType = null;
+		for ( key in sceneTypes ){
+			var sceneType = sceneTypes[key];
+
+			if ( sceneType.sceneTypeId == sceneTypeId ){
+				currentSceneType = sceneType;
+				break;
+			}
+		}
+
+		if ( currentSceneType != null ){
+			$.ajax({
+				type: "POST",
+				url: "/api/scene",
+				data: {
+					game_id: gameId,
+					scenetype_id: currentSceneType.sceneTypeId
+				},
+				success: function ( response ){
+					sceneList.push(response);
+					currentScene = response;
+
+					var imgUrl = currentSceneType.backgroundAvatar.url;
+					$("#mainFrame").css({
+						"background-image": "url('"+ imgUrl + "')",
+						"background-repeat": "no-repeat",
+						"background-position": "center",
+						"background-size": "cover"
+					});
+					$("#newWorldButton").hide();
+					$(".elements").show();
+					$(".schoolbagImage").show();
+					$(".draggable").tooltip({disabled: false});
+					$("#storylineButton").show();
+					$("#newWorldDialog").dialog("close");
+				},
+				error: function ( jqXHR, textStatus, errorThrown ){
+					console.log('create scene error:', jqXHR, textStatus, errorThrown);
+				},
+				dataType: "json" 
+			});
+		}
+	});	
+}
 
 function Scene(){
-	this.elementList = []; // = objectList 
+	this.elementList = []; // = objectList
+	this.scene_id = -1
 }
 
 
@@ -297,7 +442,6 @@ function saveContentFromMainFrame(){
 	var cloneOfMainFrame = $("#mainFrame").clone();
 	cloneOfMainFrame.css({"position": "relative"}).addClass("inStoryline").appendTo("#storylineDialog");
 	$("#mainFrame").empty();
-	
 	
 	//trying to make an element inside storyline clickable, when clicked it should be placed on mainframe
 	/*
@@ -316,63 +460,48 @@ function saveContentFromMainFrame(){
 //pseudo
 function saveElements(){
 
-//access width and height, x and y:
-// var div = currentDialog.div;
-// console.log(currentDialog.div.offsetParent.offsetParent.offsetLeft); //x
-// console.log(currentDialog.div.offsetParent.offsetParent.offsetTop); //y
+	//May need more stuff here
 
-// console.log(currentDialog.div.offsetParent.offsetParent.offsetHeight); //height
-// console.log(currentDialog.div.offsetParent.offsetParent.offsetTop); //width
-
-	// for(var i = 0; i < objectList.length, i++){
-		// $.ajax({
-			// type: "POST",
-			// url: "/api/element/",
-			// data: {
-				// element_type_id: 1,
-				// frame_x : 0,
-				// frame_y : 0,
-				// frame_width: 0,
-				// frame_height : 0,
-				// scene_id: 2
-			// },
-			// success: function (response) {console.log(response)},
-			// dataType: "json"
-		// });
-		
-	// }
+	//Save call for database
+	for(var i = 0; i < objectList.length; i++){
+		var temp = objectList[i];
+		if (temp.element_id < 0){
+			$.ajax({
+				type: "POST",
+				url: "/api/element/?",
+				data: {
+					element_type_id: "1",
+					frame_x : temp.div.offsetParent.offsetParent.offsetLeft,
+					frame_y : temp.div.offsetParent.offsetParent.offsetTop,
+					frame_width: temp.div.offsetParent.offsetParent.offsetWidth,
+					frame_height : temp.div.offsetParent.offsetParent.offsetHeight,
+					scene_id: "2"
+				},
+				success: function (response) {
+					console.log(response);
+					temp.element_id = response.elementId;
+				},
+				dataType: "json"
+			});
+		}
+		else{
+			$.ajax({
+				type: "POST",
+				url: "/api/element/"  +temp.element_id,
+				data: {
+					element_type_id: "1",
+					frame_x : temp.div.offsetParent.offsetParent.offsetLeft,
+					frame_y : temp.div.offsetParent.offsetParent.offsetTop,
+					frame_width: temp.div.offsetParent.offsetParent.offsetWidth,
+					frame_height : temp.div.offsetParent.offsetParent.offsetHeight,
+					scene_id: "2"
+				},
+				success: function (response) {
+					console.log(response);
+					temp.element_id = response.elementId;
+				},
+				dataType: "json"
+			});
+		}
+	}
 }
-
-
-$(document).ready(function(){
-	$(".img-grid").on("dblclick", "img", function(e){
-		var imgUrl = e.target.getAttribute('src');
-		$("#mainFrame").css({
-			"background-image": "url('"+ imgUrl + "')",
-			"background-repeat": "no-repeat",
-			"background-position": "center",
-			"background-size": "cover"
-		});
-		$("#newWorldButton").hide();
-		$(".elements").show();
-		$(".schoolbagImage").show();
-		$(".draggable").tooltip({disabled: false});
-		$("#storylineButton").show();
-		$("#newWorldDialog").dialog("close");
-	});
-	
-	$.ajax({
-		type: "POST",
-		url: "/api/element/23",
-		data: {
-			element_type_id: "1",
-			frame_x: "5",
-			frame_y: "5",
-			frame_width: "100",
-			frame_height: "100",
-			scene_id: "100",
-		},
-		success: function (response) {console.log(response)},
-		dataType: "json"
-	});
-});

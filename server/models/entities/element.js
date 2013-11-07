@@ -130,12 +130,14 @@ Element.prototype.addActionType = function( actionTypeId, data, callback ){
     };
 
     var query = 'INSERT INTO element_to_action_type_rel SET ?';
+    var self = this;
 
     db.query( query, post, function ( error, rows, fields ){
-        if ( error ) return callback( error, false );
+        if ( error && error.code == 'ER_DUP_ENTRY' ) return callback( 'Dette elementet har allerede denne handlingen', false );
+        else if ( error ) return callback( error, false );
 
-        if ( rows.insertId ) Element.loadById( this.elementId, callback );
-        else return callback( 'Could not add action type ' + actionTypeId + ' to element with id ' + this.elementId, false );
+        if ( rows.affectedRows ) Element.loadById( self.elementId, callback );
+        else return callback( 'Could not add action type ' + actionTypeId + ' to element with id ' + self.elementId, false );
     });
 };
 

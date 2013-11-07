@@ -65,10 +65,12 @@ function resetScore(){
 }
 
 function createMathActivity(mathObject){
+	console.log("math activity");
 	currentMathObject = mathObject;
 	
 	currentMathObject.questionsAnswered = 0;
 	currentMathObject.correctAnswers = 0;
+	currentMathObject.life = 3;
 	
 	resetScore();
 	
@@ -78,7 +80,6 @@ function createMathActivity(mathObject){
 
 function initializeMathDialog(){
 	$(".chooseActivityDialog").dialog("close");
-	console.log("math activity");
 	
 	var Wwidth = $(window).width();
 	var Wheight = $(window).height();
@@ -94,7 +95,6 @@ function initializeMathDialog(){
 		}
 	});
 	
-	currentMathObject.life = 3;
 }
 
 function beforeParametersAreSetView(){
@@ -172,7 +172,7 @@ function checkAnswer(){
 				setTimeout(function(){
 					alert("Du klarte ikke svare riktig på nok regnestykker. Prøv igjen!");
 					$(".numberOfQuestionsAnswered").text(currentMathObject.questionsAnswered+1);
-					alert("Du svarte riktig på " + currentMathObject.correctAnswers + " sporsmaal av totalt 10 sporsmaal");
+					alert("Du svarte riktig på " + currentMathObject.correctAnswers + " sporsmål av totalt 10 sporsmål");
 					$(".mathActivity").dialog("close");
 				}, 1000);
 				
@@ -190,7 +190,7 @@ function checkAnswer(){
 		setTimeout(function(){
 			if(currentMathObject.questionsAnswered == 9){
 				$(".numberOfQuestionsAnswered").text(currentMathObject.questionsAnswered+1);
-				alert("Du svarte riktig på " + currentMathObject.correctAnswers + " sporsmaal av totalt 10 sporsmaal");
+				alert("Du svarte riktig på " + currentMathObject.correctAnswers + " sporsmål av totalt 10 sporsmål");
 				$(".mathActivity").dialog("close");
 			}
 			if(currentMathObject.questionsAnswered!=9 && $(".answerField").val()!=""){
