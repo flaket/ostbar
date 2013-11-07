@@ -13,7 +13,8 @@ function Game( data ){
     this.gameId = data.game_id;
     this.userId = data.user_id;
     this.name = data.name;
-    this.initialScene = data.initial_scene;
+    this.initialSceneId = data.initial_scene_id;
+    this.scenes = data.scenes;
     this.goal = data.goal;
     this.created = data.created;
     this.deleted = data.deleted;
@@ -60,13 +61,14 @@ Game.initWithData = function ( data, callback ){
 
     async.parallel({
         goal: Goal.loadById.bind( Goal, data.goal_id ),
-        initial_scene: Scene.loadById.bind( Scene, data.initial_scene_id )
+        scenes: Scene.loadAllInGame.bind( Scene, data.game_id )
     },
     function ( error, results ){
         if ( error ) return callback( error, false );
 
         data.goal = results.goal;
-        data.initial_scene = results.initial_scene;
+        data.scenes = results.scenes;
+        
         callback(null,  new Game( data ) );
     });
 }
@@ -83,7 +85,6 @@ Game.create = function ( userId, name, callback ){
 }
 
 Game.prototype.setName = function ( name, callback ){
-
     if ( name == null ){
         return callback( 'Noe gikk galt, kan ikke sette navn = null', false );
     } else if ( name.length < 3 ){

@@ -266,6 +266,18 @@ jQuery(document).ready(function(){
 		runAnimationEffect(currentDialog);
 		return false;
 	});
+
+	$.ajax({
+		type: "GET",
+		url: "/api/elementtype",
+		success: function ( response ){
+			console.log('elementtype:', response)
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('elementtype error:', textStatus, errorThrown);
+		},
+		dataType: "json"
+	});
 });
 
 // function for running animation
