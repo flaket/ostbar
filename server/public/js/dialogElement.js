@@ -9,6 +9,7 @@ function Dialog(object){
 	
 	this.dialogData = "";
 	this.div = object;
+	this.element_id = -1;
 	
 	this.activityObject = null;
 	this.activityIndex = -1;

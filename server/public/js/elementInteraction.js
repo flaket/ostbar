@@ -74,6 +74,8 @@ jQuery(document).ready(function(){
 		console.log(currentDialog);
 		console.log(objectList);
 		
+		saveElements();
+		
 		var previousVersionDialog = $.extend(true,{},currentDialog); // copy
 		
 		resetCheckBoxes(currentDialog);
@@ -306,12 +308,14 @@ jQuery(document).ready(function(){
 var currentDialog = null;
 var objectList = [];
 
+var currentScene = null;
 var sceneList = [];
 var currentScenetype = null;
 var sceneTypes = null;
 
 function Scene(){
-	this.elementList = []; // = objectList 
+	this.elementList = []; // = objectList
+	this.scene_id = -1
 }
 
 
@@ -320,7 +324,6 @@ function saveContentFromMainFrame(){
 	var cloneOfMainFrame = $("#mainFrame").clone();
 	cloneOfMainFrame.css({"position": "relative"}).addClass("inStoryline").appendTo("#storylineDialog");
 	$("#mainFrame").empty();
-	
 	
 	//trying to make an element inside storyline clickable, when clicked it should be placed on mainframe
 	/*
@@ -339,31 +342,53 @@ function saveContentFromMainFrame(){
 //pseudo
 function saveElements(){
 
-//access width and height, x and y:
-// var div = currentDialog.div;
-// console.log(currentDialog.div.offsetParent.offsetParent.offsetLeft); //x
-// console.log(currentDialog.div.offsetParent.offsetParent.offsetTop); //y
+	//May need more stuff here
 
-// console.log(currentDialog.div.offsetParent.offsetParent.offsetHeight); //height
-// console.log(currentDialog.div.offsetParent.offsetParent.offsetTop); //width
 
-	// for(var i = 0; i < objectList.length, i++){
-		// $.ajax({
-			// type: "POST",
-			// url: "/api/element/",
-			// data: {
-				// element_type_id: 1,
-				// frame_x : 0,
-				// frame_y : 0,
-				// frame_width: 0,
-				// frame_height : 0,
-				// scene_id: 2
-			// },
-			// success: function (response) {console.log(response)},
-			// dataType: "json"
-		// });
-		
-	// }
+
+	
+	//Save call for database
+	for(var i = 0; i < objectList.length; i++){
+		var temp = objectList[i];
+		if (temp.element_id < 0){
+			$.ajax({
+				type: "POST",
+				url: "/api/element/?",
+				data: {
+					element_type_id: "1",
+					frame_x : temp.div.offsetParent.offsetParent.offsetLeft,
+					frame_y : temp.div.offsetParent.offsetParent.offsetTop,
+					frame_width: temp.div.offsetParent.offsetParent.offsetWidth,
+					frame_height : temp.div.offsetParent.offsetParent.offsetHeight,
+					scene_id: "2"
+				},
+				success: function (response) {
+					console.log(response);
+					temp.element_id = response.elementId;
+				},
+				dataType: "json"
+			});
+		}
+		else{
+			$.ajax({
+				type: "POST",
+				url: "/api/element/"  +temp.element_id,
+				data: {
+					element_type_id: "1",
+					frame_x : temp.div.offsetParent.offsetParent.offsetLeft,
+					frame_y : temp.div.offsetParent.offsetParent.offsetTop,
+					frame_width: temp.div.offsetParent.offsetParent.offsetWidth,
+					frame_height : temp.div.offsetParent.offsetParent.offsetHeight,
+					scene_id: "2"
+				},
+				success: function (response) {
+					console.log(response);
+					temp.element_id = response.elementId;
+				},
+				dataType: "json"
+			});
+		}
+	}
 }
 
 function setupSceneChooser() {
