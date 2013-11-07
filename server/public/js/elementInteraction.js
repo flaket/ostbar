@@ -1,5 +1,21 @@
+var initialCallsReturned = 0;
+var initialCallsShouldReturn = 2;
+
+var currentDialog = null;
+var objectList = [];
+
+var currentScene = null;
+var sceneList = [];
+
+var sceneTypes = null;
+
+var currentGame = null;
+var gameId = 0;
+
 jQuery(document).ready(function(){
 	
+	gameId = parseInt($('#gameIdDiv').html());
+
 	$("#storylineButton").hide();
 	$(".elements").hide();
 	$(".draggable").tooltip({disabled: true});
@@ -286,7 +302,7 @@ jQuery(document).ready(function(){
 				for ( key in response ){
 					var scenetype = response[key];
 					var div = '<div class="img-wrapper img-wrapper1"><div class="img-container">';
-					div += '<img name="' + scenetype.scenetypeId + '" src="' + scenetype.backgroundAvatar.url + '" width ="200" height="200">';
+					div += '<img name="' + scenetype.sceneTypeId + '" src="' + scenetype.backgroundAvatar.url + '" width ="200" height="200">';
 					div += '</div></div>';
 
 					html += div;
@@ -294,24 +310,126 @@ jQuery(document).ready(function(){
 				imageGrid.html(html);
 			}
 
-			setupSceneChooser();
+			initialCallsReturned++;
+			setupAfterCallsReturns();
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
 			console.log('elementtype error:', textStatus, errorThrown);
 		},
 		dataType: "json"
 	});
+
+	$.ajax({
+		type: "GET",
+		url: '/api/game/' + gameId,
+		success: function ( response ){
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				currentGame = response;
+				if ( currentGame.scenes.length == 0){
+					$("#newWorldButton").show();
+
+				} else {
+					$("#newWorldButton").hide();
+
+					console.log(currentGame);
+
+					if (currentGame.initialSceneId != null){
+						console.log('has initial scene id', currentGame.initialSceneId);
+
+						for ( key in currentGame.scenes ){
+							var scene = currentGame.scenes[key];
+							if ( scene.sceneId == currentGame.initialSceneId ){
+								currentScene = scene;
+								break;
+							}
+						}
+
+						initialCallsReturned++;
+						setupAfterCallsReturns();
+					}
+				}
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('get game error:', textStatus, errorThrown);	
+		}
+	});
 });
 
+function setupAfterCallsReturns() {
+	if ( initialCallsReturned == initialCallsShouldReturn ){
+		if ( currentScene != null ){
 
+			currentSceneType = currentScene.sceneType;
 
-var currentDialog = null;
-var objectList = [];
+			var imgUrl = currentSceneType.backgroundAvatar.url;
+			$("#mainFrame").css({
+				"background-image": "url('"+ imgUrl + "')",
+				"background-repeat": "no-repeat",
+				"background-position": "center",
+				"background-size": "cover"
+			});
 
-var currentScene = null;
-var sceneList = [];
-var currentScenetype = null;
-var sceneTypes = null;
+			$(".elements").show();
+			$(".schoolbagImage").show();
+			$(".draggable").tooltip({disabled: false});
+			$("#storylineButton").show();
+		} else {
+			setupSceneChooser();
+		}
+	}
+}
+
+function setupSceneChooser() {
+	$(".img-grid").on("dblclick", "img", function(e){
+		var sceneTypeId = e.target.getAttribute('name');
+
+		var currentSceneType = null;
+		for ( key in sceneTypes ){
+			var sceneType = sceneTypes[key];
+
+			if ( sceneType.sceneTypeId == sceneTypeId ){
+				currentSceneType = sceneType;
+				break;
+			}
+		}
+
+		if ( currentSceneType != null ){
+			$.ajax({
+				type: "POST",
+				url: "/api/scene",
+				data: {
+					game_id: gameId,
+					scenetype_id: currentSceneType.sceneTypeId
+				},
+				success: function ( response ){
+					sceneList.push(response);
+					currentScene = response;
+
+					var imgUrl = currentSceneType.backgroundAvatar.url;
+					$("#mainFrame").css({
+						"background-image": "url('"+ imgUrl + "')",
+						"background-repeat": "no-repeat",
+						"background-position": "center",
+						"background-size": "cover"
+					});
+					$("#newWorldButton").hide();
+					$(".elements").show();
+					$(".schoolbagImage").show();
+					$(".draggable").tooltip({disabled: false});
+					$("#storylineButton").show();
+					$("#newWorldDialog").dialog("close");
+				},
+				error: function ( jqXHR, textStatus, errorThrown ){
+					console.log('create scene error:', jqXHR, textStatus, errorThrown);
+				},
+				dataType: "json" 
+			});
+		}
+	});	
+}
 
 function Scene(){
 	this.elementList = []; // = objectList
@@ -344,9 +462,6 @@ function saveElements(){
 
 	//May need more stuff here
 
-
-
-	
 	//Save call for database
 	for(var i = 0; i < objectList.length; i++){
 		var temp = objectList[i];
@@ -396,25 +511,4 @@ function saveElements(){
 			});
 		}
 	}
-}
-
-function setupSceneChooser() {
-	$(".img-grid").on("dblclick", "img", function(e){
-		var scenetypeId = e.target.getAttribute('name');
-
-		
-		var imgUrl = e.target.getAttribute('src');
-		$("#mainFrame").css({
-			"background-image": "url('"+ imgUrl + "')",
-			"background-repeat": "no-repeat",
-			"background-position": "center",
-			"background-size": "cover"
-		});
-		$("#newWorldButton").hide();
-		$(".elements").show();
-		$(".schoolbagImage").show();
-		$(".draggable").tooltip({disabled: false});
-		$("#storylineButton").show();
-		$("#newWorldDialog").dialog("close");
-	});	
 }

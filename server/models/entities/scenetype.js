@@ -9,7 +9,7 @@ var World   = require( './world' ).World;
 function SceneType( data ){
     Entity.call( this );
 
-    this.scenetypeId = data.scenetype_id;
+    this.sceneTypeId = data.scenetype_id;
     this.world = data.world;
     this.backgroundAvatar = data.backgroundAvatar;
 }
