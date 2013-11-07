@@ -11,6 +11,8 @@ var requestError = function ( res, error ){
 }
 
 var standardGETResponse = function ( req, res, Entity ){
+    req.sanitize( 'id' ).toInt();
+
     if ( req.params.id ){
         Entity.loadById( req.params.id, function ( error, entity ){
             if ( error ) return requestError( res, error );
@@ -39,12 +41,19 @@ module.exports = function ( app ){
         standardGETResponse( req, res, models.World );
     });
 
+    app.get( '/api/element/:id?', function ( req, res ){
+        console.log( '!!! REMOVE ELEMENT GET !!!' );
+        standardGETResponse( req, res, models.Element );
+    });
+
     app.get( '/api/elementtype/:id?', auth, function ( req, res ){
         standardGETResponse( req, res, models.ElementType );
     });
 
     app.get( '/api/game/:id?', auth, function ( req, res ){
         var Game = models.Game;
+
+        req.sanitize( 'id' ).toInt();
 
         if ( req.params.id ){
             Game.loadByIdForUser( req.params.id, req.user.userId, function ( error, game ){
@@ -66,6 +75,8 @@ module.exports = function ( app ){
     app.get( '/api/activitylanguage/:id', auth, function ( req, res ){
         var ActivityLanguage = models.ActivityLanguage;
 
+        req.sanitize( 'id' ).toInt();
+
         ActivityLanguage.loadById( req.params.id, function ( error, activityLanguage ){
             if ( error ) return requestError( res, error );
 
@@ -76,6 +87,8 @@ module.exports = function ( app ){
 
     app.get( '/api/activitymath/:id', auth, function ( req, res ){
         var ActivityMath = models.ActivityMath;
+
+        req.sanitize( 'id' ).toInt();
 
         ActivityMath.loadById( req.params.id, function ( error, activityMath ){
             if ( error ) return requestError( res, error );
@@ -88,6 +101,8 @@ module.exports = function ( app ){
     app.get( '/api/activityquiz/:id', auth, function ( req, res ){
         var ActivityQuiz = models.ActivityQuiz;
 
+        req.sanitize( 'id' ).toInt();
+
         ActivityQuiz.loadById( req.params.id, function ( error, activityQuiz ){
             if ( error ) return requestError( res, error );
 
@@ -98,6 +113,8 @@ module.exports = function ( app ){
 
     app.get( '/api/activity/:id', auth, function ( req, res ){
         var Activity = models.Activity;
+
+        req.sanitize( 'id' ).toInt();
 
         Activity.loadById( req.params.id, function ( error, activity ){
             if ( error ) return requestError( res, error );
@@ -142,68 +159,99 @@ module.exports = function ( app ){
         });
     });
 
-    app.post( '/api/element/:id?', auth, function ( req, res ){
+    app.post( '/api/element/:id?/:method?', function ( req, res ){
+        console.log('!!! PUT BACK AUTH IN ELEMENT POST !!!');
+
         var Element = models.Element,
             Scene = models.Scene;
 
-        req.checkBody( 'element_type_id', 'element_type_id (int) is required' ).isInt();
-        req.checkBody( 'frame_x', 'frame_x (float) is required' ).isFloat();
-        req.checkBody( 'frame_y', 'frame_y (float) is required' ).isFloat();
-        req.checkBody( 'frame_width', 'frame_width (float) is required' ).isFloat();
-        req.checkBody( 'frame_height', 'frame_height (float) is required' ).isFloat();
-        
-        req.sanitize( 'element_type_id' ).toInt();
-        req.sanitize( 'frame_x' ).xss();
-        req.sanitize( 'frame_y' ).xss();
-        req.sanitize( 'frame_width' ).xss();
-        req.sanitize( 'frame_height' ).xss();
-        
-        if ( !req.params.id ){
-            req.checkBody( 'scene_id', 'scene_id (int) is required' ).isInt();
-            req.sanitize( 'scene_id').toInt();
-        }
+        req.sanitize( 'id' ).toInt();
 
-        var errors = req.validationErrors();
+        if ( req.params.id && req.params.method == 'actiontype' ){
+            req.checkBody( 'actiontype_id', 'actiontype_id (int) is required' ).isInt();
 
-        if ( errors ) return res.send( { error: errors } );
+            req.sanitize( 'actiontype_id' ).toInt();
 
-        var elementTypeId = req.body.element_type_id,
-            frame = {
-                x: req.body.frame_x,
-                y: req.body.frame_y,
-                width: req.body.frame_width,
-                height: req.body.frame_height
-            }
+            var errors = req.validationErrors();
 
-        if ( req.params.id ){
-            Element.loadById( parseInt( req.params.id ), function ( error, element ){
+            if ( errors ) return res.send( { error: errors } );
+
+            Element.loadById( req.params.id, function ( error, element ){
                 if ( error ) return requestError( res, error );
 
                 if ( element ){
-                    element.elementTypeId = elementTypeId;
-
-                    element.frameX = frame.x;
-                    element.frameY = frame.y;
-                    element.frameWidth = frame.width;
-                    element.frameHeight = frame.height;
-
-                    element.update( function ( error, element ){
+                    var actionTypeId = req.body.actiontype_id;
+                    var data = req.body.data || '';
+                    element.addActionType( actionTypeId, data, function ( error, element ){
+                        console.log( 'added action type', error, element );
                         if ( error ) return requestError( res, error );
 
-                        if ( element ) return res.send( element );
+                        if ( element ) return res.send( { element: element } );
                         else return emptyResponse( res );
                     });
                 } else return emptyResponse( res );
             });
+
         } else {
-            var sceneId = req.body.scene_id;
+            req.checkBody( 'element_type_id', 'element_type_id (int) is required' ).isInt();
+            req.checkBody( 'frame_x', 'frame_x (float) is required' ).isFloat();
+            req.checkBody( 'frame_y', 'frame_y (float) is required' ).isFloat();
+            req.checkBody( 'frame_width', 'frame_width (float) is required' ).isFloat();
+            req.checkBody( 'frame_height', 'frame_height (float) is required' ).isFloat();
+            
+            req.sanitize( 'element_type_id' ).toInt();
+            req.sanitize( 'frame_x' ).xss();
+            req.sanitize( 'frame_y' ).xss();
+            req.sanitize( 'frame_width' ).xss();
+            req.sanitize( 'frame_height' ).xss();
+            
+            if ( !req.params.id ){
+                req.checkBody( 'scene_id', 'scene_id (int) is required' ).isInt();
+                req.sanitize( 'scene_id').toInt();
+            }
 
-            Element.create( elementTypeId, frame, sceneId, function ( error, createdElement ){
-                if ( error ) return requestError( res, error );
+            var errors = req.validationErrors();
 
-                if ( createdElement ) return res.send( 201, createdElement );
-                else return emptyResponse( res );
-            });
+            if ( errors ) return res.send( { error: errors } );
+
+            var elementTypeId = req.body.element_type_id,
+                frame = {
+                    x: req.body.frame_x,
+                    y: req.body.frame_y,
+                    width: req.body.frame_width,
+                    height: req.body.frame_height
+                }
+
+            if ( req.params.id ){
+                Element.loadById( req.params.id, function ( error, element ){
+                    if ( error ) return requestError( res, error );
+
+                    if ( element ){
+                        element.elementTypeId = elementTypeId;
+
+                        element.frameX = frame.x;
+                        element.frameY = frame.y;
+                        element.frameWidth = frame.width;
+                        element.frameHeight = frame.height;
+
+                        element.update( function ( error, element ){
+                            if ( error ) return requestError( res, error );
+
+                            if ( element ) return res.send( element );
+                            else return emptyResponse( res );
+                        });
+                    } else return emptyResponse( res );
+                });
+            } else {
+                var sceneId = req.body.scene_id;
+
+                Element.create( elementTypeId, frame, sceneId, function ( error, createdElement ){
+                    if ( error ) return requestError( res, error );
+
+                    if ( createdElement ) return res.send( 201, createdElement );
+                    else return emptyResponse( res );
+                });
+            }
         }
     });
 };

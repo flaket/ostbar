@@ -271,7 +271,11 @@ jQuery(document).ready(function(){
 		type: "GET",
 		url: "/api/elementtype",
 		success: function ( response ){
-			console.log('elementtype:', response)
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				var sidebar = $('#customSidebar');
+			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
 			console.log('elementtype error:', textStatus, errorThrown);
