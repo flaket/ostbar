@@ -43,7 +43,7 @@ jQuery(document).ready(function(){
 				"left": ui.offset.left
 			}).appendTo(".draggable").draggable({
 				containment:"parent"
-			}).removeClass("ui-draggable").toggleClass("element").children().children().resizable();
+			}).removeClass("ui-draggable").toggleClass("element");
 		}
 	});
 	
@@ -74,7 +74,7 @@ jQuery(document).ready(function(){
 		console.log(currentDialog);
 		console.log(objectList);
 		
-		saveElements();
+		// saveElements();
 		
 		var previousVersionDialog = $.extend(true,{},currentDialog); // copy
 		
@@ -363,8 +363,12 @@ function saveElements(){
 					scene_id: "2"
 				},
 				success: function (response) {
-					console.log(response);
-					temp.element_id = response.elementId;
+					if ( response.redirect ){
+						window.location.href = response.redirect;
+					} else {
+						console.log(response);
+						temp.element_id = response.elementId;
+					}
 				},
 				dataType: "json"
 			});
@@ -382,8 +386,11 @@ function saveElements(){
 					scene_id: "2"
 				},
 				success: function (response) {
-					console.log(response);
-					temp.element_id = response.elementId;
+					if ( response.redirect ){
+						window.location.href = response.redirect;
+					} else {
+						console.log(response);
+					}
 				},
 				dataType: "json"
 			});
