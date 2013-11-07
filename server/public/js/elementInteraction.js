@@ -458,13 +458,14 @@ $(document).ready(function(){
 	
 	$.ajax({
 		type: "POST",
-		url: "/api/element/2",
+		url: "/api/element/23",
 		data: {
-			element_type_id: "2",
+			element_type_id: "1",
 			frame_x: "5",
 			frame_y: "5",
 			frame_width: "100",
 			frame_height: "100",
+			scene_id: "100",
 		},
 		success: function (response) {console.log(response)},
 		dataType: "json"
