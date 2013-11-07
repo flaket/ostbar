@@ -339,11 +339,7 @@ jQuery(document).ready(function(){
 				} else {
 					$("#newWorldButton").hide();
 
-					console.log(currentGame);
-
 					if (currentGame.initialSceneId != null){
-						console.log('has initial scene id', currentGame.initialSceneId);
-
 						for ( key in currentGame.scenes ){
 							var scene = currentGame.scenes[key];
 							scene.objectList = new ObjectList();
@@ -353,11 +349,11 @@ jQuery(document).ready(function(){
 								currentObjectList = currentScene.objectList;
 							}
 						}
-
-						initialCallsReturned++;
-						setupAfterCallsReturns();
 					}
 				}
+
+				initialCallsReturned++;
+				setupAfterCallsReturns();
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
@@ -386,12 +382,12 @@ function setupAfterCallsReturns() {
 			$(".draggable").tooltip({disabled: false});
 			$("#storylineButton").show();
 		} else {
-			setupSceneChooser();
+			choseSceneFromSceneChooser();
 		}
 	}
 }
 
-function setupSceneChooser() {
+function choseSceneFromSceneChooser() {
 	$(".img-grid").on("dblclick", "img", function(e){
 		var sceneTypeId = e.target.getAttribute('name');
 
@@ -405,15 +401,21 @@ function setupSceneChooser() {
 			}
 		}
 
+		console.log('currentSceneType', currentSceneType);
+
 		if ( currentSceneType != null ){
 			$.ajax({
 				type: "POST",
 				url: "/api/scene",
 				data: {
 					game_id: gameId,
-					scenetype_id: currentSceneType.sceneTypeId
+					scenetype_id: currentSceneType.sceneTypeId,
+					is_initial_scene: true
 				},
 				success: function ( response ){
+
+					console.log('post scene', response);
+
 					sceneList.push(response);
 					currentScene = response;
 

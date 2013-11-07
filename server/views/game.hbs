@@ -7,9 +7,11 @@
 <script src="/js/dialogElement.js"></script>
 <script src="/js/runAnimation.js"></script>
 <script src="/js/createWorld.js"></script>
-<script src="/js/ElementFunctions.js"></script>
+<script src="/js/elementFunctions.js"></script>
 <script src="/js/convertToHtml.js"></script>
 <script src="/js/createStoryline.js"></script>
+
+
 
 <div id="customSidebar" class="noisy sidebar">
   <div class="elements">
@@ -93,7 +95,7 @@
   <div class="chooseActivityDialog">
   </div>
   
-  <div class="mathActivity" title="Matte aktivitet">
+  <div class="mathActivity" title="Matteaktivitet">
     <p class="question1"> Velg ett nummer mellom: </p>
     <input type="text" id="lownumber" placeholder="fra" />
     <p class="question1"> og <p>
@@ -125,9 +127,30 @@
     </div>
   </div>
   
-  <div class="languageActivity" title="Språkaktivitet">
+  <div class="quizActivity" title="Quizaktivitet">
+    <div class="quizQuestions">
+      <div class="question1">
+        <form>
+
+          Spørsmål <input id="quizQuestion" type="text"><br>
+
+          <div class="quizAlternatives">
+            <input id="checkAlt1" type="checkbox" name="ans"> Alternativ 1 <input id="alt1" type="text"><br>
+            <input id="checkAlt2" type="checkbox" name="ans"> Alternativ 2 <input id="alt2" type="text"><br>
+            <input id="checkAlt3" type="checkbox" name="ans"> Alternativ 3 <input id="alt3" type="text"><br>
+
+            Huk av for riktig svaralternativ <br>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+    <input type="button" value="legg til flere spørmsmål" onclick="makeNewQuestion()"><br>
+
+    <input type="button" value="Ferdigstill Quiz" onclick="finalizeQuiz()">
   </div>
-  
+
 </div>
 
 <div id="newWorldDialog" title="Velg verden">

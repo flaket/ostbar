@@ -91,8 +91,11 @@ Game.prototype.setName = function ( name, callback ){
         return callback( 'Spillet\'s navn må bestå av tre eller flere bokstaver', false );
     }
 
+    if ( name == this.name ) return callback( null, true );
+
     db.query( 'UPDATE game SET name = ? WHERE game_id = ?', [name, this.gameId], function ( error, rows, fields ){
-        console.log('rows', rows);
+        if ( error ) callback( error, false );
+
         if ( rows.affectedRows == 1 ){
             callback( null, true );    
         } else {
@@ -100,5 +103,21 @@ Game.prototype.setName = function ( name, callback ){
         } 
     });
 }
+
+Game.prototype.setInitialSceneId = function( initialSceneId, callback ){
+    if ( initialSceneId == null) return callback( null, false );
+
+    if ( initialSceneId == this.initialSceneId ) callback( null, true );
+
+    db.query('UPDATE game SET initial_scene_id = ? WHERE game_id = ?', [initialSceneId, this.gameId], function ( error, rows, fields ){
+        if ( error ) callback( error, false );
+
+        if ( rows.affectedRows == 1 ){
+            callback( null, true );    
+        } else {
+            callback( null, false );
+        } 
+    }); 
+};
 
 module.exports.Game = Game;
