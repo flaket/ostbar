@@ -281,104 +281,15 @@ jQuery(document).ready(function(){
 });
 
 
-function mathActivityFunction(e){
-	createMathActivity(objectList[inList(objectList,e.target)].activityObject);
-}
-
-function languageActivityFunction(){
-	//dummy
-}
-
-function quizActivityFunction(){
-	//dummy
-}
-
-
-function dialogFunction(e){
-	console.log(objectList[inList(objectList,e.target)].dialogData);
-	// $(e.target).tipsy({
-		// gravity: 's',
-		// html: true,
-		// title: function(){
-				// return convertToHtml(objectList[inList(objectList,e.target)].dialogData)
-			// }
-	// });
-	$("#writtenText").val(objectList[inList(objectList,e.target)].dialogData);
-	$(".writtenDialog").dialog({
-		modal: true,
-		buttons: {
-			Ok: function(){
-					$(this).dialog("close");
-			}
-		}
-	}).siblings(".ui-dialog-titlebar").hide();
-}
-
-function convertToHtml(e){
-	var temp = e.split('\n');
-	console.log(temp);
-	var output = "";
-	
-	for (var i = 0; i<temp.length; i++){
-		output += temp[i]+"<br>";
-	}
-	console.log(output);
-	return output;
-}
-
-function animationFunction(e){
-	runAnimationEffect(objectList[inList(objectList,e.target)]);
-}
 
 var currentDialog = null;
 var objectList = [];
-
-
-
 
 var sceneList = [];
 
 function Scene(){
 	this.elementList = []; // = objectList 
 }
-
-
-$(function createNewWorldView(){
-	$("#newWorldDialog").dialog({
-		autoOpen: false,
-		width: 900,
-		modal: true,
-		show: {
-			effect: "blind",
-			duration: 500
-		}
-	});
-	
-	$("#newWorldButton").click(function(){
-		$("#newWorldDialog").dialog("open");
-	});
-});
-
-$(function createStorylineView(){
-	
-	$("#storylineDialog").dialog({
-		autoOpen: false,
-		width: 900,
-		height: 500,
-		show: {
-	        effect: "clip",
-	        duration: 300
-		},
-		hide: {
-	      effect: "clip",
-	      duration: 300
-    	}
-	});
-	
-	$("#storylineButton").on("click", function(){
-		$("#storylineDialog").dialog("open");
-	});
-});
 
 
 function saveContentFromMainFrame(){
@@ -432,12 +343,6 @@ function saveElements(){
 	// }
 }
 
-
-function createLanguageActivity(){
-	$(".chooseActivityDialog").dialog("close");
-
-	console.log("language activity");
-}
 
 $(document).ready(function(){
 	$(".img-grid").on("dblclick", "img", function(e){
