@@ -12,7 +12,8 @@ function Question(name, alt1, alt2, alt3, checkboxChecked){
 }
 
 function createNewQuizActivity(quizObject){
-
+	createAnotherQuestion(quizObject);
+	initializeQuizDialog();
 }
 
 function makeNewQuestion(){
@@ -64,5 +65,25 @@ function resetFields(){
 }
 
 function finalizeQuiz(){
+	$(".quizActivity").dialog("close");
+}
+
+
+function initializeQuizDialog(){
+	$(".chooseActivityDialog").dialog("close");
+	
+	var Wwidth = $(window).width();
+	var Wheight = $(window).height();
+	
+	$(".quizActivity").dialog({
+		rezisable: false,
+		height: Wheight*0.8,
+		width: Wwidth*0.7,
+		position: {
+			my: "center top",
+			at: "center top",
+			of: "#mainFrame"
+		}
+	});
 	
 }

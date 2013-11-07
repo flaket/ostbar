@@ -178,7 +178,33 @@ jQuery(document).ready(function(){
 									createLanguageActivity();
 								},
 								"Quiz aktivitet": function(){
-									
+									if(currentDialog.activityObject == null || currentDialog.activityIndex != 2){
+										if(currentDialog.activityIndex > -1){
+											if(currentDialog.activityIndex == 1)
+												$(target).off("click", languageActivityFunction);
+											if(currentDialog.activityIndex == 0)
+												$(target).off("click", mathActivityFunction);
+											currentDialog.activityClickActionMade = false;
+										}
+										currentDialog.activityIndex = 2;
+										var quizObject = new QuizActivity();
+										console.log(objectList);
+										currentDialog.activityObject = quizObject;
+										console.log("new quizObject");
+										console.log(currentDialog);
+										console.log("\n");
+										createNewQuizActivity(quizObject);
+									}
+									else if(currentDialog.activityObject!=null && currentDialog.activityIndex == 2){
+										console.log("refresh quiz object");
+										console.log(currentDialog);
+										console.log("\n");
+										createNewQuizActivity(currentDialog.activityObject);
+									}
+									if(!currentDialog.activityClickActionMade && currentDialog.activityIndex == 2){
+										$(target).on("click", quizActivityFunction);
+										currentDialog.activityClickActionMade = true;
+									}
 								},
 						
 							},
