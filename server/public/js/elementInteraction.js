@@ -200,13 +200,15 @@ jQuery(document).ready(function(){
 										console.log("new quizObject");
 										console.log(currentDialog);
 										console.log("\n");
-										createNewQuizActivity(quizObject);
+										var newGame = true;
+										createNewQuizActivity(quizObject, newGame);
 									}
 									else if(currentDialog.activityObject!=null && currentDialog.activityIndex == 2){
 										console.log("refresh quiz object");
 										console.log(currentDialog);
 										console.log("\n");
-										createNewQuizActivity(currentDialog.activityObject);
+										var newGame = true;
+										createNewQuizActivity(currentDialog.activityObject, newGame);
 									}
 									if(!currentDialog.activityClickActionMade && currentDialog.activityIndex == 2){
 										$(target).on("click", quizActivityFunction);
