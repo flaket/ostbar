@@ -15,7 +15,7 @@ function animationFunction(e){
 }
 
 function mathActivityFunction(e){
-	createMathActivity(objectList[inList(objectList,e.target)].activityObject);
+	createMathActivity(currentObjectList.objectList[inList(currentObjectList.objectList,e.target)].activityObject);
 }
 
 function languageActivityFunction(){
