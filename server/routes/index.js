@@ -210,7 +210,23 @@ module.exports.game_post = function ( req, res ){
 };
 
 module.exports.new_game = function ( req, res ){
-    Game.create( req.user.userId, 'Bogus', function ( error, game ){
+    req.checkBody('name', 'name (string) is required').notEmpty();
+    req.sanitize('name').xss();
+
+    var errors = req.validationErrors();
+
+    if ( errors ) {
+        Game.loadAllForUser( req.user.userId, function ( error, games ){
+            return res.render('/game', {
+                user: req.user,
+                games: games,
+                error: errors
+            });
+        });
+    }
+    
+
+    Game.create( req.user.userId, req.body.name, function ( error, game ){
         if ( error ) {
             return res.render( 'games', {
                 error: error,
@@ -219,6 +235,7 @@ module.exports.new_game = function ( req, res ){
         }
 
         res.render( 'game', {
+            user: req.user,
             game: game
         });
     });
