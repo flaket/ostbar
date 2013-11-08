@@ -87,7 +87,7 @@ jQuery(document).ready(function(){
 			else{
 				var dia = new Dialog(target);
 				currentDialog = dia;
-				objectList.push(dia);
+				currentObjectList.objectList.push(dia);
 				console.log("new object");
 			}
 		}

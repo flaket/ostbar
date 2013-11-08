@@ -1,3 +1,5 @@
+var currentQuestionObject = null;
+
 function QuizActivity(){
 	this.questionsMade = 0;
 	this.list = [];
@@ -12,55 +14,54 @@ function Question(name, alt1, alt2, alt3, checkboxChecked){
 }
 
 function createNewQuizActivity(quizObject, newGame){
-	createAnotherQuestion(quizObject, newGame);
+	currentQuestionObject = quizObject;
 	initializeQuizDialog();
+	createAnotherQuestion(quizObject, newGame);
 }
 
 function makeNewQuestion(){
-	createAnotherQuestion(currentQuestionObject);
+	createAnotherQuestion(currentQuestionObject,false);
 }
 
-var currentQuestionObject = new QuizActivity();
-
 function createAnotherQuestion(questionObject, newGame){
-	currentQuestionObject = questionObject;
-
-	if(!newGame){
-		createNewQuestionObject();
-	}
 	resetFields(newGame);
-	
 }
 
 function resetFields(newGame){
 	$(".numberOfQuestions").text(currentQuestionObject.questionsMade);
-	if(!newGame && (!$("#quizQuestion").val().length > 0) || (!$("#alt1").val().length > 0) || (!$("#alt2").val().length > 0) || (!$("#alt3").val().length > 0) 
-		|| ( (!$("#checkAlt1").is(":checked")) && (!$("#checkAlt2").is(":checked")) && (!$("#checkAlt3").is(":checked")) ) ){
-		alert("fyll inn verdier i alle felt"); 
+	if(!newGame){
+		if( (!$("#quizQuestion").val().length > 0) || (!$("#alt1").val().length > 0) || (!$("#alt2").val().length > 0) || (!$("#alt3").val().length > 0) 
+			|| ( (!$("#checkAlt1").is(":checked")) && (!$("#checkAlt2").is(":checked")) && (!$("#checkAlt3").is(":checked")) ) ){
+			alert("fyll inn verdier i alle felt"); 
+		}
+		else{
+			var checkedAlternative = null;
+			if($("#checkAlt1").is(":checked")){
+				checkedAlternative = "alternative 1";
+			}
+			else if($("#checkAlt2").is(":checked")){
+				checkedAlternative = "alternative 2";
+			}
+			else{ checkedAlternative = "alternative 3"; }
+
+			createNewQuestionObject(checkedAlternative);
+			$("input:text").val("");
+			$("input:checkbox").attr("checked", false);
+		}
 	}
 	else{
-		if($("#checkAlt1").is(":checked")){
-			checkedAlternative = "alternative 1";
-		}
-		else if($("#checkAlt2").is(":checked")){
-			checkedAlternative = "alternative 2";
-		}
-		else{ checkedAlternative = "alternative 3"; }
-
 		$("input:text").val("");
 		$("input:checkbox").attr("checked", false);
-
 	}
 	
 }
 
-function createNewQuestionObject(){
+function createNewQuestionObject(checkedAlternative){
 	var questionName = $("#quizQuestion").val();
 	var alt1 = $("#alt1").val();
 	var alt2 = $("#alt2").val();
 	var alt3 = $("#alt3").val();
-	var checkedAlternative = null;
-
+	
 	currentQuestionObject.questionsMade++;
 	var tempObject = new Question(questionName, alt1, alt2, alt3, checkedAlternative);
 	currentQuestionObject.list.push(tempObject);
@@ -92,8 +93,8 @@ function initializeQuizDialog(){
 			of: "#mainFrame"
 		}
 	});
-	$(".numberOfQuestions").text(0);
-	currentQuestionObject.questionsMade = 0;
+	$(".numberOfQuestions").text(currentQuestionObject.questionsMade);
+	// currentQuestionObject.questionsMade = 0;
 
 	$("#numberOfQuestionText").text("Antall spørsmål lagd:");
 }
