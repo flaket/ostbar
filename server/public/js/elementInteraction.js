@@ -134,15 +134,6 @@ jQuery(document).ready(function(){
 					
 					if(currentDialog.activityChecked==true){
 						//make a new activity
-//						$(target).on("click", function(){
-//							if(name=="Cow"){
-//								createCowActivity();
-//							}
-//							if(name=="Chicken"){
-//								createChickenActivity();
-//							}
-//							
-//						});
 						
 						$(".chooseActivityDialog").dialog({
 							position: {
