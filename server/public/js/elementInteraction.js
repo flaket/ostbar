@@ -95,6 +95,7 @@ jQuery(document).ready(function(){
 		console.log(currentObjectList);
 		console.log(currentScene);
 		console.log(sceneList);
+		console.log(currentScene.sceneId);
 		
 		saveElements();
 		
@@ -312,7 +313,7 @@ jQuery(document).ready(function(){
 		});
 	});
 	
-	$( "#button" ).click(function() {
+	$( "#animationTestButton" ).click(function() {
 		runAnimationEffect(currentDialog);
 		return false;
 	});
@@ -439,6 +440,8 @@ function choseSceneFromSceneChooser() {
 				success: function ( response ){
 					sceneList.push(response);
 					currentScene = response;
+					currentScene.ObjectList = new ObjectList();
+					currentObjectList = currentScene.ObjectList;
 					currentGame.initialSceneId = currentScene.sceneId;
 
 					var imgUrl = currentSceneType.backgroundAvatar.url;
@@ -501,7 +504,7 @@ function saveElements(){
 					frame_y : temp.div.offsetParent.offsetParent.offsetTop,
 					frame_width: temp.div.offsetParent.offsetParent.offsetWidth,
 					frame_height : temp.div.offsetParent.offsetParent.offsetHeight,
-					scene_id: currentScene.sceneId,
+					scene_id: currentScene.sceneId,	
 				},
 				success: function (response) {
 					if ( response.redirect ){
