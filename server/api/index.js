@@ -71,58 +71,6 @@ module.exports = function ( app ){
         }
     });
 
-    app.get( '/api/activitylanguage/:id', auth, function ( req, res ){
-        var ActivityLanguage = models.ActivityLanguage;
-
-        req.sanitize( 'id' ).toInt();
-
-        ActivityLanguage.loadById( req.params.id, function ( error, activityLanguage ){
-            if ( error ) return requestError( res, error );
-
-            if ( activityLanguage ) res.send( activityLanguage );
-            else emptyResponse( res );
-        })
-    });
-
-    app.get( '/api/activitymath/:id', auth, function ( req, res ){
-        var ActivityMath = models.ActivityMath;
-
-        req.sanitize( 'id' ).toInt();
-
-        ActivityMath.loadById( req.params.id, function ( error, activityMath ){
-            if ( error ) return requestError( res, error );
-
-            if ( activityMath ) res.send( activityMath );
-            else emptyResponse( res );
-        });
-    });
-
-    app.get( '/api/activityquiz/:id', auth, function ( req, res ){
-        var ActivityQuiz = models.ActivityQuiz;
-
-        req.sanitize( 'id' ).toInt();
-
-        ActivityQuiz.loadById( req.params.id, function ( error, activityQuiz ){
-            if ( error ) return requestError( res, error );
-
-            if ( activityQuiz ) res.send( activityQuiz );
-            else emptyResponse( res );
-        });
-    });
-
-    app.get( '/api/activity/:id', auth, function ( req, res ){
-        var Activity = models.Activity;
-
-        req.sanitize( 'id' ).toInt();
-
-        Activity.loadById( req.params.id, function ( error, activity ){
-            if ( error ) return requestError( res, error );
-
-            if ( activity ) res.send( activity );
-            else emptyResponse( res );
-        });
-    });
-
     app.get( '/api/scene/:id?', auth, function ( req, res ){
         if (!req.params.id) return emptyResponse( res );
 
@@ -165,13 +113,13 @@ module.exports = function ( app ){
                             game.setInitialSceneId( scene.sceneId, function ( error, success ){
                                 if ( error ) return res.send( { error: error } );
 
-                                if ( success ) return res.send( { scene: scene } );
+                                if ( success ) return res.send( scene );
                                 else return requestError( res, 'Kunne ikke sette initialSceneId på game' + game_id);
                             });
                         } else return requestError( res, 'Kunne ikke sette initialSceneId, fordi det ikke eksisterer' );
                     });
                 } else {
-                    res.send( { scene: scene } );
+                    res.send( scene );
                 }
             }
             else emptyResponse( res );
@@ -270,5 +218,82 @@ module.exports = function ( app ){
                 });
             }
         }
+    });
+
+    app.get( '/api/activitylanguage/:id', auth, function ( req, res ){
+        var ActivityLanguage = models.ActivityLanguage;
+
+        req.sanitize( 'id' ).toInt();
+
+        ActivityLanguage.loadById( req.params.id, function ( error, activityLanguage ){
+            if ( error ) return requestError( res, error );
+
+            if ( activityLanguage ) res.send( activityLanguage );
+            else emptyResponse( res );
+        })
+    });
+
+    app.get( '/api/activitymath/:id', auth, function ( req, res ){
+        var ActivityMath = models.ActivityMath;
+
+        req.sanitize( 'id' ).toInt();
+
+        ActivityMath.loadById( req.params.id, function ( error, activityMath ){
+            if ( error ) return requestError( res, error );
+
+            if ( activityMath ) res.send( activityMath );
+            else emptyResponse( res );
+        });
+    });
+
+    app.post( '/api/activitymath/:id?', auth, function ( req, res ){
+        var ActivityMath = models.ActivityMath;
+
+        req.sanitize( 'id' ).toInt();
+
+        if ( req.params.id ){
+
+        } else {
+
+            req.checkBody('numbers_range_from', 'numbers_range_from (int) is required').isInt();
+            req.checkBody('numbers_range_to', 'numbers_range_to (int) is required').isInt();
+            req.checkBody('n_operands', 'n_operands (int) is required').isInt();
+
+            req.sanitize('numbers_range_from').toInt();
+            req.sanitize('numbers_range_to').toInt();
+            req.sanitize('n_operands').toInt();
+
+            var errors = req.validationErrors();
+
+            if ( errors ) return res.send( {error: errors } );
+
+            // ActivityMath.create()
+        }
+    });
+
+    app.get( '/api/activityquiz/:id', auth, function ( req, res ){
+        var ActivityQuiz = models.ActivityQuiz;
+
+        req.sanitize( 'id' ).toInt();
+
+        ActivityQuiz.loadById( req.params.id, function ( error, activityQuiz ){
+            if ( error ) return requestError( res, error );
+
+            if ( activityQuiz ) res.send( activityQuiz );
+            else emptyResponse( res );
+        });
+    });
+
+    app.get( '/api/activity/:id', auth, function ( req, res ){
+        var Activity = models.Activity;
+
+        req.sanitize( 'id' ).toInt();
+
+        Activity.loadById( req.params.id, function ( error, activity ){
+            if ( error ) return requestError( res, error );
+
+            if ( activity ) res.send( activity );
+            else emptyResponse( res );
+        });
     });
 };
