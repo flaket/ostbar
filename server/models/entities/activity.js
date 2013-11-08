@@ -55,4 +55,14 @@ Activity.loadById = function ( id, callback ){
     });
 }
 
+Activity.create = function ( id, activityType, rewardId, callback ){
+    if ( id == null || activityType == null ) callback( null, false );
+
+    if (activityType == 'MATH' || activityType == 'LANGUAGE' || activityType == 'QUIZ' ){
+
+    } else return callback( 'Ugyldig aktivitetstype, ' + activityType, false );
+
+    db.query('INSERT INTO activity')
+}
+
 module.exports.Activity = Activity;
