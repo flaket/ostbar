@@ -195,7 +195,7 @@ jQuery(document).ready(function(){
 										}
 										currentDialog.activityIndex = 2;
 										var quizObject = new QuizActivity();
-										console.log(objectList);
+										console.log(currentObjectList.objectList);
 										currentDialog.activityObject = quizObject;
 										console.log("new quizObject");
 										console.log(currentDialog);
