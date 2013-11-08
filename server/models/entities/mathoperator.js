@@ -45,4 +45,20 @@ MathOperator.initWithData = function ( data, callback ){
     callback( null, new MathOperator( data ) );
 }
 
+MathOperator.addToMathActivity = function ( mathActivityId, mathOperatorId ){
+    if ( mathActivityId == null || mathOperatorId == null ){
+        callback ( null, false );
+    }
+
+    var query = 'INSERT INTO activity_math_to_math_operator_rel VALUES (?, ?)';
+
+    db.query(query, [mathActivityId, mathOperatorId], function ( error, rows, fields ) {
+        if ( error ) callback( error, false );
+
+        if ( rows.insertId ) {
+            
+        }
+    });
+}
+
 module.exports.MathOperator = MathOperator;

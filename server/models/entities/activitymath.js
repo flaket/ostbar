@@ -72,13 +72,40 @@ ActivityMath.create = function ( args, callback ){
     db.query('INSERT INTO activity_math VALUES (NULL, ?, ?, ?, ?)', post, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        for (key in operators) {
+        if ( rows.insertId ){
+            ActivityMath.loadByActivityId( activityId, function ( error, activity ){
+                if ( error ) callback( error, false );
 
-        }
+                for ( key in operators ){
+                    var operator = operators[key];
+
+                }
+
+            });
+        } else return callback( 'Kunne ikke opprette MathActivity', false );
+    });
+}
+
+ActivityMath.prototype.addOperator = function ( operatorId, callback ){
+    if ( operatorId == null ) return callback( null, false );
+
+    var query = 'INSERT INTO activity_math_to_math_operator_rel VALUES (?, ?)';
+
+    var self = this;
+
+    db.query( query, [this.activityMathId, operatorId], function ( error, rows, fields){
+        if ( error ) return callback( error, false );
 
         if ( rows.insertId ){
-            ActivityMath.loadByActivityId( activityId, callback );
-        } else return callback( 'Kunne ikke opprette MathActivity', false );
+            MathOperator.loadById( operatorId, function ( error, mathOperator ){
+                if ( error ) callback( error, false );
+
+                if ( !self.operators ) self.operators = [];
+                self.operators.push( mathOperator );
+
+
+            });
+        }
     });
 }
 
