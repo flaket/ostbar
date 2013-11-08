@@ -90,4 +90,6 @@ function initializeQuizDialog(){
 	});
 	$(".numberOfQuestions").text(0);
 	currentQuestionObject.questionsMade = 0;
+
+	$("#numberOfQuestionText").text("Antall spørsmål lagd:");
 }

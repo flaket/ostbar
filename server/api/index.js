@@ -267,7 +267,7 @@ module.exports = function ( app ){
 
             if ( errors ) return res.send( {error: errors } );
 
-            // ActivityMath.create()
+            ActivityMath.create()
         }
     });
 
