@@ -59,10 +59,10 @@ function addActivity(target){
 				"Quiz aktivitet": function(){
 					if(currentDialog.activityObject == null || currentDialog.activityIndex != 2){
 						if(currentDialog.activityIndex > -1){
-							if(currentDialog.activityIndex == 1)
-								$(target).off("click", languageActivityFunction);
 							if(currentDialog.activityIndex == 0)
 								$(target).off("click", mathActivityFunction);
+							if(currentDialog.activityIndex == 1)
+								$(target).off("click", languageActivityFunction);
 							currentDialog.activityClickActionMade = false;
 						}
 						currentDialog.activityIndex = 2;

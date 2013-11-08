@@ -298,6 +298,7 @@ function choseSceneFromSceneChooser() {
 	});	
 }
 
+//Broken!!!
 function saveContentFromMainFrame(){
 	$(".textarea").hide();
 	var cloneOfMainFrame = $("#mainFrame").clone();
