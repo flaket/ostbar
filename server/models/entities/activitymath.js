@@ -13,6 +13,7 @@ function ActivityMath( data ){
     this.operators = data.operators;
     this.numbersRangeFrom = data.numbers_range_from;
     this.numbersRangeTo = data.numbers_range_to;
+    this.operandsCount = data.n_operands;
 }
 
 ActivityMath.prototype = new Entity(  );
@@ -52,6 +53,32 @@ ActivityMath.initWithData = function ( data, callback ){
 
         data.operators = results.operators;
         callback( null, new ActivityMath( data ) );
+    });
+}
+
+ActivityMath.create = function ( args, callback ){
+    var activityId = args.activityId, 
+        numbersRangeFrom = args.numbersRangeFrom, 
+        numbersRangeTo = args.numbersRangeTo, 
+        operandsCount = args.operandsCount, 
+        operators = args.operators;
+
+    if ( activityId == null || numbersRangeFrom == null || numbersRangeTo == null || operandsCount == null ){
+        return callback( null, false );
+    }
+
+    var post = [activityId, numbersRangeFrom, numbersRangeTo, operandsCount];
+
+    db.query('INSERT INTO activity_math VALUES (NULL, ?, ?, ?, ?)', post, function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        for (key in operators) {
+
+        }
+
+        if ( rows.insertId ){
+            ActivityMath.loadByActivityId( activityId, callback );
+        } else return callback( 'Kunne ikke opprette MathActivity', false );
     });
 }
 
