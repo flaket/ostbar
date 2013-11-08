@@ -31,6 +31,7 @@ function createAnotherQuestion(questionObject){
 }
 
 function resetFields(){
+	$(".numberOfQuestions").text(currentQuestionObject.questionsMade);
 	if( (!$("#quizQuestion").val().length > 0) || (!$("#alt1").val().length > 0) || (!$("#alt2").val().length > 0) || (!$("#alt3").val().length > 0) 
 		|| ( (!$("#checkAlt1").is(":checked")) && (!$("#checkAlt2").is(":checked")) && (!$("#checkAlt3").is(":checked")) ) ){
 		alert("fyll inn verdier i alle felt"); 
@@ -61,7 +62,9 @@ function resetFields(){
 		console.log("number of questions made : " + currentQuestionObject.questionsMade);
 		console.log(tempObject);
 		console.log(currentQuestionObject.list);
+
 	}
+	$(".numberOfQuestions").text(currentQuestionObject.questionsMade);
 }
 
 function finalizeQuiz(){
@@ -85,5 +88,6 @@ function initializeQuizDialog(){
 			of: "#mainFrame"
 		}
 	});
-	
+	$(".numberOfQuestions").text(0);
+	currentQuestionObject.questionsMade = 0;
 }
