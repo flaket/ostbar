@@ -55,14 +55,27 @@ Activity.loadById = function ( id, callback ){
     });
 }
 
-Activity.create = function ( id, activityType, rewardId, callback ){
+Activity.create = function ( id, activityType, rewardId, additionalParameters, callback ){
     if ( id == null || activityType == null ) callback( null, false );
 
     if (activityType == 'MATH' || activityType == 'LANGUAGE' || activityType == 'QUIZ' ){
+        db.query('INSERT INTO activity VALUES (NULL, ?, ?', [activityType, rewardId], function ( error, rows, fields ){
+            if ( error ) return callback( error, false );
 
+            var activityId = rows.insertId;
+
+            if (!activityId) return callback( 'Kunne ikke opprette aktivitet', false );
+
+            var subclass;
+
+            switch ( data.activity_type ){
+                case 'LANGUAGE': subclass = ActivityLanguage; break;
+                case 'MATH': subclass = ActivityMath; break;
+                case 'QUIZ': subclass = ActivityQuiz; break;
+            }
+
+        });
     } else return callback( 'Ugyldig aktivitetstype, ' + activityType, false );
-
-    db.query('INSERT INTO activity')
 }
 
 module.exports.Activity = Activity;
