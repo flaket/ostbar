@@ -9,7 +9,7 @@ function ActivityMath( data ){
     Entity.call( this );
 
     this.activityMathId = data.activity_math_id;
-    this.activity_id = data.activity_id;
+    this.activityId = data.activity_id;
     this.operators = data.operators;
     this.numbersRangeFrom = data.numbers_range_from;
     this.numbersRangeTo = data.numbers_range_to;
@@ -76,36 +76,37 @@ ActivityMath.create = function ( args, callback ){
             ActivityMath.loadByActivityId( activityId, function ( error, activity ){
                 if ( error ) callback( error, false );
 
-                for ( key in operators ){
-                    var operator = operators[key];
-
-                }
-
+                activity.addOperators( operators, callback );
             });
         } else return callback( 'Kunne ikke opprette MathActivity', false );
     });
 }
 
-ActivityMath.prototype.addOperator = function ( operatorId, callback ){
-    if ( operatorId == null ) return callback( null, false );
+ActivityMath.prototype.addOperators = function ( operatorIds, callback ){
+    if ( operatorIds == null ) return callback( null, false );
 
-    var query = 'INSERT INTO activity_math_to_math_operator_rel VALUES (?, ?)';
+    var posts = Array();
+
+    for ( key in operatorIds ){
+        posts.push({
+            mathActivityId: this.activityMathId,
+            mathOperatorId: operatorIds[key]
+        });
+    }
 
     var self = this;
 
-    db.query( query, [this.activityMathId, operatorId], function ( error, rows, fields){
+    async.map( posts, MathOperator.addToMathActivity, function( error, results ){
         if ( error ) return callback( error, false );
+        else if (results.indexOf( false ) != -1) return callback ( 'Kunne ikke legge til operator nr ' + (results.indexOf( false ) + 1) , false );
 
-        if ( rows.insertId ){
-            MathOperator.loadById( operatorId, function ( error, mathOperator ){
-                if ( error ) callback( error, false );
+        MathOperator.loadAllInActivityMath( self.activityMathId, function ( error, operators ){
+            if ( error ) return callback( error, false );
 
-                if ( !self.operators ) self.operators = [];
-                self.operators.push( mathOperator );
+            self.operators = operators;
 
-
-            });
-        }
+            callback( null, self );
+        });
     });
 }
 

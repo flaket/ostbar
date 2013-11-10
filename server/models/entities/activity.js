@@ -55,11 +55,11 @@ Activity.loadById = function ( id, callback ){
     });
 }
 
-Activity.create = function ( id, activityType, rewardId, additionalParameters, callback ){
-    if ( id == null || activityType == null ) callback( null, false );
+Activity.create = function ( activityType, rewardId, params, callback ){
+    if ( activityType == null ) callback( null, false );
 
     if (activityType == 'MATH' || activityType == 'LANGUAGE' || activityType == 'QUIZ' ){
-        db.query('INSERT INTO activity VALUES (NULL, ?, ?', [activityType, rewardId], function ( error, rows, fields ){
+        db.query('INSERT INTO activity VALUES (NULL, ?, ?)', [activityType, rewardId], function ( error, rows, fields ){
             if ( error ) return callback( error, false );
 
             var activityId = rows.insertId;
@@ -68,12 +68,20 @@ Activity.create = function ( id, activityType, rewardId, additionalParameters, c
 
             var subclass;
 
-            switch ( data.activity_type ){
+            switch ( activityType ){
                 case 'LANGUAGE': subclass = ActivityLanguage; break;
                 case 'MATH': subclass = ActivityMath; break;
                 case 'QUIZ': subclass = ActivityQuiz; break;
             }
 
+            params.activityId = activityId;
+
+            subclass.create( params, function ( error, subclassInstance ){
+                if ( error ) return callback( error, false );
+
+                if ( subclassInstance ) Activity.loadById( activityId, callback );
+                else return callback( 'Kunne ikke opprette aktivitet av type ' + activityType, false );
+            });
         });
     } else return callback( 'Ugyldig aktivitetstype, ' + activityType, false );
 }

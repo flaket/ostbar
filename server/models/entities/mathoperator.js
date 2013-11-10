@@ -45,19 +45,22 @@ MathOperator.initWithData = function ( data, callback ){
     callback( null, new MathOperator( data ) );
 }
 
-MathOperator.addToMathActivity = function ( mathActivityId, mathOperatorId ){
+MathOperator.addToMathActivity = function ( params, callback ){
+    var mathActivityId = params.mathActivityId,
+        mathOperatorId = params.mathOperatorId;
+
     if ( mathActivityId == null || mathOperatorId == null ){
-        callback ( null, false );
+        return callback ( null, false );
     }
 
     var query = 'INSERT INTO activity_math_to_math_operator_rel VALUES (?, ?)';
 
-    db.query(query, [mathActivityId, mathOperatorId], function ( error, rows, fields ) {
-        if ( error ) callback( error, false );
+    db.query( query, [mathActivityId, mathOperatorId], function ( error, rows, fields ) {
+        if ( error ) return callback( error, false );
 
-        if ( rows.insertId ) {
-            
-        }
+        var success = rows.affectedRows == 1
+
+        callback( null, success );
     });
 }
 
