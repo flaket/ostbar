@@ -100,13 +100,7 @@ ActivityMath.prototype.addOperators = function ( operatorIds, callback ){
         if ( error ) return callback( error, false );
         else if (results.indexOf( false ) != -1) return callback ( 'Kunne ikke legge til operator nr ' + (results.indexOf( false ) + 1) , false );
 
-        MathOperator.loadAllInActivityMath( self.activityMathId, function ( error, operators ){
-            if ( error ) return callback( error, false );
-
-            self.operators = operators;
-
-            callback( null, self );
-        });
+        ActivityMath.loadById( self.activityMathId, callback );
     });
 }
 

@@ -29,7 +29,7 @@ MathOperator.loadAllInActivityMath = function ( activityMathId, callback ){
     if ( activityMathId == null ) return callback( null, false );
 
     var query = 'SELECT * '
-        query += 'FROM activity_math_to_math_operator_rel am_to_mo_rel LEFT JOIN math_operator mo ';
+        query += 'FROM activity_math_to_math_operator_rel am_to_mo_rel INNER JOIN math_operator mo ';
         query += 'ON am_to_mo_rel.math_operator_id = mo.math_operator_id AND am_to_mo_rel.activity_math_id = ?';
 
     db.query( query, activityMathId, function ( error, rows, fields ){
