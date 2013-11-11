@@ -97,10 +97,39 @@
   </div>
   
   <div class="mathActivity" title="Matteaktivitet">
-    <p class="question1"> Velg ett nummer mellom: </p>
+    <p class="question1"> Nummerintervall mellom: </p>
     <input type="text" id="lownumber" placeholder="fra" />
     <p class="question1"> og <p>
     <input type="text" id="highnumber" placeholder="til" onkeypress="submitInputNumbers(event)"/>
+    <form>
+        <fieldset style = "width: 100%">
+          <div class="question1" style="width:50%; float: left"> Operatorer </div><div class="question1" style="width:50%; float: left"> Antall operander</div>
+          <br><br>
+          <div style="float: left; width:10%"> 
+            <label for="+">+</label>
+            <input id="+" type="checkbox"/>
+          </div>
+          <div style="float: left; width:10%">
+            <label for="-">-</label>
+            <input id="-" type="checkbox"/>
+          </div>
+          <div style="float: left; width:10%">
+            <label for="*">*</label>
+            <input id="*" type="checkbox"/>
+          </div>
+          <div style="float: left; width:10%">
+            <label for="/">/</label>
+            <input id="/" type="checkbox"/>
+          </div>
+          <div style="float: left; width:10%">
+            <label for="alle">alle</label>
+            <input id="all" type="checkbox"/>
+          </div>
+          <div style="float: left; width:50%">
+            <input type = "text" id="operands" style="width:20%"/>
+          </div>
+        </fieldset>
+    </form>
     <br>
     <input type="submit" id="inputValueButton" value="Generer!" />
   
