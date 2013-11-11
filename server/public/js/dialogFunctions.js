@@ -1,4 +1,4 @@
-function addScene(target){
+function addScene(target,previousVersionDialog,index){
 	if(currentDialog.sceneChecked==true){
 		$(this).dialog("close");
 		
@@ -13,7 +13,7 @@ function addScene(target){
 	};
 }
 
-function addActivity(target){
+function addActivity(target,previousVersionDialog,index){
 	//make a new activity
 	if(currentDialog.activityChecked==true){
 		$(".chooseActivityDialog").dialog({
@@ -99,7 +99,7 @@ function addActivity(target){
 	}
 }
 
-function addDialog(target){
+function addDialog(target,previousVersionDialog,index){
 	if(currentDialog.dialogChecked){
 		//make a new dialog
 		$(".userInputDialog").dialog({
@@ -132,7 +132,7 @@ function addDialog(target){
 	}
 }
 
-function addPickUp(target){
+function addPickUp(target,previousVersionDialog,index){
 	if(currentDialog.pickUpChecked){
 		//make an element pickable
 		$(this).dialog("close");
@@ -145,7 +145,7 @@ function addPickUp(target){
 }
 
 
-function addAnimation(target){
+function addAnimation(target,previousVersionDialog,index){
 	// append animation on target
 	if(currentDialog.animationChecked){
 		if(!currentDialog.animationClickActionMade){
@@ -159,7 +159,7 @@ function addAnimation(target){
 	}
 }
 
-function addSound(target){
+function addSound(target,previousVersionDialog,index){
 	//append sound on target
 	if(currentDialog.soundChecked){
 	}
