@@ -49,7 +49,7 @@ DROP TABLE IF EXISTS `activity`;
 CREATE TABLE `activity` (
   `activity_id` int(11) NOT NULL AUTO_INCREMENT,
   `activity_type` enum('LANGUAGE','MATH','QUIZ') NOT NULL,
-  `reward_id` int(11) NOT NULL,
+  `reward_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`activity_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -60,7 +60,7 @@ CREATE TABLE `activity` (
 
 LOCK TABLES `activity` WRITE;
 /*!40000 ALTER TABLE `activity` DISABLE KEYS */;
-INSERT INTO `activity` VALUES (1,'MATH',1);
+INSERT INTO `activity` VALUES (1,'MATH',NULL);
 /*!40000 ALTER TABLE `activity` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -111,7 +111,7 @@ CREATE TABLE `activity_math` (
 
 LOCK TABLES `activity_math` WRITE;
 /*!40000 ALTER TABLE `activity_math` DISABLE KEYS */;
-INSERT INTO `activity_math` VALUES (1,1,0,10,2);
+INSERT INTO `activity_math` VALUES (1,1,1,12345,12);
 /*!40000 ALTER TABLE `activity_math` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -135,7 +135,7 @@ CREATE TABLE `activity_math_to_math_operator_rel` (
 
 LOCK TABLES `activity_math_to_math_operator_rel` WRITE;
 /*!40000 ALTER TABLE `activity_math_to_math_operator_rel` DISABLE KEYS */;
-INSERT INTO `activity_math_to_math_operator_rel` VALUES (1,1),(1,2);
+INSERT INTO `activity_math_to_math_operator_rel` VALUES (1,1),(1,2),(1,3);
 /*!40000 ALTER TABLE `activity_math_to_math_operator_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -202,7 +202,7 @@ CREATE TABLE `element` (
   `frame_width` double NOT NULL,
   `frame_height` double NOT NULL,
   PRIMARY KEY (`element_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -211,7 +211,7 @@ CREATE TABLE `element` (
 
 LOCK TABLES `element` WRITE;
 /*!40000 ALTER TABLE `element` DISABLE KEYS */;
-INSERT INTO `element` VALUES (1,4,101,102,103,104),(2,2,5,5,100,100),(3,1,0,0,1140,722),(4,1,0,0,1140,782);
+INSERT INTO `element` VALUES (1,4,101,102,103,104),(2,2,5,5,100,100),(3,1,0,0,1140,722),(4,1,0,0,1140,782),(5,1,0,0,1175,796),(6,1,0,0,1564,643),(7,1,0,0,1680,648),(8,1,0,0,1680,648),(9,1,0,0,1680,648);
 /*!40000 ALTER TABLE `element` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -236,7 +236,7 @@ CREATE TABLE `element_to_action_type_rel` (
 
 LOCK TABLES `element_to_action_type_rel` WRITE;
 /*!40000 ALTER TABLE `element_to_action_type_rel` DISABLE KEYS */;
-INSERT INTO `element_to_action_type_rel` VALUES (1,2,'1'),(1,4,'123'),(2,3,'x');
+INSERT INTO `element_to_action_type_rel` VALUES (6,2,'1');
 /*!40000 ALTER TABLE `element_to_action_type_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -306,7 +306,7 @@ CREATE TABLE `game` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`game_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -315,7 +315,7 @@ CREATE TABLE `game` (
 
 LOCK TABLES `game` WRITE;
 /*!40000 ALTER TABLE `game` DISABLE KEYS */;
-INSERT INTO `game` VALUES (1,1,'Spill nr 1',NULL,NULL,'2013-09-23 12:21:07',NULL),(2,1,'Spill nr 2',1,NULL,'2013-10-13 14:50:03',NULL),(4,1,'Spill nr 3',NULL,NULL,'2013-10-31 15:23:20',NULL),(5,1,'Spill nr 4',NULL,NULL,'2013-10-31 15:24:04',NULL),(6,1,'Spill nr 5',NULL,NULL,'2013-10-31 15:25:50',NULL);
+INSERT INTO `game` VALUES (1,1,'Spill nr 1',5,NULL,'2013-09-23 12:21:07',NULL),(2,1,'Spill nr 2',1,NULL,'2013-10-13 14:50:03',NULL),(4,1,'Spill nr 3',2,NULL,'2013-10-31 15:23:20',NULL),(5,1,'Spill nr 4',3,NULL,'2013-10-31 15:24:04',NULL),(10,1,'Spill nr 5',NULL,NULL,'2013-11-08 09:32:00',NULL),(11,1,'asdf',4,NULL,'2013-11-08 09:51:53',NULL),(12,1,'Nytt spill',6,NULL,'2013-11-08 10:33:12',NULL);
 /*!40000 ALTER TABLE `game` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -531,7 +531,7 @@ CREATE TABLE `scene` (
   `scenetype_id` int(11) NOT NULL,
   `game_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`scene_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -540,7 +540,7 @@ CREATE TABLE `scene` (
 
 LOCK TABLES `scene` WRITE;
 /*!40000 ALTER TABLE `scene` DISABLE KEYS */;
-INSERT INTO `scene` VALUES (1,6,2);
+INSERT INTO `scene` VALUES (1,6,2),(2,2,4),(3,4,5),(4,2,11),(5,1,1),(6,6,12);
 /*!40000 ALTER TABLE `scene` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -564,7 +564,7 @@ CREATE TABLE `scene_to_element_rel` (
 
 LOCK TABLES `scene_to_element_rel` WRITE;
 /*!40000 ALTER TABLE `scene_to_element_rel` DISABLE KEYS */;
-INSERT INTO `scene_to_element_rel` VALUES (1,1),(1,2),(2,3),(2,4);
+INSERT INTO `scene_to_element_rel` VALUES (1,1),(1,2),(1,5),(2,3),(2,4),(5,6),(5,8),(5,9),(6,7);
 /*!40000 ALTER TABLE `scene_to_element_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -702,4 +702,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-11-07 16:01:45
+-- Dump completed on 2013-11-11 15:16:37
