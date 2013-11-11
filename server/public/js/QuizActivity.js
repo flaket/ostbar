@@ -136,7 +136,7 @@ function createQuizActivity(questionList){
 		initializeQuizDialog();
 	}
 	else{
-		alert("Du må lage flere spørsmål");
+		alert("Du er ferdig med alle spørsmål");
 	}
 
 	$(".numberOfQuestions").hide();
