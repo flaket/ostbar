@@ -54,8 +54,8 @@ LanguageQuestion.initWithData = function ( data, callback ){
     }
 
     async.parallel({
-        dataClass: dataClass.loadById( dataClass, data.data_id ),
-        alternatives: LanguageQuestionAlternative.loadAllInLanguageQuestion( LanguageQuestionAlternative, data.language_question_id )
+        dataClass: dataClass.loadById.bind( dataClass, data.data_id ),
+        alternatives: LanguageQuestionAlternative.loadAllInLanguageQuestion.bind( LanguageQuestionAlternative, data.language_question_id )
     },
     function ( error, results ){
         if ( error ) return callback( error, false );

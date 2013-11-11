@@ -18,6 +18,20 @@ function createNewQuizActivity(questionList, newGame){
 	currentQuestionObject = questionList;
 	initializeQuizDialog();
 	createAnotherQuestion(questionList, newGame);
+
+	$(".numberOfQuestions").show();
+	$("#numberOfQuestionText").show();
+	$("#quizButton").show();
+	$("#finishQuiz").show();
+
+	$("#nextButtonDiv").hide();
+	$("#lastButtonDiv").hide();
+
+	$("#quizQuestion").prop("disabled", false);
+	$("#alt1").prop("disabled", false);
+	$("#alt2").prop("disabled", false);
+	$("#alt3").prop("disabled", false);
+
 }
 
 function makeNewQuestion(){
@@ -74,8 +88,13 @@ function createNewQuestionObject(checkedAlternative){
 }
 
 function finalizeQuiz(){
-	resetFields(false);
-	$(".quizActivity").dialog("close");
+	if( (!$("#quizQuestion").val().length > 0) || (!$("#alt1").val().length > 0) || (!$("#alt2").val().length > 0) || (!$("#alt3").val().length > 0) 
+			|| ( (!$("#checkAlt1").is(":checked")) && (!$("#checkAlt2").is(":checked")) && (!$("#checkAlt3").is(":checked")) ) ){
+		$(".quizActivity").dialog("close");
+	}
+	else{
+		resetFields(false);
+	}
 }
 
 
@@ -150,6 +169,7 @@ function showQuestions(){
 		}
 	}
 	else{
+		resetFields(true);
 		$(".quizActivity").dialog("close");
 	}
 }
