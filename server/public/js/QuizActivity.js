@@ -4,6 +4,7 @@ var correctQuestionsAnswered = 0;
 function QuizActivity(){
 	this.questionsMade = 0;
 	this.list = [];
+	this.questionsAnswered = 0;
 }
 
 function Question(name, alt1, alt2, alt3, checkboxChecked){
@@ -16,7 +17,7 @@ function Question(name, alt1, alt2, alt3, checkboxChecked){
 
 function createNewQuizActivity(questionList, newGame){
 	currentQuestionObject = questionList;
-	initializeQuizDialog();
+	initializeQuizDialog();	
 	createAnotherQuestion(questionList, newGame);
 
 	$(".numberOfQuestions").show();
@@ -124,7 +125,6 @@ function initializeQuizDialog(){
 		}
 	});
 	$(".numberOfQuestions").text(currentQuestionObject.questionsMade);
-	// currentQuestionObject.questionsMade = 0;
 
 	$("#numberOfQuestionText").text("Antall spørsmål lagd:");
 }
@@ -132,7 +132,12 @@ function initializeQuizDialog(){
 function createQuizActivity(questionList){
 	console.log("quiz activity");
 	currentQuestionObject = questionList;
-	initializeQuizDialog();
+	if(currentQuestionObject.questionsAnswered!=currentQuestionObject.list.length){
+		initializeQuizDialog();
+	}
+	else{
+		alert("Du må lage flere spørsmål");
+	}
 
 	$(".numberOfQuestions").hide();
 	$("#numberOfQuestionText").hide();
@@ -166,6 +171,8 @@ function showQuestions(){
 		$("#alt3").val(alternative3);
 
 		showProperButton();
+		currentQuestionObject.questionsAnswered++;
+		console.log(currentQuestionObject.questionsAnswered);
 		break;
 		}
 	}
