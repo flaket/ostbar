@@ -136,7 +136,7 @@ function createQuizActivity(questionList){
 		initializeQuizDialog();
 	}
 	else{
-		alert("Du må lage flere spørsmål");
+		alert("Du er ferdig med alle spørsmål");
 	}
 
 	$(".numberOfQuestions").hide();
@@ -147,10 +147,9 @@ function createQuizActivity(questionList){
 	showQuestions();
 }
 
-var count = 0;
 function showQuestions(){
-	if(count<currentQuestionObject.list.length){
-		for(var i=count; i<currentQuestionObject.list.length; i++){
+	if(currentQuestionObject.questionsAnswered<currentQuestionObject.list.length){
+		for(var i=currentQuestionObject.questionsAnswered; i<currentQuestionObject.list.length; i++){
 		console.log("var i er: " + i);
 		console.log("lengden på lista er: " + currentQuestionObject.list.length);
 		var questionName = currentQuestionObject.list[i].questionName;
@@ -171,7 +170,6 @@ function showQuestions(){
 		$("#alt3").val(alternative3);
 
 		showProperButton();
-		currentQuestionObject.questionsAnswered++;
 		console.log(currentQuestionObject.questionsAnswered);
 		break;
 		}
@@ -183,9 +181,8 @@ function showQuestions(){
 }
 
 function showProperButton(){
-	console.log("count er: "+ count);
 	console.log("lengden på lista er: " + currentQuestionObject.list.length);
-	if(count<currentQuestionObject.list.length-1){
+	if(currentQuestionObject.questionsAnswered<currentQuestionObject.list.length-1){
 		$("#lastButtonDiv").hide();
 		$("#nextButtonDiv").show();
 	}
@@ -196,15 +193,14 @@ function showProperButton(){
 }
 
 function checkQuizAnswer(){
-	console.log("count er nå: "+ count);
 
-	var correctAnswer = currentQuestionObject.list[count].questionCorrectAnswer;
+	var correctAnswer = currentQuestionObject.list[currentQuestionObject.questionsAnswered].questionCorrectAnswer;
 	if($("#checkAlt1").is(":checked")){
 		if($("#alt1").val()==correctAnswer){
 			console.log("RIKTIG");
 			correctQuestionsAnswered++;
 			resetAnswer();
-			count++;
+			currentQuestionObject.questionsAnswered++;
 			showQuestions();
 		}
 		else{
@@ -218,7 +214,7 @@ function checkQuizAnswer(){
 			console.log("RIKTIG");
 			correctQuestionsAnswered++;
 			resetAnswer();
-			count++;
+			currentQuestionObject.questionsAnswered++;
 			showQuestions();
 		}
 		else{
@@ -232,7 +228,7 @@ function checkQuizAnswer(){
 			console.log("RIKTIG");
 			correctQuestionsAnswered++;
 			resetAnswer();
-			count++;
+			currentQuestionObject.questionsAnswered++;
 			showQuestions();
 		}
 		else{
