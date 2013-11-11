@@ -22,6 +22,6 @@ function languageActivityFunction(){
 	//dummy
 }
 
-function quizActivityFunction(){
-	//dummy
+function quizActivityFunction(e){
+	createQuizActivity(currentObjectList.objectList[inList(currentObjectList.objectList, e.target)].activityObject);
 }
