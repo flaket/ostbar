@@ -147,12 +147,18 @@
       </div>
     </div>
     <div>
+      <div id="nextButtonDiv" style="display:none">
+        <button id="nextQuestion" onclick="checkQuizAnswer()">neste spørsmål</button> 
+      </div>
+      <div id="lastButtonDiv" style="display:none">
+        <button id="showResult" onclick="checkQuizAnswer()">se resultat</button> 
+      </div>
       <div id="numberOfQuestionText"style="float: left">  </div>
       <div class="numberOfQuestions" style="float: left">
       </div>
     </div> <br><br><br>
-    <input type="button" value="legg til flere spørsmål" onclick="makeNewQuestion()"><br><br>
-    <input type="button" value="Ferdigstill Quiz" onclick="finalizeQuiz()">
+    <input id="quizButton" type="button" value="legg til flere spørsmål" onclick="makeNewQuestion()"><br><br>
+    <input id="finishQuiz" type="button" value="Ferdigstill Quiz" onclick="finalizeQuiz()">
   </div>
 
 </div>

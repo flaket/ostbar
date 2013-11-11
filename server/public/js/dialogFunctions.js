@@ -67,13 +67,13 @@ function addActivity(target,previousVersionDialog,index){
 							currentDialog.activityClickActionMade = false;
 						}
 						currentDialog.activityIndex = 2;
-						var quizObject = new QuizActivity();
+						var questionList = new QuizActivity();
 						console.log(currentObjectList.objectList);
-						currentDialog.activityObject = quizObject;
-						console.log("new quizObject");
+						currentDialog.activityObject = questionList;
+						console.log("new questionList");
 						console.log(currentDialog);
 						console.log("\n");
-						createNewQuizActivity(quizObject,true);
+						createNewQuizActivity(questionList,true);
 					}
 					else if(currentDialog.activityObject!=null && currentDialog.activityIndex == 2){
 						console.log("refresh quiz object");
