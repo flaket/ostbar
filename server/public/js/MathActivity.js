@@ -24,6 +24,8 @@ function createNewMathActivity(mathObject){
 	
 	beforeParametersAreSetView();
 	initializeMathDialog();
+
+	$("#all").prop('checked', true).change();
 	
 	$("#inputValueButton").click(function createRandomNumber(){
 		if($("#lownumber").val()=="" || $("#highnumber").val() == ""){
