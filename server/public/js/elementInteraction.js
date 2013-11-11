@@ -97,8 +97,6 @@ jQuery(document).ready(function(){
 		console.log(sceneList);
 		console.log(currentScene.sceneId);
 		
-		saveElements();
-		
 		var previousVersionDialog = $.extend(true,{},currentDialog); // copy
 		
 		resetCheckBoxes(currentDialog);
@@ -124,6 +122,8 @@ jQuery(document).ready(function(){
 					addPickUp(target,previousVersionDialog,index);
 					addAnimation(target,previousVersionDialog,index);
 					addSound(target,previousVersionDialog,index);
+
+					saveElements();
 
 					$(this).dialog("close");
 				},
@@ -320,7 +320,7 @@ function saveContentFromMainFrame(){
 	});
 }
 
-//pseudo
+
 function saveElements(){
 	//May need more stuff here
 
@@ -348,6 +348,9 @@ function saveElements(){
 						temp.element_id = response.elementId;
 					}
 				},
+				error: function ( jqXHR, textStatus, errorThrown ){
+					console.log('post element error:', jqXHR, textStatus, errorThrown);
+				},
 				dataType: "json"
 			});
 		}
@@ -370,6 +373,9 @@ function saveElements(){
 						console.log(response);
 					}
 				},
+				error: function ( jqXHR, textStatus, errorThrown ){
+					console.log('update element error:', jqXHR, textStatus, errorThrown);
+				},
 				dataType: "json"
 			});
 		}
@@ -380,16 +386,16 @@ function saveElements(){
 function loadElementsByScene(elements){
 	console.log("");
 	for(element in elements){
-		console.log(elements[element]);
+		// console.log(elements[element]);
 		var elem = elements[element];
 
 		//TODO, get the actual avatar (as in gfx)
 
-		$("<div></div>").html("<div class =\"elements ui-draggable\" style=\"display:block;\">" + "<img width=\""
-								 + elem.frameWidth +"\" height=\"" + elem.frameHeight + 
-								 "\" src=\"/gfx/Penguins.jpg\"" + "name = \"Penguin\">" +
-								 "</img></div>")
-			.css({
+		$("<div></div>").html("<div class =\"elements ui-draggable\" style=\"display:block;\">" + 
+								"<img width=\""  + elem.frameWidth + "\" height=\"" + elem.frameHeight + 
+								"\" src=\"/gfx/Penguins.jpg\"" + "name = \"Penguin\">" +
+								"</img></div>")
+		.css({
 			"position": "absolute",
 			"top": elem.frameY,
 			"left": elem.frameX,
@@ -399,16 +405,44 @@ function loadElementsByScene(elements){
 		
 	}
 	var temp = document.getElementsByClassName("element");
-	console.log(temp);
+	// console.log(temp);
 	for (var i = 0; i < temp.length ; i++) {
-		console.log(temp[i]);
-		console.log(temp[i].children[0].children[0]);
+		// console.log(temp[i]);
+		// console.log(temp[i].children[0].children[0]);
 		var target = temp[i].children[0].children[0];
-		console.log("");
+		// console.log("");
 		var dia = new Dialog(target);
 		dia.element_id = elements[i].elementId;
 		currentDialog = dia;
 		currentObjectList.objectList.push(dia);
 	};
 	console.log(currentScene);
+
+	//TODO, update the internal properties and "pointers" of the dialog object based on the element action types
+}
+
+function saveActivityByElementId(activityObject,elementID){
+	$.ajax({
+		type: "POST",
+		url: "/api/activity/",
+		data: {
+			activity_type: "MATH",
+			numbers_range_from: activityObject.lowestNumber,
+			numbers_range_to: activityObject.highestNumber,
+			n_operands: "1",
+			operators: "1",
+		},
+		success: function (response) {
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				console.log(response);
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('post activity error:', jqXHR, "", textStatus, "", errorThrown);
+		},
+
+		dataType: "json"
+	});
 }

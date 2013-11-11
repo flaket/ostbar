@@ -47,6 +47,7 @@ function addActivity(target,previousVersionDialog,index){
 						console.log(currentDialog);
 						console.log("\n");
 						createNewMathActivity(currentDialog.activityObject);
+						saveActivityByElementId(currentDialog.activityObject,currentDialog.element_id);
 					}
 					if(!currentDialog.activityClickActionMade && currentDialog.activityIndex == 0){
 						$(target).on("click", mathActivityFunction);
