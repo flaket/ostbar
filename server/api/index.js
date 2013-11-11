@@ -278,19 +278,19 @@ module.exports = function ( app ){
 
         switch ( activityType ){
             case 'MATH':
-                req.checkBody('numbers_range_from', 'numbers_range_from (int) is required').isInt();
-                req.checkBody('numbers_range_to', 'numbers_range_to (int) is required').isInt();
-                req.checkBody('n_operands', 'n_operands (int) is required').isInt();
-                req.checkBody('operators', 'operators (comma separated string of ints) is required').notEmpty();
+                req.checkBody( 'numbers_range_from', 'numbers_range_from (int) is required' ).isInt();
+                req.checkBody( 'numbers_range_to', 'numbers_range_to (int) is required' ).isInt();
+                req.checkBody( 'n_operands', 'n_operands (int) is required' ).isInt();
+                req.checkBody( 'operators', 'operators (comma separated string of ints) is required' ).notEmpty();
 
-                req.sanitize('numbers_range_from').toInt();
-                req.sanitize('numbers_range_to').toInt();
-                req.sanitize('n_operands').toInt();
-                req.sanitize('operators').xss();
+                req.sanitize( 'numbers_range_from' ).toInt();
+                req.sanitize( 'numbers_range_to' ).toInt();
+                req.sanitize( 'n_operands' ).toInt();
+                req.sanitize( 'operators' ).xss();
 
                 var errors = req.validationErrors();
 
-                if ( errors ) return res.send( {error: errors } );
+                if ( errors ) return res.send( { error: errors } );
 
                 var operators = req.body.operators.split(',');
                 for ( key in operators ){
@@ -309,13 +309,30 @@ module.exports = function ( app ){
 
                 break;
             case 'QUIZ':
+                // req.checkBody( 'questions', 'questions (json object) is required' ).notEmpty();
 
+                // req.sanitize( 'questions' ).xss();
+
+                // var errors = req.validationErrors();
+
+                // if ( errors ) res.send( { error: errors } );
+
+                var questions = req.body.questions;
+
+                params = {
+                    questions: questions
+                };
+
+                break;
             default:
                 res.send( { error: 'Ugyldig aktivitetstype, ' + activityType } );
                 break;
         }
 
-        Activity.create( 'MATH', rewardId, elementId, params, function ( error, activity ){
+        Activity.create( activityType, rewardId, elementId, params, function ( error, activity ){
+            
+            console.log('got object', util.inspect(activity, false, null));
+
             if ( error ) return requestError( res, error );
 
             if ( activity ) return res.send( 201, activity );

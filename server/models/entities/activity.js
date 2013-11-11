@@ -88,9 +88,8 @@ Activity.create = function ( activityType, rewardId, elementId, params, callback
                             element.addActivity( activityId, function ( error, element ){
                                 if ( error ) return callback( error, false );
 
-                                if ( element ) Activity.loadById( activityId, callback );
+                                if ( element ) return Activity.loadById( activityId, callback );
                                 else return callback( 'Kunne ikke legge til aktivitet av type ' + activityType, false );
-
                             });
                         } else return callback( 'Kunne ikke laste element med id ' + elementId, false );
                     });

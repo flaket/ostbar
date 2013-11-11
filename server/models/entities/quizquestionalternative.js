@@ -66,4 +66,47 @@ QuizQuestionAlternative.initWithData = function ( data, callback ){
     callback( null, new QuizQuestionAlternative( data) );
 }
 
+QuizQuestionAlternative.create = function ( params, callback ){
+    var quizQuestionId = params.quizQuestionId,
+        alternative = params.alternative,
+        correct = params.correct;
+
+    if ( quizQuestionId == null || alternative == null ) return callback( null, false );
+
+    var query = 'INSERT INTO quiz_question_alternative VALUES (NULL, ?, ?)',
+        post = [ quizQuestionId, alternative ];
+
+    db.query( query, post, function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        if ( rows.insertId ) {
+            var quizQuestionAlternativeId = rows.insertId;
+
+            if ( correct ){
+                query = 'INSERT INTO quiz_question_correct VALUES (?, ?)';
+                post = [ quizQuestionId, quizQuestionAlternativeId ];
+
+                db.query( query, post, function ( error, rows, fields ){
+                    if ( error ) callback ( error, false );
+
+                    QuizQuestionAlternative.loadById( quizQuestionAlternativeId, callback );
+                });
+            } else {
+                QuizQuestionAlternative.loadById( quizQuestionAlternativeId, callback );
+            }
+        }
+        else return callback( 'Kunne ikke opprette QuizQuestionAlternative med data ' + params, false );
+    });
+}
+
+QuizQuestionAlternative.createAlternatives = function ( alternatives, quizQuestionId, callback ){
+    if ( alternatives == null || quizQuestionId == null ) return callback( null, false );
+
+    db.query( 'DELETE FROM quiz_question_alternative WHERE quiz_question_id = ?', quizQuestionId, function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        async.map( alternatives, QuizQuestionAlternative.create, callback );    
+    });
+}
+
 module.exports.QuizQuestionAlternative = QuizQuestionAlternative;

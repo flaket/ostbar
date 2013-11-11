@@ -9,7 +9,7 @@ function ActivityQuiz( data ){
     Entity.call( this );
 
     this.activityQuizId = data.activity_quiz_id;
-    this.activity_id = data.activity_id;
+    this.activityId = data.activity_id;
     this.questions = data.quiz_questions;
 }
 
@@ -65,11 +65,29 @@ ActivityQuiz.create = function ( params, callback ){
         if ( error ) return callback( error, null );
 
         if ( rows.insertId ){
-            ActivityQuiz.loadById( rows.insertId, function ( error, activity ){
+            ActivityQuiz.loadByActivityId( activityId, function ( error, activity ){
+                if ( error ) return callback( error, false );
 
+                activity.addQuestions( questions, callback );
             });
         } else return callback( 'Kunne ikke opprette ActivityQuiz', false );
     });
 };
+
+ActivityQuiz.prototype.addQuestions = function ( questions, callback ){
+    if ( questions == null ) return callback( null, false );
+
+    var self = this;
+
+    for ( key in questions ){
+        questions[key].activityQuizId = this.activityQuizId;
+    }
+
+    async.map( questions, QuizQuestion.create, function ( error, results){
+        if ( error ) callback( error, false );
+
+        return ActivityQuiz.loadById( self.activityQuizId, callback );
+    });
+}
 
 module.exports.ActivityQuiz = ActivityQuiz;
