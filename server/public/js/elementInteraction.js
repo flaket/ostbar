@@ -118,12 +118,12 @@ jQuery(document).ready(function(){
 			buttons: {
 				"Bekreft": function(){
 					
-					addScene(target);
-					addActivity(target);
-					addDialog(target);
-					addPickUp(target);
-					addAnimation(target);
-					addSound(target);
+					addScene(target,previousVersionDialog,index);
+					addActivity(target,previousVersionDialog,index);
+					addDialog(target,previousVersionDialog,index);
+					addPickUp(target,previousVersionDialog,index);
+					addAnimation(target,previousVersionDialog,index);
+					addSound(target,previousVersionDialog,index);
 
 					$(this).dialog("close");
 				},
@@ -226,6 +226,7 @@ function setupAfterCallsReturns() {
 		if ( currentScene != null ){
 
 			currentSceneType = currentScene.sceneType;
+			loadElementsByScene(currentScene.elements);
 
 			var imgUrl = currentSceneType.backgroundAvatar.url;
 			$("#mainFrame").css({
@@ -326,16 +327,17 @@ function saveElements(){
 	//Save call for database
 	for(var i = 0; i < currentObjectList.objectList.length; i++){
 		var temp = currentObjectList.objectList[i];
+		console.log(temp);
 		if (temp.element_id < 0){
 			$.ajax({
 				type: "POST",
 				url: "/api/element/?",
 				data: {
 					element_type_id: "1",
-					frame_x : temp.div.offsetParent.offsetParent.offsetLeft,
-					frame_y : temp.div.offsetParent.offsetParent.offsetTop,
-					frame_width: temp.div.offsetParent.offsetParent.offsetWidth,
-					frame_height : temp.div.offsetParent.offsetParent.offsetHeight,
+					frame_x : temp.div.offsetParent.offsetLeft,
+					frame_y : temp.div.offsetParent.offsetTop,
+					frame_width: temp.div.offsetParent.offsetWidth,
+					frame_height : temp.div.offsetParent.offsetHeight,
 					scene_id: currentScene.sceneId,	
 				},
 				success: function (response) {
@@ -355,10 +357,10 @@ function saveElements(){
 				url: "/api/element/"  +temp.element_id,
 				data: {
 					element_type_id: "1",
-					frame_x : temp.div.offsetParent.offsetParent.offsetLeft,
-					frame_y : temp.div.offsetParent.offsetParent.offsetTop,
-					frame_width: temp.div.offsetParent.offsetParent.offsetWidth,
-					frame_height : temp.div.offsetParent.offsetParent.offsetHeight,
+					frame_x : temp.div.offsetParent.offsetLeft,
+					frame_y : temp.div.offsetParent.offsetTop,
+					frame_width: temp.div.offsetParent.offsetWidth,
+					frame_height : temp.div.offsetParent.offsetHeight,
 					scene_id: currentScene.sceneId,
 				},
 				success: function (response) {
@@ -372,4 +374,41 @@ function saveElements(){
 			});
 		}
 	}
+}
+
+
+function loadElementsByScene(elements){
+	console.log("");
+	for(element in elements){
+		console.log(elements[element]);
+		var elem = elements[element];
+
+		//TODO, get the actual avatar (as in gfx)
+
+		$("<div></div>").html("<div class =\"elements ui-draggable\" style=\"display:block;\">" + "<img width=\""
+								 + elem.frameWidth +"\" height=\"" + elem.frameHeight + 
+								 "\" src=\"/gfx/Penguins.jpg\"" + "name = \"Penguin\">" +
+								 "</img></div>")
+			.css({
+			"position": "absolute",
+			"top": elem.frameY,
+			"left": elem.frameX,
+		}).appendTo(".draggable").draggable({
+			containment:"parent"
+		}).removeClass("ui-draggable").toggleClass("element");
+		
+	}
+	var temp = document.getElementsByClassName("element");
+	console.log(temp);
+	for (var i = 0; i < temp.length ; i++) {
+		console.log(temp[i]);
+		console.log(temp[i].children[0].children[0]);
+		var target = temp[i].children[0].children[0];
+		console.log("");
+		var dia = new Dialog(target);
+		dia.element_id = elements[i].elementId;
+		currentDialog = dia;
+		currentObjectList.objectList.push(dia);
+	};
+	console.log(currentScene);
 }
