@@ -94,6 +94,7 @@ function finalizeQuiz(){
 	}
 	else{
 		resetFields(false);
+		$(".quizActivity").dialog("close");
 	}
 }
 

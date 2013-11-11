@@ -86,11 +86,6 @@ Activity.create = function ( activityType, rewardId, elementId, params, callback
 
                         if ( element ){
                             element.addActivity( activityId, function ( error, element ){
-
-                                console.log('element add activity');
-                                console.log(error);
-                                console.log(element);
-
                                 if ( error ) return callback( error, false );
 
                                 if ( element ) Activity.loadById( activityId, callback );
