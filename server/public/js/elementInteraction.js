@@ -427,6 +427,7 @@ function saveActivityByElementId(activityIndex,activityObject,elementID){
 		url: "/api/activity/",
 		data: {
 			activity_type: "MATH",
+			element_id: elementID,
 			numbers_range_from: activityObject.lowestNumber,
 			numbers_range_to: activityObject.highestNumber,
 			n_operands: "1",
