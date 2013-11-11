@@ -101,7 +101,7 @@
     <input type="text" id="lownumber" placeholder="fra" />
     <p class="question1"> og <p>
     <input type="text" id="highnumber" placeholder="til" onkeypress="submitInputNumbers(event)"/>
-    <form>
+    <form onsubmit="return submitFormFunction();">
         <fieldset style = "width: 100%">
           <div class="question1" style="width:50%; float: left"> Operatorer </div><div class="question1" style="width:50%; float: left"> Antall operander</div>
           <br><br>
@@ -132,7 +132,7 @@
         </fieldset>
     </form>
     <br>
-    <input type="submit" id="inputValueButton" value="Generer!" />
+    <button id="inputValueButton" value="Generer!" /></button>
   
     <img id="life1" name = "heart" alt="life" src="/gfx/heart.png" style="display: none;">
     <img id="life2" name = "heart" alt="life" src="/gfx/heart.png" style="display: none;">

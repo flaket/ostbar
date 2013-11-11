@@ -60,10 +60,15 @@ function submitAnswer(e){
 }
 
 function submitInputNumbers(e){
-	if(e.keyCode == 13)
+	if(e.keyCode == 13){
 		$("#inputValueButton").click();
+	}
 }
 
+function submitFormFunction(){
+	$("#inputValueButton").click();
+	return false;
+}
 
 function resetScoreAndFields(){
 	if(currentMathObject !=null){
@@ -254,6 +259,7 @@ function setRandomValues(){
 
 
 function createQuestion(){
+	// $("#answerField").focus();
 	$(".numberOfQuestionsAnswered").text(currentMathObject.questionsAnswered);
 	
 	
