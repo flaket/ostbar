@@ -5,12 +5,14 @@ function MathActivity(){
 	this.lowestNumber = 0;
 	this.highestNumber = 0;
 	
+	this.operators = [];
+
 	this.randomNumber1 = 0;
 	this.randomNumber2 = 0;
 	
 	this.life = 3;
 	
-	resetScore();
+	// resetScore();
 }
 
 var currentMathObject = null;
@@ -55,13 +57,18 @@ function submitInputNumbers(e){
 }
 
 
-function resetScore(){
+function resetScoreAndFields(){
 	if(currentMathObject !=null){
 		$("#life1").css({"display": "inline"});
 		$("#life2").css({"display": "inline"});
 		$("#life3").css({"display": "inline"});
 	}
 	$(".numberOfQuestionsAnswered").text("0");
+
+	$("#correctAnswerSmiley").css({"display": "none"});
+	$("#wrongAnswerSmiley").css({"display": "none"});
+	
+	$(".answerField").val("");
 }
 
 function createMathActivity(mathObject){
@@ -72,7 +79,7 @@ function createMathActivity(mathObject){
 	currentMathObject.correctAnswers = 0;
 	currentMathObject.life = 3;
 	
-	resetScore();
+	resetScoreAndFields();
 	
 	initializeMathDialog();
 	initializeNewMathActivity();
@@ -246,7 +253,7 @@ function createQuestion(){
 	var operator = chooseRandomOperator(numberOfOperators);
 	
 	if(operator=='/'){
-		if(currentMathObject.randomNumber1 > currentMathObject.randomNumber2 || currentMathObject.randomNumber1==currentMathObject.randomNumber2 || currentMathObject.randomNumber2 > currentMathObject.randomNumber1 || currentMathObject.randomNumber1 != 0 || currentMathObject.randomNumber2 != 0){
+		if(currentMathObject.randomNumber1 != 0 || currentMathObject.randomNumber2 != 0){
 			if(currentMathObject.randomNumber2 > currentMathObject.randomNumber1){
 				var temp = currentMathObject.randomNumber1;
 				currentMathObject.randomNumber1 = currentMathObject.randomNumber2;

@@ -421,7 +421,7 @@ function loadElementsByScene(elements){
 	//TODO, update the internal properties and "pointers" of the dialog object based on the element action types
 }
 
-function saveActivityByElementId(activityObject,elementID){
+function saveActivityByElementId(activityIndex,activityObject,elementID){
 	$.ajax({
 		type: "POST",
 		url: "/api/activity/",

@@ -6,6 +6,7 @@ var async   = require( 'async' );
 var ActivityLanguage    = require( './activitylanguage' ).ActivityLanguage;
 var ActivityMath        = require( './activitymath' ).ActivityMath;
 var ActivityQuiz        = require( './activityquiz' ).ActivityQuiz;
+var Element             = require( './element' ).Element;
 var Reward              = require( './reward' ).Reward;
 
 function Activity( data ){
@@ -55,7 +56,7 @@ Activity.loadById = function ( id, callback ){
     });
 }
 
-Activity.create = function ( activityType, rewardId, params, callback ){
+Activity.create = function ( activityType, rewardId, elementId, params, callback ){
     if ( activityType == null ) callback( null, false );
 
     if (activityType == 'MATH' || activityType == 'LANGUAGE' || activityType == 'QUIZ' ){
@@ -79,8 +80,26 @@ Activity.create = function ( activityType, rewardId, params, callback ){
             subclass.create( params, function ( error, subclassInstance ){
                 if ( error ) return callback( error, false );
 
-                if ( subclassInstance ) Activity.loadById( activityId, callback );
-                else return callback( 'Kunne ikke opprette aktivitet av type ' + activityType, false );
+                if ( subclassInstance ){
+                    Element.loadById( elementId, function ( error, element ){
+                        if ( error ) return callback( error );
+
+                        if ( element ){
+                            element.addActivity( activityId, function ( error, element ){
+
+                                console.log('element add activity');
+                                console.log(error);
+                                console.log(element);
+
+                                if ( error ) return callback( error, false );
+
+                                if ( element ) Activity.loadById( activityId, callback );
+                                else return callback( 'Kunne ikke legge til aktivitet av type ' + activityType, false );
+
+                            });
+                        } else return callback( 'Kunne ikke laste element med id ' + elementId, false );
+                    });
+                } else return callback( 'Kunne ikke opprette aktivitet av type ' + activityType, false );
             });
         });
     } else return callback( 'Ugyldig aktivitetstype, ' + activityType, false );

@@ -257,19 +257,24 @@ module.exports = function ( app ){
         if ( req.params.id ) return res.send( { error: 'not implemented' } );
 
         req.checkBody( 'activity_type', 'activity_type (string) is required' ).notEmpty();
-        req.sanitize( 'activity_type' ).xss()
+        req.checkBody( 'element_id', 'element_id (int) is required' ).isInt();
+        
+        req.sanitize( 'activity_type' ).xss();
+        req.sanitize( 'element_id' ).toInt();
 
         var errors = req.validationErrors();
 
         if ( errors ) return res.send( { error: errors } );
 
-        var activityType = req.body.activity_type;
-        var rewardId = null;
+        var activityType = req.body.activity_type,
+            elementId = req.body.element_id,
+            rewardId = null,
+            params = null;
+
         if ( req.body.rewardId ){
             req.sanitize( 'rewardId' ).toInt();
             rewardId = req.body.rewardId;
         }
-        var params = null;
 
         switch ( activityType ){
             case 'MATH':
@@ -303,12 +308,14 @@ module.exports = function ( app ){
                 }
 
                 break;
+            case 'QUIZ':
+
             default:
                 res.send( { error: 'Ugyldig aktivitetstype, ' + activityType } );
                 break;
         }
 
-        Activity.create( 'MATH', rewardId, params, function ( error, activity ){
+        Activity.create( 'MATH', rewardId, elementId, params, function ( error, activity ){
             if ( error ) return requestError( res, error );
 
             if ( activity ) return res.send( 201, activity );
