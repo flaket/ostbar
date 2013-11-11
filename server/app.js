@@ -39,6 +39,13 @@ app.get( '/game/:id?', app.ensureAuthenticated, core_routes.mygames );
 
 app.post( '/game', app.ensureAuthenticated, core_routes.new_game );
 
+app.get( '/postTester', function ( req, res ){
+    res.render( 'postTester', {
+        user: req.user
+    });
+
+});
+
 // -- ajax requests
 app.post( '/game/:id', app.ensureAuthenticatedAjax, core_routes.game_post );
 

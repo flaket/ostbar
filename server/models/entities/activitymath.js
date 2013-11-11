@@ -52,6 +52,7 @@ ActivityMath.initWithData = function ( data, callback ){
         if ( error ) return callback( error, false );
 
         data.operators = results.operators;
+
         callback( null, new ActivityMath( data ) );
     });
 }
@@ -78,7 +79,7 @@ ActivityMath.create = function ( args, callback ){
 
                 activity.addOperators( operators, callback );
             });
-        } else return callback( 'Kunne ikke opprette MathActivity', false );
+        } else return callback( 'Kunne ikke opprette ActivityMath', false );
     });
 }
 
