@@ -6,6 +6,7 @@ function MathActivity(){
 	this.highestNumber = 0;
 	
 	this.operators = [];
+	this.operandsCount = 1;
 
 	this.randomNumber1 = 0;
 	this.randomNumber2 = 0;
@@ -25,23 +26,28 @@ function createNewMathActivity(mathObject){
 	initializeMathDialog();
 	
 	$("#inputValueButton").click(function createRandomNumber(){
-		afterParametersAreSetView();
-		// $(".mathActivity").dialog("close");
-		
-		var numLow = $("#lownumber").val();
-		var numHigh = $("#highnumber").val();
-		
-		if(numLow>numHigh){
-			var temp = numLow;
-			numLow = numHigh;
-			numHigh = temp;
+		if($("#lownumber").val()=="" || $("#highnumber").val() == ""){
+			alert("Du må skrive inn i alle feltene");
 		}
-		
-		currentMathObject.lowestNumber = numLow;
-		currentMathObject.highestNumber = numHigh;
-		
-		$(".mathActivity").dialog("close");
-		// initializeNewMathActivity();
+		else{
+			afterParametersAreSetView();
+			// $(".mathActivity").dialog("close");
+			
+			var numLow = $("#lownumber").val();
+			var numHigh = $("#highnumber").val();
+			
+			if(numLow>numHigh){
+				var temp = numLow;
+				numLow = numHigh;
+				numHigh = temp;
+			}
+			
+			currentMathObject.lowestNumber = numLow;
+			currentMathObject.highestNumber = numHigh;
+			
+			$(".mathActivity").dialog("close");
+			// initializeNewMathActivity();
+		}
 	});
 	
 }

@@ -17,6 +17,11 @@ function ObjectList(){
 }
 
 jQuery(document).ready(function(){
+
+	$("#all").change(function(){
+		console.log("checking the boxes!");
+		$(".operatorCheckboxes").prop('checked', $("#all").is(':checked'));
+	});
 	
 	gameId = parseInt($('#gameIdDiv').html());
 

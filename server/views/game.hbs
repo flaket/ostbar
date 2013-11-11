@@ -107,26 +107,27 @@
           <br><br>
           <div style="float: left; width:10%"> 
             <label for="+">+</label>
-            <input id="+" type="checkbox"/>
+            <input class="operatorCheckboxes" id="+" type="checkbox"/>
           </div>
           <div style="float: left; width:10%">
             <label for="-">-</label>
-            <input id="-" type="checkbox"/>
+            <input class="operatorCheckboxes" id="-" type="checkbox"/>
           </div>
           <div style="float: left; width:10%">
             <label for="*">*</label>
-            <input id="*" type="checkbox"/>
+            <input class="operatorCheckboxes" id="*" type="checkbox"/>
           </div>
           <div style="float: left; width:10%">
             <label for="/">/</label>
-            <input id="/" type="checkbox"/>
+            <input class="operatorCheckboxes" id="/" type="checkbox"/>
           </div>
           <div style="float: left; width:10%">
             <label for="alle">alle</label>
-            <input id="all" type="checkbox"/>
+            <input class="operatorCheckboxes" id="all" type="checkbox"/>
           </div>
           <div style="float: left; width:50%">
-            <input type = "text" id="operands" style="width:20%"/>
+            <input type = "text" id="operands" style="width:20%" value="2" onblur="if (this.value == '') {this.value= '2';}" 
+            onfocus ="if (this.value=='2'){this.value ='';}"/>
           </div>
         </fieldset>
     </form>
