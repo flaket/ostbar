@@ -51,14 +51,34 @@ function resetFields(newGame){
 			alert("fyll inn verdier i alle felt"); 
 		}
 		else{
-			var checkedAlternative = null;
-			if($("#checkAlt1").is(":checked")){
-				checkedAlternative = $("#alt1").val();
+			var checkedAlternative = [];
+			if($("#checkAlt1").is(":checked") && $("#checkAlt2").is(":checked") && $("#checkAlt3").is(":checked")){
+				checkedAlternative.push($("#alt1").val());
+				checkedAlternative.push($("#alt2").val());
+				checkedAlternative.push($("#alt3").val());
+			}
+			else if($("#checkAlt1").is(":checked") && $("#checkAlt2").is(":checked")){
+				checkedAlternative.push($("#alt1").val());
+				checkedAlternative.push($("#alt2").val());
+			}
+			else if($("#checkAlt1").is(":checked") && $("#checkAlt3").is(":checked")){
+				checkedAlternative.push($("#alt1").val());
+				checkedAlternative.push($("#alt3").val());
+			}
+			else if($("#checkAlt2").is(":checked") && $("#checkAlt3").is(":checked")){
+				checkedAlternative.push($("#alt2").val());
+				checkedAlternative.push($("#alt3").val());
+			}	
+			
+			else if($("#checkAlt1").is(":checked")){
+				checkedAlternative.push($("#alt1").val());
 			}
 			else if($("#checkAlt2").is(":checked")){
-				checkedAlternative = $("#alt2").val();
+				checkedAlternative.push($("#alt2").val());
 			}
-			else{ checkedAlternative = $("#alt3").val(); }
+			else{ 
+				checkedAlternative.push($("#alt3").val()); 
+			}
 
 			createNewQuestionObject(checkedAlternative);
 			$("input:text").val("");
