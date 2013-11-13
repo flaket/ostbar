@@ -9,10 +9,11 @@ function ActivityMath( data ){
     Entity.call( this );
 
     this.activityMathId = data.activity_math_id;
-    this.activity_id = data.activity_id;
+    this.activityId = data.activity_id;
     this.operators = data.operators;
     this.numbersRangeFrom = data.numbers_range_from;
     this.numbersRangeTo = data.numbers_range_to;
+    this.operandsCount = data.n_operands;
 }
 
 ActivityMath.prototype = new Entity(  );
@@ -51,7 +52,56 @@ ActivityMath.initWithData = function ( data, callback ){
         if ( error ) return callback( error, false );
 
         data.operators = results.operators;
+
         callback( null, new ActivityMath( data ) );
+    });
+}
+
+ActivityMath.create = function ( args, callback ){
+    var activityId = args.activityId, 
+        numbersRangeFrom = args.numbersRangeFrom, 
+        numbersRangeTo = args.numbersRangeTo, 
+        operandsCount = args.operandsCount, 
+        operators = args.operators;
+
+    if ( activityId == null || numbersRangeFrom == null || numbersRangeTo == null || operandsCount == null ){
+        return callback( null, false );
+    }
+
+    var post = [activityId, numbersRangeFrom, numbersRangeTo, operandsCount];
+
+    db.query('INSERT INTO activity_math VALUES (NULL, ?, ?, ?, ?)', post, function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        if ( rows.insertId ){
+            ActivityMath.loadByActivityId( activityId, function ( error, activity ){
+                if ( error ) callback( error, false );
+
+                activity.addOperators( operators, callback );
+            });
+        } else return callback( 'Kunne ikke opprette ActivityMath', false );
+    });
+}
+
+ActivityMath.prototype.addOperators = function ( operatorIds, callback ){
+    if ( operatorIds == null ) return callback( null, false );
+
+    var posts = Array();
+
+    for ( key in operatorIds ){
+        posts.push({
+            mathActivityId: this.activityMathId,
+            mathOperatorId: operatorIds[key]
+        });
+    }
+
+    var self = this;
+
+    async.map( posts, MathOperator.addToMathActivity, function( error, results ){
+        if ( error ) return callback( error, false );
+        else if (results.indexOf( false ) != -1) return callback ( 'Kunne ikke legge til operator nr ' + (results.indexOf( false ) + 1) , false );
+
+        ActivityMath.loadById( self.activityMathId, callback );
     });
 }
 

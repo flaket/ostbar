@@ -1,5 +1,5 @@
 function dialogFunction(e){
-	$("#writtenText").val(objectList[inList(objectList,e.target)].dialogData);
+	$("#writtenText").val(currentObjectList.objectList[inList(currentObjectList.objectList,e.target)].dialogData);
 	$(".writtenDialog").dialog({
 		modal: true,
 		buttons: {
@@ -11,17 +11,17 @@ function dialogFunction(e){
 }
 
 function animationFunction(e){
-	runAnimationEffect(objectList[inList(objectList,e.target)]);
+	runAnimationEffect(currentObjectList.objectList[inList(currentObjectList.objectList,e.target)]);
 }
 
 function mathActivityFunction(e){
-	createMathActivity(objectList[inList(objectList,e.target)].activityObject);
+	createMathActivity(currentObjectList.objectList[inList(currentObjectList.objectList,e.target)].activityObject);
 }
 
 function languageActivityFunction(){
 	//dummy
 }
 
-function quizActivityFunction(){
-	//dummy
+function quizActivityFunction(e){
+	createQuizActivity(currentObjectList.objectList[inList(currentObjectList.objectList, e.target)].activityObject);
 }

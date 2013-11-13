@@ -4,3 +4,55 @@
         <div class="small-12 columns">Hello world!</div>
     </div>
 </section>
+
+
+<script type="text/javascript">
+  $( document ).ready( function () {
+    $.ajax({ 
+      type: 'POST', 
+      url: '/api/activity/', 
+      dataType:"json", 
+      data: {
+        activity_type: 'QUIZ',
+        element_id: 6,
+        questions: [
+          {
+            question: 'spm 1',
+            alternatives: [
+              {
+                alternative: 'spm 1, alt 1',
+                correct: true
+              },
+              {
+                alternative: 'spm 1, alt 2',
+                correct: false
+              }
+            ],
+          },
+          {
+            question: 'spm 2',
+            alternatives: [
+              {
+                alternative: 'spm 2, alt 1',
+                correct: true
+              },
+              {
+                alternative: 'spm 2, alt 2',
+                correct: false
+              }
+            ],
+          }
+        ]
+      },
+      success: function ( response ){ 
+        console.log('success');
+        console.log(response);
+      }, 
+      error: function( xhr, textStatus, errorThrown ){ 
+        alert('Error!  Status = ' + xhr.status); 
+        console.log('textStatus', textStatus);
+        console.log('errorThrown', errorThrown);
+      } 
+    });
+  });
+</script>

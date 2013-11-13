@@ -29,7 +29,7 @@ MathOperator.loadAllInActivityMath = function ( activityMathId, callback ){
     if ( activityMathId == null ) return callback( null, false );
 
     var query = 'SELECT * '
-        query += 'FROM activity_math_to_math_operator_rel am_to_mo_rel LEFT JOIN math_operator mo ';
+        query += 'FROM activity_math_to_math_operator_rel am_to_mo_rel INNER JOIN math_operator mo ';
         query += 'ON am_to_mo_rel.math_operator_id = mo.math_operator_id AND am_to_mo_rel.activity_math_id = ?';
 
     db.query( query, activityMathId, function ( error, rows, fields ){
@@ -43,6 +43,25 @@ MathOperator.initWithData = function ( data, callback ){
     if ( data == null ) return callback( null, false );
 
     callback( null, new MathOperator( data ) );
+}
+
+MathOperator.addToMathActivity = function ( params, callback ){
+    var mathActivityId = params.mathActivityId,
+        mathOperatorId = params.mathOperatorId;
+
+    if ( mathActivityId == null || mathOperatorId == null ){
+        return callback ( null, false );
+    }
+
+    var query = 'INSERT INTO activity_math_to_math_operator_rel VALUES (?, ?)';
+
+    db.query( query, [mathActivityId, mathOperatorId], function ( error, rows, fields ) {
+        if ( error ) return callback( error, false );
+
+        var success = rows.affectedRows == 1
+
+        callback( null, success );
+    });
 }
 
 module.exports.MathOperator = MathOperator;

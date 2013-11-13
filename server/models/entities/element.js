@@ -123,22 +123,45 @@ Element.prototype.update = function ( callback ){
 Element.prototype.addActionType = function( actionTypeId, data, callback ){
     if ( actionTypeId == null || data == null ) return callback( null, false );
 
+    
+    var query = 'INSERT INTO element_to_action_type_rel SET ?';
     var post = {
         element_id: this.elementId, 
         action_type_id: actionTypeId,
         data: data
     };
-
-    var query = 'INSERT INTO element_to_action_type_rel SET ?';
     var self = this;
 
     db.query( query, post, function ( error, rows, fields ){
-        if ( error && error.code == 'ER_DUP_ENTRY' ) return callback( 'Dette elementet har allerede denne handlingen', false );
-        else if ( error ) return callback( error, false );
+        if ( error && error.code == 'ER_DUP_ENTRY' ) {
 
-        if ( rows.affectedRows ) Element.loadById( self.elementId, callback );
-        else return callback( 'Could not add action type ' + actionTypeId + ' to element with id ' + self.elementId, false );
+            query = 'UPDATE element_to_action_type_rel SET data = ? WHERE element_id = ? AND action_type_id = ?';
+            post = [data, self.elementId, actionTypeId];
+            db.query( query, post, function ( error, rows, fields ){
+                if ( error ) return callback( error, false );
+
+                return Element.loadById( self.elementId, callback );
+            });
+        } else if ( error ) {
+            return callback( error, false );
+        } else {
+            if ( rows.affectedRows ) Element.loadById( self.elementId, callback );
+            else return callback( 'Could not add action type ' + actionTypeId + ' to element with id ' + self.elementId, false );
+        }
     });
 };
+
+Element.prototype.addActivity = function( activityId, callback ){
+    if ( activityId == null ) return callback( null, false );
+
+    var self = this;
+
+    db.query('SELECT * FROM action_type WHERE type = \'TO_ACTIVITY\'', function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        if (rows.length == 1) self.addActionType( rows[0].action_type_id, activityId + '', callback );
+        else callback( 'TO_ACTIVITY finnes ikke i databasen', false );
+    });
+}
 
 module.exports.Element = Element;

@@ -17,6 +17,11 @@ function ObjectList(){
 }
 
 jQuery(document).ready(function(){
+
+	$("#all").change(function(){
+		console.log("checking the boxes!");
+		$(".operatorCheckboxes").prop('checked', $("#all").is(':checked'));
+	});
 	
 	gameId = parseInt($('#gameIdDiv').html());
 
@@ -87,7 +92,7 @@ jQuery(document).ready(function(){
 			else{
 				var dia = new Dialog(target);
 				currentDialog = dia;
-				objectList.push(dia);
+				currentObjectList.objectList.push(dia);
 				console.log("new object");
 			}
 		}
@@ -96,8 +101,6 @@ jQuery(document).ready(function(){
 		console.log(currentScene);
 		console.log(sceneList);
 		console.log(currentScene.sceneId);
-		
-		saveElements();
 		
 		var previousVersionDialog = $.extend(true,{},currentDialog); // copy
 		
@@ -117,183 +120,16 @@ jQuery(document).ready(function(){
 			modal: true,
 			buttons: {
 				"Bekreft": function(){
-					if(currentDialog.sceneChecked==true){
-						$(this).dialog("close");
-						
-						var option = {
-								to: "#storylineButton",
-								className: "ui-effects-transfer"
-						};
-						$(target).effect("transfer", option, 1000);
+					
+					addScene(target,previousVersionDialog,index);
+					addActivity(target,previousVersionDialog,index);
+					addDialog(target,previousVersionDialog,index);
+					addPickUp(target,previousVersionDialog,index);
+					addAnimation(target,previousVersionDialog,index);
+					addSound(target,previousVersionDialog,index);
 
-						saveContentFromMainFrame();
-						
-					};
-					
-					
-					
-					if(currentDialog.activityChecked==true){
-						//make a new activity
-//						$(target).on("click", function(){
-//							if(name=="Cow"){
-//								createCowActivity();
-//							}
-//							if(name=="Chicken"){
-//								createChickenActivity();
-//							}
-//							
-//						});
-						
-						$(".chooseActivityDialog").dialog({
-							position: {
-								my: "center top",
-								at: "center top",
-								of: "#mainFrame"
-							},
-							title: "choose activity type",
-							buttons:{
-								"Matte aktivitet": function(){
-									if(currentDialog.activityObject == null || currentDialog.activityIndex != 0){
-										if(currentDialog.activityIndex > -1){
-											if(currentDialog.activityIndex == 1)
-												$(target).off("click", languageActivityFunction);
-											if(currentDialog.activityIndex == 2)
-												$(target).off("click", quizActivityFunction);
-											currentDialog.activityClickActionMade = false;
-										}
-										currentDialog.activityIndex = 0;
-										var mathObject = new MathActivity();
-										console.log(currentObjectList.objectList);
-										currentDialog.activityObject = mathObject;
-										console.log("new mathobject");
-										console.log(currentDialog);
-										console.log("\n");
-										createNewMathActivity(mathObject);
-									}
-									else if(currentDialog.activityObject!=null && currentDialog.activityIndex == 0){
-										console.log("refresh math object");
-										console.log(currentDialog);
-										console.log("\n");
-										createNewMathActivity(currentDialog.activityObject);
-									}
-									if(!currentDialog.activityClickActionMade && currentDialog.activityIndex == 0){
-										$(target).on("click", mathActivityFunction);
-										currentDialog.activityClickActionMade = true;
-									}
-								},
-								"Språk aktivitet": function(){
-									createLanguageActivity();
-								},
-								"Quiz aktivitet": function(){
-									if(currentDialog.activityObject == null || currentDialog.activityIndex != 2){
-										if(currentDialog.activityIndex > -1){
-											if(currentDialog.activityIndex == 1)
-												$(target).off("click", languageActivityFunction);
-											if(currentDialog.activityIndex == 0)
-												$(target).off("click", mathActivityFunction);
-											currentDialog.activityClickActionMade = false;
-										}
-										currentDialog.activityIndex = 2;
-										var quizObject = new QuizActivity();
-										console.log(currentObjectList.objectList);
-										currentDialog.activityObject = quizObject;
-										console.log("new quizObject");
-										console.log(currentDialog);
-										console.log("\n");
-										createNewQuizActivity(quizObject);
-									}
-									else if(currentDialog.activityObject!=null && currentDialog.activityIndex == 2){
-										console.log("refresh quiz object");
-										console.log(currentDialog);
-										console.log("\n");
-										createNewQuizActivity(currentDialog.activityObject);
-									}
-									if(!currentDialog.activityClickActionMade && currentDialog.activityIndex == 2){
-										$(target).on("click", quizActivityFunction);
-										currentDialog.activityClickActionMade = true;
-									}
-								},
-						
-							},
-							
-						});
-						
-					};
-					if(!currentDialog.activityChecked){
-						if(currentDialog.activityIndex == 0)
-							$(target).off("click", mathActivityFunction);
-						if(currentDialog.activityIndex == 1)
-							$(target).off("click", languageActivityFunction);
-						if(currentDialog.activityIndex == 2)
-							$(target).off("click", quizActivityFunction);
-						currentDialog.activityClickActionMade = false;
-					}
-					
-					
-					if(currentDialog.dialogChecked==true){
-						//make a new dialog
-						$(".userInputDialog").dialog({
-							title: "type in dialog",
-							buttons:{
-								"Bekreft": function(){
-									if(!$("#dialogText").val()){
-										alert("please type in a dialog");
-									}
-									else{
-										if(!currentDialog.dialogClickActionMade){
-											$(target).on("click", dialogFunction);
-											currentDialog.dialogClickActionMade = true;
-										}
-										currentDialog.dialogData = $('#dialogText').val();
-										$(this).dialog("close");
-									}
-								},
-								"Avbryt": function(){
-									$(this).dialog("close");
-									currentObjectList.objectList[index] = previousVersionDialog;
-									currentDialog = previousVersionDialog;
-								}
-							}
-						});
-					};
-					if(!currentDialog.dialogChecked){
-						$(target).off("click", dialogFunction);
-						currentDialog.dialogClickActionMade = false;
-					}
-					
-					
-					
-					if(currentDialog.pickUpChecked){
-						//make an element pickable
-						$(this).dialog("close");
-						var option = {
-								to: ".schoolbagImage",
-								className: "ui-effects-transfer"
-						};
-						$(target).effect("transfer", option, 1000);
-					};
-					
-					
-					if(currentDialog.animationChecked){
-						//append animation on target
-						if(!currentDialog.animationClickActionMade){
-							$(target).on("click", animationFunction);
-							currentDialog.animationClickActionMade = true;
-						}
-					}
-					if(!currentDialog.animationChecked){
-						$(target).off("click", animationFunction);
-						currentDialog.animationClickActionMade = false;
-					}
-					
-					
-					
-					if(currentDialog.soundChecked){
-						//append sound on target
-					}
-					
-					
-					
+					saveElements();
+
 					$(this).dialog("close");
 				},
 				"Avbryt": function(){
@@ -395,6 +231,7 @@ function setupAfterCallsReturns() {
 		if ( currentScene != null ){
 
 			currentSceneType = currentScene.sceneType;
+			loadElementsByScene(currentScene.elements);
 
 			var imgUrl = currentSceneType.backgroundAvatar.url;
 			$("#mainFrame").css({
@@ -467,6 +304,7 @@ function choseSceneFromSceneChooser() {
 	});	
 }
 
+//Broken!!!
 function saveContentFromMainFrame(){
 	$(".textarea").hide();
 	var cloneOfMainFrame = $("#mainFrame").clone();
@@ -487,23 +325,24 @@ function saveContentFromMainFrame(){
 	});
 }
 
-//pseudo
+
 function saveElements(){
 	//May need more stuff here
 
 	//Save call for database
 	for(var i = 0; i < currentObjectList.objectList.length; i++){
 		var temp = currentObjectList.objectList[i];
+		console.log(temp);
 		if (temp.element_id < 0){
 			$.ajax({
 				type: "POST",
 				url: "/api/element/?",
 				data: {
 					element_type_id: "1",
-					frame_x : temp.div.offsetParent.offsetParent.offsetLeft,
-					frame_y : temp.div.offsetParent.offsetParent.offsetTop,
-					frame_width: temp.div.offsetParent.offsetParent.offsetWidth,
-					frame_height : temp.div.offsetParent.offsetParent.offsetHeight,
+					frame_x : temp.div.offsetParent.offsetLeft,
+					frame_y : temp.div.offsetParent.offsetTop,
+					frame_width: temp.div.offsetParent.offsetWidth,
+					frame_height : temp.div.offsetParent.offsetHeight,
 					scene_id: currentScene.sceneId,	
 				},
 				success: function (response) {
@@ -514,6 +353,9 @@ function saveElements(){
 						temp.element_id = response.elementId;
 					}
 				},
+				error: function ( jqXHR, textStatus, errorThrown ){
+					console.log('post element error:', jqXHR, textStatus, errorThrown);
+				},
 				dataType: "json"
 			});
 		}
@@ -523,10 +365,10 @@ function saveElements(){
 				url: "/api/element/"  +temp.element_id,
 				data: {
 					element_type_id: "1",
-					frame_x : temp.div.offsetParent.offsetParent.offsetLeft,
-					frame_y : temp.div.offsetParent.offsetParent.offsetTop,
-					frame_width: temp.div.offsetParent.offsetParent.offsetWidth,
-					frame_height : temp.div.offsetParent.offsetParent.offsetHeight,
+					frame_x : temp.div.offsetParent.offsetLeft,
+					frame_y : temp.div.offsetParent.offsetTop,
+					frame_width: temp.div.offsetParent.offsetWidth,
+					frame_height : temp.div.offsetParent.offsetHeight,
 					scene_id: currentScene.sceneId,
 				},
 				success: function (response) {
@@ -536,8 +378,77 @@ function saveElements(){
 						console.log(response);
 					}
 				},
+				error: function ( jqXHR, textStatus, errorThrown ){
+					console.log('update element error:', jqXHR, textStatus, errorThrown);
+				},
 				dataType: "json"
 			});
 		}
 	}
+}
+
+
+function loadElementsByScene(elements){
+	console.log("");
+	for(element in elements){
+		// console.log(elements[element]);
+		var elem = elements[element];
+
+		//TODO, get the actual avatar (as in gfx)
+
+		$("<div></div>").html("<div class =\"elements ui-draggable\" style=\"display:block;\">" + 
+								"<img width=\""  + elem.frameWidth + "\" height=\"" + elem.frameHeight + 
+								"\" src=\"/gfx/Penguins.jpg\"" + "name = \"Penguin\">" +
+								"</img></div>")
+		.css({
+			"position": "absolute",
+			"top": elem.frameY,
+			"left": elem.frameX,
+		}).appendTo(".draggable").draggable({
+			containment:"parent"
+		}).removeClass("ui-draggable").toggleClass("element");
+		
+	}
+	var temp = document.getElementsByClassName("element");
+	// console.log(temp);
+	for (var i = 0; i < temp.length ; i++) {
+		// console.log(temp[i]);
+		// console.log(temp[i].children[0].children[0]);
+		var target = temp[i].children[0].children[0];
+		// console.log("");
+		var dia = new Dialog(target);
+		dia.element_id = elements[i].elementId;
+		currentDialog = dia;
+		currentObjectList.objectList.push(dia);
+	};
+	console.log(currentScene);
+
+	//TODO, update the internal properties and "pointers" of the dialog object based on the element action types
+}
+
+function saveActivityByElementId(activityIndex,activityObject,elementID){
+	$.ajax({
+		type: "POST",
+		url: "/api/activity/",
+		data: {
+			activity_type: "MATH",
+			element_id: elementID,
+			numbers_range_from: activityObject.lowestNumber,
+			numbers_range_to: activityObject.highestNumber,
+			n_operands: "1",
+			operators: "1",
+		},
+		success: function (response) {
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				console.log(response);
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('post activity error:', jqXHR, "", textStatus, "", errorThrown);
+		},
+
+		dataType: "json"
+	});
 }

@@ -65,4 +65,56 @@ QuizQuestion.initWithData = function ( data, callback ){
     });
 }
 
+QuizQuestion.create = function ( params, callback ){
+    var question = params.question,
+        timeLimit = params.timeLimit,
+        subjectId = params.subjectId,
+        alternatives = params.alternatives,
+        activityQuizId = params.activityQuizId;
+
+    if ( question == null || alternatives == null || activityQuizId == null ){
+        return callback( null, false );
+    }
+
+    var query = 'INSERT INTO quiz_question VALUES (NULL, ?, ?, ?, ?)';
+    var post = [
+        activityQuizId,
+        question,
+        timeLimit,
+        subjectId
+    ];
+
+    db.query( query, post, function ( error, rows, fields ){
+        console.log('db insert error', error);
+        console.log('db insert rows', rows);
+
+        if ( error ) return callback ( error, false );
+
+        if ( rows.insertId ) {
+
+            var quizQuestionId = rows.insertId;
+
+            QuizQuestion.loadById( quizQuestionId, function ( error, quizQuestion ){
+                console.log('QuizQuestion.create', quizQuestion);
+
+                if ( error ) return callback( error, false );
+
+                for ( key in alternatives ){
+                    alternatives[key].quizQuestionId = quizQuestionId;
+                }
+
+                async.parallel({
+                    alternatives: QuizQuestionAlternative.createAlternatives.bind( QuizQuestionAlternative, alternatives, quizQuestionId ),
+                },
+                function ( error, results ){
+                    console.log( 'error:', error );
+                    console.log( 'results:', results );
+
+                    return callback( null, true );
+                });
+            });
+        } else return callback ( 'Kunne ikke opprette QuizQuestion med data ' + params, false );
+    });
+}
+
 module.exports.QuizQuestion = QuizQuestion;

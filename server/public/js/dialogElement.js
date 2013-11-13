@@ -122,12 +122,12 @@ function OnChangeCheckBoxAnimation(){
 	if(document.getElementById("animation").checked){
 		currentDialog.animationChecked = true;
 		$("#effectTypes").attr("disabled", false);
-		$("#button").attr("disabled", false);
+		$("#animationTestButton").attr("disabled", false);
 	}
 	else{
 		currentDialog.animationChecked = false;
 		$("#effectTypes").attr("disabled", true);
-		$("#button").attr("disabled", true);
+		$("#animationTestButton").attr("disabled", true);
 	}
 }
 

@@ -113,7 +113,7 @@ module.exports = function ( app ){
                             game.setInitialSceneId( scene.sceneId, function ( error, success ){
                                 if ( error ) return res.send( { error: error } );
 
-                                if ( success ) return res.send( scene );
+                                if ( success ) return res.send( 201, scene );
                                 else return requestError( res, 'Kunne ikke sette initialSceneId på game' + game_id);
                             });
                         } else return requestError( res, 'Kunne ikke sette initialSceneId, fordi det ikke eksisterer' );
@@ -246,29 +246,98 @@ module.exports = function ( app ){
         });
     });
 
-    app.post( '/api/activitymath/:id?', auth, function ( req, res ){
-        var ActivityMath = models.ActivityMath;
+    app.post( '/api/activity/:id?', auth, function ( req, res ){
+        var Activity            = models.Activity,
+            ActivityMath        = models.ActivityMath,
+            ActivityLanguage    = models.ActivityLanguage,
+            ActivityQuiz        = models.ActivityQuiz;
 
         req.sanitize( 'id' ).toInt();
+        
+        if ( req.params.id ) return res.send( { error: 'not implemented' } );
 
-        if ( req.params.id ){
+        req.checkBody( 'activity_type', 'activity_type (string) is required' ).notEmpty();
+        req.checkBody( 'element_id', 'element_id (int) is required' ).isInt();
+        
+        req.sanitize( 'activity_type' ).xss();
+        req.sanitize( 'element_id' ).toInt();
 
-        } else {
+        var errors = req.validationErrors();
 
-            req.checkBody('numbers_range_from', 'numbers_range_from (int) is required').isInt();
-            req.checkBody('numbers_range_to', 'numbers_range_to (int) is required').isInt();
-            req.checkBody('n_operands', 'n_operands (int) is required').isInt();
+        if ( errors ) return res.send( { error: errors } );
 
-            req.sanitize('numbers_range_from').toInt();
-            req.sanitize('numbers_range_to').toInt();
-            req.sanitize('n_operands').toInt();
+        var activityType = req.body.activity_type,
+            elementId = req.body.element_id,
+            rewardId = null,
+            params = null;
 
-            var errors = req.validationErrors();
-
-            if ( errors ) return res.send( {error: errors } );
-
-            ActivityMath.create()
+        if ( req.body.rewardId ){
+            req.sanitize( 'rewardId' ).toInt();
+            rewardId = req.body.rewardId;
         }
+
+        switch ( activityType ){
+            case 'MATH':
+                req.checkBody( 'numbers_range_from', 'numbers_range_from (int) is required' ).isInt();
+                req.checkBody( 'numbers_range_to', 'numbers_range_to (int) is required' ).isInt();
+                req.checkBody( 'n_operands', 'n_operands (int) is required' ).isInt();
+                req.checkBody( 'operators', 'operators (comma separated string of ints) is required' ).notEmpty();
+
+                req.sanitize( 'numbers_range_from' ).toInt();
+                req.sanitize( 'numbers_range_to' ).toInt();
+                req.sanitize( 'n_operands' ).toInt();
+                req.sanitize( 'operators' ).xss();
+
+                var errors = req.validationErrors();
+
+                if ( errors ) return res.send( { error: errors } );
+
+                var operators = req.body.operators.split(',');
+                for ( key in operators ){
+                    operators[ key ] = parseInt( operators[ key ] );
+                    if ( typeof operators[ key ] != 'number' || isNaN( operators[ key ] ) ){
+                        return res.send( { error: 'invalid format of operators list (item nr ' + (parseInt(key)+1) + '), list must consist of comma separated integers' } );
+                    }
+                }
+
+                params = {
+                    numbersRangeFrom: req.body.numbers_range_from,
+                    numbersRangeTo: req.body.numbers_range_to,
+                    operandsCount: req.body.n_operands,
+                    operators: operators
+                }
+
+                break;
+            case 'QUIZ':
+                // req.checkBody( 'questions', 'questions (json object) is required' ).notEmpty();
+
+                // req.sanitize( 'questions' ).xss();
+
+                // var errors = req.validationErrors();
+
+                // if ( errors ) res.send( { error: errors } );
+
+                var questions = req.body.questions;
+
+                params = {
+                    questions: questions
+                };
+
+                break;
+            default:
+                res.send( { error: 'Ugyldig aktivitetstype, ' + activityType } );
+                break;
+        }
+
+        Activity.create( activityType, rewardId, elementId, params, function ( error, activity ){
+            
+            console.log('got object', util.inspect(activity, false, null));
+
+            if ( error ) return requestError( res, error );
+
+            if ( activity ) return res.send( 201, activity );
+            else return requestError( res, 'Kunne ikke opprette aktivitet' );
+        });
     });
 
     app.get( '/api/activityquiz/:id', auth, function ( req, res ){
