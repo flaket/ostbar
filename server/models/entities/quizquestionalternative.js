@@ -9,7 +9,7 @@ function QuizQuestionAlternative( data ){
     this.quizQuestionAlternativeId = data.quiz_question_alternative_id;
     this.quizQuestionId = data.quiz_question_id;
     this.alternative = data.alternative;
-}
+};
 
 QuizQuestionAlternative.prototype = new Entity();
 
@@ -24,7 +24,7 @@ QuizQuestionAlternative.loadById = function ( id, callback ){
         if ( rows.length == 1 ) QuizQuestionAlternative.initWithData( rows[0], callback );
         else callback( 'Could not load QuizQuestionAlternative with id ' + id, false );
     });
-}
+};
 
 QuizQuestionAlternative.loadAllInQuizQuestion = function ( quizQuestionId, callback ){
     if ( quizQuestionId == null ) return callback( null, false );
@@ -38,7 +38,7 @@ QuizQuestionAlternative.loadAllInQuizQuestion = function ( quizQuestionId, callb
 
         async.map( rows, QuizQuestionAlternative.initWithData, callback );
     });
-}
+};
 
 QuizQuestionAlternative.loadAllCorrectInQuizQuestion = function ( quizQuestionId, callback ){
     if ( quizQuestionId == null ) return callback( null, false );
@@ -58,20 +58,22 @@ QuizQuestionAlternative.loadAllCorrectInQuizQuestion = function ( quizQuestionId
 
         callback( null, correctAlternatives );
     });
-}
+};
 
 QuizQuestionAlternative.initWithData = function ( data, callback ){
     if ( data == null ) return callback( null, false );
 
     callback( null, new QuizQuestionAlternative( data) );
-}
+};
 
 QuizQuestionAlternative.create = function ( params, callback ){
     var quizQuestionId = params.quizQuestionId,
         alternative = params.alternative,
         correct = params.correct;
 
-    if ( quizQuestionId == null || alternative == null ) return callback( null, false );
+    if ( quizQuestionId == null || alternative == null || correct == null ){
+        return callback( null, false );
+    }
 
     var query = 'INSERT INTO quiz_question_alternative VALUES (NULL, ?, ?)',
         post = [ quizQuestionId, alternative ];
@@ -82,7 +84,7 @@ QuizQuestionAlternative.create = function ( params, callback ){
         if ( rows.insertId ) {
             var quizQuestionAlternativeId = rows.insertId;
 
-            if ( correct ){
+            if ( correct == 'true' ){
                 query = 'INSERT INTO quiz_question_correct VALUES (?, ?)';
                 post = [ quizQuestionId, quizQuestionAlternativeId ];
 
@@ -97,7 +99,7 @@ QuizQuestionAlternative.create = function ( params, callback ){
         }
         else return callback( 'Kunne ikke opprette QuizQuestionAlternative med data ' + params, false );
     });
-}
+};
 
 QuizQuestionAlternative.createAlternatives = function ( alternatives, quizQuestionId, callback ){
     if ( alternatives == null || quizQuestionId == null ) return callback( null, false );
@@ -107,6 +109,6 @@ QuizQuestionAlternative.createAlternatives = function ( alternatives, quizQuesti
 
         async.map( alternatives, QuizQuestionAlternative.create, callback );    
     });
-}
+};
 
 module.exports.QuizQuestionAlternative = QuizQuestionAlternative;

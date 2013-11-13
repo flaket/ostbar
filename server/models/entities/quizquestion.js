@@ -76,18 +76,15 @@ QuizQuestion.create = function ( params, callback ){
         return callback( null, false );
     }
 
-    var query = 'INSERT INTO quiz_question VALUES (NULL, ?, ?, ?, ?)';
-    var post = [
-        activityQuizId,
-        question,
-        timeLimit,
-        subjectId
-    ];
+    var query = 'INSERT INTO quiz_question VALUES (NULL, ?, ?, ?, ?)',
+        post = [
+            activityQuizId,
+            question,
+            timeLimit,
+            subjectId
+        ];
 
     db.query( query, post, function ( error, rows, fields ){
-        console.log('db insert error', error);
-        console.log('db insert rows', rows);
-
         if ( error ) return callback ( error, false );
 
         if ( rows.insertId ) {
@@ -95,25 +92,25 @@ QuizQuestion.create = function ( params, callback ){
             var quizQuestionId = rows.insertId;
 
             QuizQuestion.loadById( quizQuestionId, function ( error, quizQuestion ){
-                console.log('QuizQuestion.create', quizQuestion);
-
                 if ( error ) return callback( error, false );
 
                 for ( key in alternatives ){
-                    alternatives[key].quizQuestionId = quizQuestionId;
+                    alternatives[ key ].quizQuestionId = quizQuestionId;
                 }
 
                 async.parallel({
-                    alternatives: QuizQuestionAlternative.createAlternatives.bind( QuizQuestionAlternative, alternatives, quizQuestionId ),
+                    alternatives: QuizQuestionAlternative.createAlternatives.bind( QuizQuestionAlternative, alternatives, quizQuestionId )
                 },
                 function ( error, results ){
-                    console.log( 'error:', error );
-                    console.log( 'results:', results );
+                    if ( error ) return callback( error );
+                    else if ( results.alternatives.indexOf( false ) != -1) {
+                        return callback ( 'Kunne ikke legge til alternativ nr ' + ( results.indexOf( false ) + 1 ) , false );
+                    }
 
-                    return callback( null, true );
+                    QuizQuestion.loadById( quizQuestionId, callback );
                 });
             });
-        } else return callback ( 'Kunne ikke opprette QuizQuestion med data ' + params, false );
+        } else return callback( 'Kunne ikke opprette QuizQuestion med data ' + params, false );
     });
 }
 

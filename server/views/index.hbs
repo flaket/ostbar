@@ -13,34 +13,42 @@
       url: '/api/activity/', 
       dataType:"json", 
       data: {
-        activity_type: 'QUIZ',
+        activity_type: 'LANGUAGE',
         element_id: 6,
         questions: [
           {
             question: 'spm 1',
+            languageQuestionType: 'PICTURE_RECOGNIZE',
+            data_id: 1,
             alternatives: [
               {
-                alternative: 'spm 1, alt 1',
-                correct: true
+                alternative: 'spm 1, alt 1 (riktig)',
+                correct: 'true'
               },
               {
                 alternative: 'spm 1, alt 2',
-                correct: false
+                correct: 'false'
               }
             ],
           },
           {
             question: 'spm 2',
+            languageQuestionType: 'SOUND_RECOGNIZE',
+            data_id: 1,
             alternatives: [
               {
                 alternative: 'spm 2, alt 1',
-                correct: true
+                correct: 'false'
               },
               {
                 alternative: 'spm 2, alt 2',
-                correct: false
+                correct: 'false'
+              },
+              {
+                alternative: 'spm 2, alt 3 (riktig)',
+                correct: 'true'
               }
-            ],
+            ]
           }
         ]
       },

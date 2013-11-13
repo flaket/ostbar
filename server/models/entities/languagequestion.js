@@ -31,7 +31,7 @@ LanguageQuestion.loadById = function ( id, callback ){
         if ( rows.length == 1 ) LanguageQuestion.initWithData( rows[0], callback );
         else callback( 'Could not load LanguageQuestion with id ' + id, false );
     });
-}
+};
 
 LanguageQuestion.loadAllInActivityLanguage = function( activityLanguageId, callback ){
     if ( activityLanguageId == null ) return callback( null, false );
@@ -43,7 +43,7 @@ LanguageQuestion.loadAllInActivityLanguage = function( activityLanguageId, callb
 
         async.map( rows, LanguageQuestion.initWithData, callback );
     });
-}
+};
 
 LanguageQuestion.initWithData = function ( data, callback ){
     if ( data == null ) return callback( null, false );
@@ -65,6 +65,56 @@ LanguageQuestion.initWithData = function ( data, callback ){
 
         callback( null, new LanguageQuestion( data ) );   
     });
-}
+};
+
+LanguageQuestion.create = function ( params, callback ){
+    console.log('LanguageQuestion.create params', params);
+
+    var languageQuestionType = params.languageQuestionType,
+        alternatives = params.alternatives,
+        activityLanguageId = params.activityLanguageId,
+        dataId = parseInt( params.data_id );
+
+    if ( languageQuestionType == null || alternatives == null || activityLanguageId == null || dataId == null ){
+        console.log('one or more params is null');
+        return callback( null, false );
+    }
+
+    var query = 'INSERT INTO language_question VALUES (NULL, ?, ?, 0, ?)',
+        post = [
+            activityLanguageId,
+            languageQuestionType,
+            dataId
+        ];
+
+    db.query( query, post, function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        if ( rows.insertId ){
+
+            var languageQuestionId = rows.insertId;
+
+            LanguageQuestion.loadById( languageQuestionId, function ( error, languageQuestion ){
+                if ( error ) return callback( error, false );
+
+                for ( key in alternatives ){
+                    alternatives[ key ].languageQuestionId = languageQuestionId;
+                }
+
+                async.parallel({
+                    alternatives: LanguageQuestionAlternative.createAlternatives.bind( LanguageQuestionAlternative, alternatives, languageQuestionId )
+                },
+                function ( error, results ){
+                    if ( error ) return callback( error, false );
+                    else if ( results.alternatives.indexOf( false ) != -1) {
+                        return callback ( 'Kunne ikke legge til alternativ nr ' + ( results.indexOf( false ) + 1 ) , false );
+                    }
+
+                    LanguageQuestion.loadById( languageQuestionId, callback );
+                });
+            });
+        } else return callback( 'Kunne ikke opprette LanguageQuestion med data ' + data, false );
+    });
+};
 
 module.exports.LanguageQuestion = LanguageQuestion;
