@@ -216,45 +216,51 @@ function checkQuizAnswer(){
 
 	var correctAnswer = currentQuestionObject.list[currentQuestionObject.questionsAnswered].questionCorrectAnswer;
 	if($("#checkAlt1").is(":checked")){
-		if($("#alt1").val()==correctAnswer){
-			console.log("RIKTIG");
-			correctQuestionsAnswered++;
-			resetAnswer();
-			currentQuestionObject.questionsAnswered++;
-			showQuestions();
-		}
-		else{
-			console.log("FEIL");
-			resetAnswer();
-			alert("Feil svar, du må svare riktig for å gå videre");
+		for(var i=0; i<correctAnswer.length; i++){
+			if($("#alt1").val()==correctAnswer[i]){
+				console.log("RIKTIG");
+				correctQuestionsAnswered++;
+				resetAnswer();
+				currentQuestionObject.questionsAnswered++;
+				showQuestions();
+			}
+			else{
+				console.log("FEIL");
+				resetAnswer();
+				//alert("Feil svar, du må svare riktig for å gå videre");
+			}
 		}
 	}
 	else if($("#checkAlt2").is(":checked")){
-		if($("#alt2").val()==correctAnswer){
-			console.log("RIKTIG");
-			correctQuestionsAnswered++;
-			resetAnswer();
-			currentQuestionObject.questionsAnswered++;
-			showQuestions();
-		}
-		else{
-			console.log("FEIL");
-			resetAnswer();
-			alert("Feil svar, du må svare riktig for å gå videre");
+		for(var i=0; i<correctAnswer.length; i++){
+			if($("#alt2").val()==correctAnswer[i]){
+				console.log("RIKTIG");
+				correctQuestionsAnswered++;
+				resetAnswer();
+				currentQuestionObject.questionsAnswered++;
+				showQuestions();
+			}
+			else{
+				console.log("FEIL");
+				resetAnswer();
+				//alert("Feil svar, du må svare riktig for å gå videre");
+			}
 		}
 	}
 	else if($("#checkAlt3").is(":checked")){
-		if($("#alt3").val()==correctAnswer){
-			console.log("RIKTIG");
-			correctQuestionsAnswered++;
-			resetAnswer();
-			currentQuestionObject.questionsAnswered++;
-			showQuestions();
-		}
-		else{
-			console.log("FEIL");
-			resetAnswer();
-			alert("Feil svar, du må svare riktig for å gå videre");
+		for(var i=0; i<correctAnswer.length; i++){
+			if($("#alt3").val()==correctAnswer[i]){
+				console.log("RIKTIG");
+				correctQuestionsAnswered++;
+				resetAnswer();
+				currentQuestionObject.questionsAnswered++;
+				showQuestions();
+			}
+			else{
+				console.log("FEIL");
+				resetAnswer();
+				//alert("Feil svar, du må svare riktig for å gå videre");
+			}
 		}
 	}
 }
