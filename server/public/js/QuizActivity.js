@@ -216,6 +216,7 @@ function checkQuizAnswer(){
 
 	var correctAnswer = currentQuestionObject.list[currentQuestionObject.questionsAnswered].questionCorrectAnswer;
 	if($("#checkAlt1").is(":checked")){
+		console.log("lengden av riktige svar: " + correctAnswer.length);
 		for(var i=0; i<correctAnswer.length; i++){
 			if($("#alt1").val()==correctAnswer[i]){
 				console.log("RIKTIG");
@@ -225,9 +226,16 @@ function checkQuizAnswer(){
 				showQuestions();
 			}
 			else{
-				console.log("FEIL");
-				resetAnswer();
-				//alert("Feil svar, du må svare riktig for å gå videre");
+				if(correctAnswer.length==1){
+					console.log("FEIL");
+					resetAnswer();
+					alert("Feil svar, du må svare riktig for å gå videre");
+				}
+				else{
+					console.log("FEIL");
+					resetAnswer();
+					//alert("Feil svar, du må svare riktig for å gå videre");
+				}
 			}
 		}
 	}
@@ -241,9 +249,16 @@ function checkQuizAnswer(){
 				showQuestions();
 			}
 			else{
-				console.log("FEIL");
-				resetAnswer();
-				//alert("Feil svar, du må svare riktig for å gå videre");
+				if(correctAnswer.length==1){
+					console.log("FEIL");
+					resetAnswer();
+					alert("Feil svar, du må svare riktig for å gå videre");
+				}
+				else{
+					console.log("FEIL");
+					resetAnswer();
+					//alert("Feil svar, du må svare riktig for å gå videre");
+				}
 			}
 		}
 	}
@@ -257,9 +272,16 @@ function checkQuizAnswer(){
 				showQuestions();
 			}
 			else{
-				console.log("FEIL");
-				resetAnswer();
-				//alert("Feil svar, du må svare riktig for å gå videre");
+				if(correctAnswer.length==1){
+					console.log("FEIL");
+					resetAnswer();
+					alert("Feil svar, du må svare riktig for å gå videre");
+				}
+				else{
+					console.log("FEIL");
+					resetAnswer();
+					//alert("Feil svar, du må svare riktig for å gå videre");
+				}
 			}
 		}
 	}
