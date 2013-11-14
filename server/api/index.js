@@ -348,24 +348,48 @@ module.exports = function ( app ){
                 req.checkBody( 'numbers_range_from', 'numbers_range_from (int) is required' ).isInt();
                 req.checkBody( 'numbers_range_to', 'numbers_range_to (int) is required' ).isInt();
                 req.checkBody( 'n_operands', 'n_operands (int) is required' ).isInt();
-                req.checkBody( 'operators', 'operators (comma separated string of ints) is required' ).notEmpty();
-
+                
                 req.sanitize( 'numbers_range_from' ).toInt();
                 req.sanitize( 'numbers_range_to' ).toInt();
                 req.sanitize( 'n_operands' ).toInt();
-                req.sanitize( 'operators' ).xss();
 
                 var errors = req.validationErrors();
 
                 if ( errors ) return res.send( { error: errors } );
 
-                var operators = req.body.operators.split(',');
-                for ( key in operators ){
-                    operators[ key ] = parseInt( operators[ key ] );
-                    if ( typeof operators[ key ] != 'number' || isNaN( operators[ key ] ) ){
-                        return res.send( { error: 'invalid format of operators list (item nr ' + (parseInt(key)+1) + '), list must consist of comma separated integers' } );
+                var operators = req.body.operators,
+                    operatorsSchema = {
+                        type: 'array',
+                        items: {
+                            type: 'string',
+                            intString: 'yes'
+                        }
+                    };
+
+                if ( operators == null ) return res.send( { error: 'operators (array of ints) is required'} );
+
+                validator.attributes.intString = function validateIntString( instance, schema, options, ctx ){
+                    var result = new jsonschema.ValidatorResult( instance, schema, options, ctx );
+                    var intValue = parseInt( instance );
+                    console.log('intvalue is', intValue);
+                    if ( typeof instance == 'string' && !isNaN( intValue ) ) return result;
+                    else if ( typeof instance == 'number' ) return result;
+                    else {
+                        result.addError( 'is not of a type(s) int string' );
+                        return result;
                     }
-                }
+                };
+
+                var result = validator.validate( operators, operatorsSchema );
+
+                if ( result.errors.length ) return res.send( {
+                    error: {
+                        msg: result.errors,
+                        param: 'operators',
+                    }
+                });
+
+                return res.send({ error: 'none'});
 
                 params = {
                     numbersRangeFrom: req.body.numbers_range_from,
@@ -376,7 +400,6 @@ module.exports = function ( app ){
 
                 break;
             case 'LANGUAGE':
-
                 questionsSchema.items.properties.languageQuestionType = {
                     type: 'string',
                     required: true
@@ -390,7 +413,12 @@ module.exports = function ( app ){
             case 'QUIZ':
                 var result = validator.validate( questions, questionsSchema );
                 
-                if ( result.errors.length ) return res.send( { error: result.errors } );
+                if ( result.errors.length ) return res.send( {
+                    error: {
+                        msg: result.errors,
+                        param: 'questions'
+                    }
+                });
 
                 params = {
                     questions: questions
