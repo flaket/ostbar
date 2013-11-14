@@ -169,7 +169,7 @@ CREATE TABLE `avatar` (
   `avatar_id` int(11) NOT NULL AUTO_INCREMENT,
   `url` varchar(50) NOT NULL,
   PRIMARY KEY (`avatar_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -178,7 +178,7 @@ CREATE TABLE `avatar` (
 
 LOCK TABLES `avatar` WRITE;
 /*!40000 ALTER TABLE `avatar` DISABLE KEYS */;
-INSERT INTO `avatar` VALUES (1,'/gfx/bg1.svg'),(2,'/gfx/bg2.jpg'),(3,'/gfx/bg3.jpg'),(4,'/gfx/bg4.jpg'),(5,'/gfx/bg5.jpg'),(6,'/gfx/bg6.jpg');
+INSERT INTO `avatar` VALUES (1,'/gfx/bg1.svg'),(2,'/gfx/bg2.jpg'),(3,'/gfx/bg3.jpg'),(4,'/gfx/bg4.jpg'),(5,'/gfx/bg5.jpg'),(6,'/gfx/bg6.jpg'),(7,'/gfx/Penguins.jpg'),(8,'/gfx/Koala.jpg'),(9,'/gfx/our/chicken_element.svg'),(10,'/gfx/our/cow_element.svg');
 /*!40000 ALTER TABLE `avatar` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -246,7 +246,7 @@ CREATE TABLE `element_type` (
   `sound_id` int(11) NOT NULL,
   `world_id` int(11) NOT NULL,
   PRIMARY KEY (`element_type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -255,7 +255,7 @@ CREATE TABLE `element_type` (
 
 LOCK TABLES `element_type` WRITE;
 /*!40000 ALTER TABLE `element_type` DISABLE KEYS */;
-INSERT INTO `element_type` VALUES (1,1,1,1),(2,1,1,1);
+INSERT INTO `element_type` VALUES (1,7,1,1),(2,8,1,1),(3,9,1,1),(4,10,1,1);
 /*!40000 ALTER TABLE `element_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -279,7 +279,7 @@ CREATE TABLE `element_type_to_action_type_rel` (
 
 LOCK TABLES `element_type_to_action_type_rel` WRITE;
 /*!40000 ALTER TABLE `element_type_to_action_type_rel` DISABLE KEYS */;
-INSERT INTO `element_type_to_action_type_rel` VALUES (1,1),(1,2),(1,3),(1,4),(1,5),(2,1),(2,2);
+INSERT INTO `element_type_to_action_type_rel` VALUES (1,1),(1,2),(1,3),(1,4),(1,5),(2,1),(2,2),(2,3),(2,4),(2,5),(3,1),(3,2),(3,3),(3,4),(3,5),(4,1),(4,2),(4,3),(4,4),(4,5);
 /*!40000 ALTER TABLE `element_type_to_action_type_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -331,7 +331,7 @@ CREATE TABLE `goal` (
 
 LOCK TABLES `goal` WRITE;
 /*!40000 ALTER TABLE `goal` DISABLE KEYS */;
-INSERT INTO `goal` VALUES (1,7);
+INSERT INTO `goal` VALUES (1,1);
 /*!40000 ALTER TABLE `goal` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -687,4 +687,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-11-14 11:09:47
+-- Dump completed on 2013-11-14 15:59:29

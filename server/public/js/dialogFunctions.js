@@ -34,7 +34,7 @@ function addActivity(target,previousVersionDialog,index){
 							currentDialog.activityClickActionMade = false;
 						}
 						currentDialog.activityIndex = 0;
-						var mathObject = new MathActivity();
+						var mathObject = new MathActivity();						
 						console.log(currentObjectList.objectList);
 						currentDialog.activityObject = mathObject;
 						console.log("new mathobject");
@@ -47,7 +47,6 @@ function addActivity(target,previousVersionDialog,index){
 						console.log(currentDialog);
 						console.log("\n");
 						createNewMathActivity(currentDialog.activityObject);
-						// saveActivityByElementId(currentDialog.activityIndex, currentDialog.activityObject, currentDialog.element_id);
 					}
 					if(!currentDialog.activityClickActionMade && currentDialog.activityIndex == 0){
 						$(target).on("click", mathActivityFunction);

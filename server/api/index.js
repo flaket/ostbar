@@ -2,6 +2,8 @@ var util = require( 'util' );
 var models = require( '../models' );
 var passport = require( 'passport' );
 var jsonschema = require( 'jsonschema' );
+var DB      = require( '../models/db' );
+var db      = DB.instance;
 
 var emptyResponse = function ( res ){
     res.send( 204, ' ' );
@@ -34,17 +36,25 @@ var standardGETResponse = function ( req, res, Entity ){
 module.exports = function ( app ){
     var auth = app.ensureAuthenticatedAjax;
 
+    // -- API ROOT ----------------------------------------------------------------------
+
     app.get( '/api/', auth, function ( req, res ){
         emptyResponse( res );
     });
+
+    // -- WORLD -------------------------------------------------------------------------
 
     app.get( '/api/world/:id?', auth, function ( req, res  ){
         standardGETResponse( req, res, models.World );
     });
 
+    // -- ELEMENT TYPE ------------------------------------------------------------------
+
     app.get( '/api/elementtype/:id?', auth, function ( req, res ){
         standardGETResponse( req, res, models.ElementType );
     });
+
+    // -- GAME --------------------------------------------------------------------------
 
     app.get( '/api/game/:id?', auth, function ( req, res ){
         var Game = models.Game;
@@ -68,14 +78,18 @@ module.exports = function ( app ){
         }
     });
 
+    // -- SCENETYPE ---------------------------------------------------------------------
+
+    app.get( '/api/scenetype/:id?', auth, function ( req, res ){
+        standardGETResponse( req, res, models.SceneType );
+    });
+
+    // -- SCENE -------------------------------------------------------------------------
+
     app.get( '/api/scene/:id?', auth, function ( req, res ){
         if (!req.params.id) return emptyResponse( res );
 
         standardGETResponse( req, res, models.Scene );
-    });
-
-    app.get( '/api/scenetype/:id?', auth, function ( req, res ){
-        standardGETResponse( req, res, models.SceneType );
     });
 
     app.post( '/api/scene/:id?', auth, function ( req, res ){
@@ -123,6 +137,8 @@ module.exports = function ( app ){
         });
     });
 
+    // -- ELEMENT -----------------------------------------------------------------------
+
     app.get( '/api/element/:id?', function ( req, res ){
         standardGETResponse( req, res, models.Element );
     });
@@ -149,7 +165,6 @@ module.exports = function ( app ){
                     var actionTypeId = req.body.actiontype_id;
                     var data = req.body.data || '';
                     element.addActionType( actionTypeId, data, function ( error, element ){
-                        console.log( 'added action type', error, element );
                         if ( error ) return requestError( res, error );
 
                         if ( element ) return res.send( { element: element } );
@@ -221,43 +236,39 @@ module.exports = function ( app ){
         }
     });
 
-    app.del( '/api/element/:id?', function ( req, res ){
+    app.del( '/api/element/:id', auth, function ( req, res ){
         var Element = models.Element;
 
+        req.sanitize( 'id' );
 
-        return res.send( { result: 'okok' } );
+        Element.delete( req.params.id, function ( error, success ){
+            if ( error ) return res.send( { error: error } );
+
+            return res.send( { success: success } );
+        });
     });
 
-    app.get( '/api/activitylanguage/:id', auth, function ( req, res ){
-        var ActivityLanguage = models.ActivityLanguage;
-
-        req.sanitize( 'id' ).toInt();
-
-        ActivityLanguage.loadById( req.params.id, function ( error, activityLanguage ){
-            if ( error ) return requestError( res, error );
-
-            if ( activityLanguage ) res.send( activityLanguage );
-            else emptyResponse( res );
-        })
-    });
+    // -- MATHOPERATOR ------------------------------------------------------------------
 
     app.get( '/api/mathoperator/:id?', auth, function ( req, res ){
         standardGETResponse( req, res, models.MathOperator );
     });
 
-    app.get( '/api/activitymath/:id', auth, function ( req, res ){
-        var ActivityMath = models.ActivityMath;
+    // -- ACTIVITY ----------------------------------------------------------------------
+    
+    app.get( '/api/activity/:id', auth, function ( req, res ){
+        var Activity = models.Activity;
 
         req.sanitize( 'id' ).toInt();
 
-        ActivityMath.loadById( req.params.id, function ( error, activityMath ){
+        Activity.loadById( req.params.id, function ( error, activity ){
             if ( error ) return requestError( res, error );
 
-            if ( activityMath ) res.send( activityMath );
+            if ( activity ) res.send( activity );
             else emptyResponse( res );
         });
     });
-
+    
     app.post( '/api/activity/:id?', auth, function ( req, res ){
         var Activity            = models.Activity,
             ActivityMath        = models.ActivityMath,
@@ -337,24 +348,48 @@ module.exports = function ( app ){
                 req.checkBody( 'numbers_range_from', 'numbers_range_from (int) is required' ).isInt();
                 req.checkBody( 'numbers_range_to', 'numbers_range_to (int) is required' ).isInt();
                 req.checkBody( 'n_operands', 'n_operands (int) is required' ).isInt();
-                req.checkBody( 'operators', 'operators (comma separated string of ints) is required' ).notEmpty();
-
+                
                 req.sanitize( 'numbers_range_from' ).toInt();
                 req.sanitize( 'numbers_range_to' ).toInt();
                 req.sanitize( 'n_operands' ).toInt();
-                req.sanitize( 'operators' ).xss();
 
                 var errors = req.validationErrors();
 
                 if ( errors ) return res.send( { error: errors } );
 
-                var operators = req.body.operators.split(',');
-                for ( key in operators ){
-                    operators[ key ] = parseInt( operators[ key ] );
-                    if ( typeof operators[ key ] != 'number' || isNaN( operators[ key ] ) ){
-                        return res.send( { error: 'invalid format of operators list (item nr ' + (parseInt(key)+1) + '), list must consist of comma separated integers' } );
+                var operators = req.body.operators,
+                    operatorsSchema = {
+                        type: 'array',
+                        items: {
+                            type: 'string',
+                            intString: 'yes'
+                        }
+                    };
+
+                if ( operators == null ) return res.send( { error: 'operators (array of ints) is required'} );
+
+                validator.attributes.intString = function validateIntString( instance, schema, options, ctx ){
+                    var result = new jsonschema.ValidatorResult( instance, schema, options, ctx );
+                    var intValue = parseInt( instance );
+                    console.log('intvalue is', intValue);
+                    if ( typeof instance == 'string' && !isNaN( intValue ) ) return result;
+                    else if ( typeof instance == 'number' ) return result;
+                    else {
+                        result.addError( 'is not of a type(s) int string' );
+                        return result;
                     }
-                }
+                };
+
+                var result = validator.validate( operators, operatorsSchema );
+
+                if ( result.errors.length ) return res.send( {
+                    error: {
+                        msg: result.errors,
+                        param: 'operators',
+                    }
+                });
+
+                return res.send({ error: 'none'});
 
                 params = {
                     numbersRangeFrom: req.body.numbers_range_from,
@@ -365,7 +400,6 @@ module.exports = function ( app ){
 
                 break;
             case 'LANGUAGE':
-
                 questionsSchema.items.properties.languageQuestionType = {
                     type: 'string',
                     required: true
@@ -379,7 +413,12 @@ module.exports = function ( app ){
             case 'QUIZ':
                 var result = validator.validate( questions, questionsSchema );
                 
-                if ( result.errors.length ) return res.send( { error: result.errors } );
+                if ( result.errors.length ) return res.send( {
+                    error: {
+                        msg: result.errors,
+                        param: 'questions'
+                    }
+                });
 
                 params = {
                     questions: questions
@@ -391,13 +430,34 @@ module.exports = function ( app ){
                 break;
         }
 
-        Activity.create( activityType, rewardId, elementId, params, function ( error, activity ){
+        Activity.create( activityType, rewardId, elementId, params, function ( error, activity ){            
             if ( error ) return requestError( res, error );
 
             if ( activity ) return res.send( 201, activity );
             else return requestError( res, 'Kunne ikke opprette aktivitet' );
         });
     });
+
+    app.del( '/api/activity/:id', auth, function ( req, res ){
+        var Activity = models.Activity;
+
+        req.checkBody( 'element_id', 'element_id (int) is required' ).isInt();
+
+        req.sanitize( 'id' );
+        req.sanitize( 'element_id' ).toInt();
+
+        var errors = req.validationErrors();
+
+        if ( errors ) return res.send( { error: errors } );
+
+        Activity.delete( req.params.id, req.body.element_id, function( error, success ){
+            if ( error ) return res.send( { error: error } );
+
+            return res.send( { success: success } );
+        });
+    });
+
+    // -- ACTIVITYQUIZ ------------------------------------------------------------------
 
     app.get( '/api/activityquiz/:id', auth, function ( req, res ){
         var ActivityQuiz = models.ActivityQuiz;
@@ -412,15 +472,32 @@ module.exports = function ( app ){
         });
     });
 
-    app.get( '/api/activity/:id', auth, function ( req, res ){
-        var Activity = models.Activity;
+    // -- ACTIVITYLANGUAGE --------------------------------------------------------------
+
+    app.get( '/api/activitylanguage/:id', auth, function ( req, res ){
+        var ActivityLanguage = models.ActivityLanguage;
 
         req.sanitize( 'id' ).toInt();
 
-        Activity.loadById( req.params.id, function ( error, activity ){
+        ActivityLanguage.loadById( req.params.id, function ( error, activityLanguage ){
             if ( error ) return requestError( res, error );
 
-            if ( activity ) res.send( activity );
+            if ( activityLanguage ) res.send( activityLanguage );
+            else emptyResponse( res );
+        })
+    });
+
+    // -- ACTIVITYMATH ------------------------------------------------------------------
+
+    app.get( '/api/activitymath/:id', auth, function ( req, res ){
+        var ActivityMath = models.ActivityMath;
+
+        req.sanitize( 'id' ).toInt();
+
+        ActivityMath.loadById( req.params.id, function ( error, activityMath ){
+            if ( error ) return requestError( res, error );
+
+            if ( activityMath ) res.send( activityMath );
             else emptyResponse( res );
         });
     });

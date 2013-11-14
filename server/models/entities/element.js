@@ -17,7 +17,7 @@ function Element( data ){
     this.frameWidth     = data.frame_width;
     this.frameHeight    = data.frame_height;
     this.actionTypes    = data.action_types;
-}
+};
 
 Element.prototype = new Entity();
 
@@ -91,7 +91,7 @@ Element.initWithData = function ( data, callback ){
         data.action_types = results.actionTypes;
         callback( null, new Element( data ) );
     });
-}
+};
 
 Element.prototype.update = function ( callback ){
     var query = 'UPDATE element SET ';
@@ -118,11 +118,10 @@ Element.prototype.update = function ( callback ){
 
         callback( null, self );
     });
-}
+};
 
 Element.prototype.addActionType = function( actionTypeId, data, callback ){
     if ( actionTypeId == null || data == null ) return callback( null, false );
-
     
     var query = 'INSERT INTO element_to_action_type_rel SET ?';
     var post = {
@@ -151,29 +150,57 @@ Element.prototype.addActionType = function( actionTypeId, data, callback ){
     });
 };
 
+Element.prototype.removeActionType = function ( actionTypeId, callback ){
+    if ( actionTypeId == null ) return callback( null, false );
+
+    var query = 'DELETE FROM element_to_action_type_rel WHERE element_id = ? AND action_type_id = ?';
+
+    db.query( query, [ this.elementId, actionTypeId ], function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        callback( null, true );
+    });
+};
+
 Element.prototype.addActivity = function( activityId, callback ){
     if ( activityId == null ) return callback( null, false );
 
     var self = this;
 
-    db.query('SELECT * FROM action_type WHERE type = \'TO_ACTIVITY\'', function ( error, rows, fields ){
+    db.query( 'SELECT * FROM action_type WHERE type = \'TO_ACTIVITY\'', function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        if (rows.length == 1) self.addActionType( rows[0].action_type_id, activityId + '', callback );
+        if ( rows.length == 1 ) self.addActionType( rows[0].action_type_id, activityId + '', callback );
         else callback( 'TO_ACTIVITY finnes ikke i databasen', false );
     });
-}
+};
+
+Element.prototype.removeActivity = function ( callback ){
+    var self = this;
+
+    db.query( 'SELECT * FROM action_type WHERE type = \'TO_ACTIVITY\'', function ( error, rows, fields ){
+        if ( error ) return callback ( error, false );
+
+        if ( rows.length == 1 ) self.removeActionType( rows[0].action_type_id, callback );
+    });
+};
 
 Element.delete = function ( elementId, callback ){
     if ( elementId == null ) return callback( 'Kan ikke slette element med id null', false );
 
-    db.query( 'DELETE FROM element WHERE element_id = ?', elementId, function ( error, rows, callback ){
+    db.query( 'DELETE FROM element WHERE element_id = ?', elementId, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        if ( rows.affectedRows == 1){
+        db.query( 'DELETE FROM element_to_action_type_rel WHERE element_id = ?', elementId, function ( error, rows, fields ){
+            if ( error ) return callback( error, false );
 
-        } else return callback( 'Kunne ikke slette element med id ' + elementId, false );
-    }); 
-}
+            db.query( 'DELETE FROM scene_to_element_rel WHERE element_id = ?', elementId, function ( error, rows, fields ){
+                if ( error ) return callback( error, false );
+
+                return callback( null, true );
+            });
+        });
+    });
+};
 
 module.exports.Element = Element;
