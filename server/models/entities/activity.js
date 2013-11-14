@@ -99,4 +99,35 @@ Activity.create = function ( activityType, rewardId, elementId, params, callback
     } else return callback( 'Ugyldig aktivitetstype, ' + activityType, false );
 }
 
+Activity.delete = function ( activityId, callback ){
+    if ( activityId == null ) return callback( 'Kan ikke slette aktivitet med id null', false );
+
+    Activity.loadById( activityId, function ( error, activity ){
+        if ( error ) return callback( error, false );
+
+        if ( activity ){
+            var subclass,
+                activityType = activity.activityType;
+
+            switch ( activityType ){
+                case 'LANGUAGE': subclass = ActivityLanguage; break;
+                case 'MATH': subclass = ActivityMath; break;
+                case 'QUIZ': subclass = ActivityQuiz; break;
+            }
+
+            subclass.deleteByActivityId( activity.activityId, function ( error, success ){
+                if ( error ) return callback( error, false );
+
+                if ( success ){ 
+                    db.query( 'DELETE FROM activity WHERE activity_id = ?', activityId, function ( error, rows, fields ){
+                        if ( error ) return callback( error, false );
+
+                        return callback( null, true );
+                    }); 
+                } else return callback( 'Kunne ikke slette aktivitet med type ' + activityType, false );
+            });
+        } else return callback( null, true );
+    });
+};
+
 module.exports.Activity = Activity;

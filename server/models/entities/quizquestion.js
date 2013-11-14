@@ -114,4 +114,46 @@ QuizQuestion.create = function ( params, callback ){
     });
 }
 
+QuizQuestion.delete = function ( quizQuestionId, callback ){
+    if ( quizQuestionId == null ) return callback( 'Kan ikke slette quizQuestion der quizQuestionId er null', false );
+
+    var query = 'DELETE FROM quiz_question WHERE quiz_question_id = ?';
+
+    db.query( query, quizQuestionId, function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        query = 'DELETE FROM quiz_question_alternative WHERE quiz_question_id = ?';
+
+        db.query( query, quizQuestionId, function ( error, rows, fields ){
+            if ( error ) return callback( error, false );
+
+            query = 'DELETE FROM quiz_question_correct WHERE quiz_question_id = ?';
+
+            db.query ( query, quizQuestionId, function ( error, rows, fields ){
+                if ( error ) return callback( error, false );
+
+                callback( null, true );
+            });
+        });
+    });
+};
+
+QuizQuestion.deleteByActivityQuizId = function ( activityQuizId, callback ){
+    if ( activityQuizId == null ) return callback( 'Kan ikke slette QuizQuestion for activityQuizId null', false );
+
+    var query = 'SELECT * FROM quiz_question WHERE activity_quiz_id = ?';
+    
+    db.query( query, activityQuizId, function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        var quizQuestionIds = new Array();
+
+        for ( key in rows ){
+            quizQuestionIds.push( rows[ key ].quiz_question_id );
+        }
+
+        async.map( quizQuestionIds, QuizQuestion.delete, callback );
+    });
+};
+
 module.exports.QuizQuestion = QuizQuestion;

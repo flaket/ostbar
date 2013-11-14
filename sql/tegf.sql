@@ -51,7 +51,7 @@ CREATE TABLE `activity` (
   `activity_type` enum('LANGUAGE','MATH','QUIZ') NOT NULL,
   `reward_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`activity_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -60,7 +60,6 @@ CREATE TABLE `activity` (
 
 LOCK TABLES `activity` WRITE;
 /*!40000 ALTER TABLE `activity` DISABLE KEYS */;
-INSERT INTO `activity` VALUES (1,'MATH',NULL);
 /*!40000 ALTER TABLE `activity` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -75,7 +74,7 @@ CREATE TABLE `activity_language` (
   `activity_language_id` int(11) NOT NULL AUTO_INCREMENT,
   `activity_id` int(11) NOT NULL,
   PRIMARY KEY (`activity_language_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -84,7 +83,6 @@ CREATE TABLE `activity_language` (
 
 LOCK TABLES `activity_language` WRITE;
 /*!40000 ALTER TABLE `activity_language` DISABLE KEYS */;
-INSERT INTO `activity_language` VALUES (1,1);
 /*!40000 ALTER TABLE `activity_language` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -102,7 +100,7 @@ CREATE TABLE `activity_math` (
   `numbers_range_to` double NOT NULL,
   `n_operands` int(11) NOT NULL,
   PRIMARY KEY (`activity_math_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -111,7 +109,6 @@ CREATE TABLE `activity_math` (
 
 LOCK TABLES `activity_math` WRITE;
 /*!40000 ALTER TABLE `activity_math` DISABLE KEYS */;
-INSERT INTO `activity_math` VALUES (1,1,1,12345,12);
 /*!40000 ALTER TABLE `activity_math` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -135,7 +132,6 @@ CREATE TABLE `activity_math_to_math_operator_rel` (
 
 LOCK TABLES `activity_math_to_math_operator_rel` WRITE;
 /*!40000 ALTER TABLE `activity_math_to_math_operator_rel` DISABLE KEYS */;
-INSERT INTO `activity_math_to_math_operator_rel` VALUES (1,1),(1,2),(1,3);
 /*!40000 ALTER TABLE `activity_math_to_math_operator_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -150,7 +146,7 @@ CREATE TABLE `activity_quiz` (
   `activity_quiz_id` int(11) NOT NULL AUTO_INCREMENT,
   `activity_id` int(11) NOT NULL,
   PRIMARY KEY (`activity_quiz_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -159,7 +155,6 @@ CREATE TABLE `activity_quiz` (
 
 LOCK TABLES `activity_quiz` WRITE;
 /*!40000 ALTER TABLE `activity_quiz` DISABLE KEYS */;
-INSERT INTO `activity_quiz` VALUES (1,1);
 /*!40000 ALTER TABLE `activity_quiz` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -174,7 +169,7 @@ CREATE TABLE `avatar` (
   `avatar_id` int(11) NOT NULL AUTO_INCREMENT,
   `url` varchar(50) NOT NULL,
   PRIMARY KEY (`avatar_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -183,7 +178,7 @@ CREATE TABLE `avatar` (
 
 LOCK TABLES `avatar` WRITE;
 /*!40000 ALTER TABLE `avatar` DISABLE KEYS */;
-INSERT INTO `avatar` VALUES (1,'/gfx/bg1.svg'),(2,'/gfx/bg2.jpg'),(3,'/gfx/bg3.jpg'),(4,'/gfx/bg4.jpg'),(5,'/gfx/bg5.jpg'),(6,'/gfx/bg6.jpg');
+INSERT INTO `avatar` VALUES (1,'/gfx/bg1.svg'),(2,'/gfx/bg2.jpg'),(3,'/gfx/bg3.jpg'),(4,'/gfx/bg4.jpg'),(5,'/gfx/bg5.jpg'),(6,'/gfx/bg6.jpg'),(7,'/gfx/Penguins.jpg'),(8,'/gfx/Koala.jpg'),(9,'/gfx/our/chicken_element.svg'),(10,'/gfx/our/cow_element.svg');
 /*!40000 ALTER TABLE `avatar` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -202,7 +197,7 @@ CREATE TABLE `element` (
   `frame_width` double NOT NULL,
   `frame_height` double NOT NULL,
   PRIMARY KEY (`element_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -211,7 +206,6 @@ CREATE TABLE `element` (
 
 LOCK TABLES `element` WRITE;
 /*!40000 ALTER TABLE `element` DISABLE KEYS */;
-INSERT INTO `element` VALUES (1,4,101,102,103,104),(2,2,5,5,100,100),(3,1,0,0,1140,722),(4,1,0,0,1140,782),(5,1,0,0,1175,796),(6,1,0,0,1564,643),(7,1,0,0,1680,648),(8,1,0,0,1680,648),(9,1,0,0,1680,648);
 /*!40000 ALTER TABLE `element` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -236,7 +230,6 @@ CREATE TABLE `element_to_action_type_rel` (
 
 LOCK TABLES `element_to_action_type_rel` WRITE;
 /*!40000 ALTER TABLE `element_to_action_type_rel` DISABLE KEYS */;
-INSERT INTO `element_to_action_type_rel` VALUES (6,2,'1');
 /*!40000 ALTER TABLE `element_to_action_type_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -253,7 +246,7 @@ CREATE TABLE `element_type` (
   `sound_id` int(11) NOT NULL,
   `world_id` int(11) NOT NULL,
   PRIMARY KEY (`element_type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -262,7 +255,7 @@ CREATE TABLE `element_type` (
 
 LOCK TABLES `element_type` WRITE;
 /*!40000 ALTER TABLE `element_type` DISABLE KEYS */;
-INSERT INTO `element_type` VALUES (1,1,1,1),(2,1,1,1);
+INSERT INTO `element_type` VALUES (1,7,1,1),(2,8,1,1),(3,9,1,1),(4,10,1,1);
 /*!40000 ALTER TABLE `element_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -306,7 +299,7 @@ CREATE TABLE `game` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`game_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -315,7 +308,6 @@ CREATE TABLE `game` (
 
 LOCK TABLES `game` WRITE;
 /*!40000 ALTER TABLE `game` DISABLE KEYS */;
-INSERT INTO `game` VALUES (1,1,'Spill nr 1',5,NULL,'2013-09-23 12:21:07',NULL),(2,1,'Spill nr 2',1,NULL,'2013-10-13 14:50:03',NULL),(4,1,'Spill nr 3',2,NULL,'2013-10-31 15:23:20',NULL),(5,1,'Spill nr 4',3,NULL,'2013-10-31 15:24:04',NULL),(10,1,'Spill nr 5',NULL,NULL,'2013-11-08 09:32:00',NULL),(11,1,'asdf',4,NULL,'2013-11-08 09:51:53',NULL),(12,1,'Nytt spill',6,NULL,'2013-11-08 10:33:12',NULL);
 /*!40000 ALTER TABLE `game` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -339,7 +331,7 @@ CREATE TABLE `goal` (
 
 LOCK TABLES `goal` WRITE;
 /*!40000 ALTER TABLE `goal` DISABLE KEYS */;
-INSERT INTO `goal` VALUES (1,7);
+INSERT INTO `goal` VALUES (1,1);
 /*!40000 ALTER TABLE `goal` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -357,7 +349,7 @@ CREATE TABLE `language_question` (
   `correct_alternative` int(11) NOT NULL,
   `data_id` int(11) NOT NULL,
   PRIMARY KEY (`language_question_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -366,7 +358,6 @@ CREATE TABLE `language_question` (
 
 LOCK TABLES `language_question` WRITE;
 /*!40000 ALTER TABLE `language_question` DISABLE KEYS */;
-INSERT INTO `language_question` VALUES (1,1,'PICTURE_RECOGNIZE',1,1);
 /*!40000 ALTER TABLE `language_question` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -382,7 +373,7 @@ CREATE TABLE `language_question_alternative` (
   `language_question_id` int(11) NOT NULL,
   `alternative` text NOT NULL,
   PRIMARY KEY (`language_question_alternative_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -391,7 +382,6 @@ CREATE TABLE `language_question_alternative` (
 
 LOCK TABLES `language_question_alternative` WRITE;
 /*!40000 ALTER TABLE `language_question_alternative` DISABLE KEYS */;
-INSERT INTO `language_question_alternative` VALUES (1,1,'Alternativ 1'),(2,1,'Alternativ 2');
 /*!40000 ALTER TABLE `language_question_alternative` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -431,9 +421,9 @@ CREATE TABLE `quiz_question` (
   `activity_quiz_id` int(11) NOT NULL,
   `question` text NOT NULL,
   `time_limit` double DEFAULT NULL,
-  `subject_type_id` int(11) NOT NULL,
+  `subject_type_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`quiz_question_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -442,7 +432,6 @@ CREATE TABLE `quiz_question` (
 
 LOCK TABLES `quiz_question` WRITE;
 /*!40000 ALTER TABLE `quiz_question` DISABLE KEYS */;
-INSERT INTO `quiz_question` VALUES (1,1,'Spørsmål 1...?',NULL,1);
 /*!40000 ALTER TABLE `quiz_question` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -458,7 +447,7 @@ CREATE TABLE `quiz_question_alternative` (
   `quiz_question_id` int(11) NOT NULL,
   `alternative` varchar(255) NOT NULL,
   PRIMARY KEY (`quiz_question_alternative_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -467,7 +456,6 @@ CREATE TABLE `quiz_question_alternative` (
 
 LOCK TABLES `quiz_question_alternative` WRITE;
 /*!40000 ALTER TABLE `quiz_question_alternative` DISABLE KEYS */;
-INSERT INTO `quiz_question_alternative` VALUES (1,1,'Spm 1, Alternativ 1'),(2,1,'Spm 1, Alternativ 2'),(3,1,'Spm 1, Alternativ 3');
 /*!40000 ALTER TABLE `quiz_question_alternative` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -491,7 +479,6 @@ CREATE TABLE `quiz_question_correct` (
 
 LOCK TABLES `quiz_question_correct` WRITE;
 /*!40000 ALTER TABLE `quiz_question_correct` DISABLE KEYS */;
-INSERT INTO `quiz_question_correct` VALUES (1,2);
 /*!40000 ALTER TABLE `quiz_question_correct` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -531,7 +518,7 @@ CREATE TABLE `scene` (
   `scenetype_id` int(11) NOT NULL,
   `game_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`scene_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -540,7 +527,6 @@ CREATE TABLE `scene` (
 
 LOCK TABLES `scene` WRITE;
 /*!40000 ALTER TABLE `scene` DISABLE KEYS */;
-INSERT INTO `scene` VALUES (1,6,2),(2,2,4),(3,4,5),(4,2,11),(5,1,1),(6,6,12);
 /*!40000 ALTER TABLE `scene` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -564,7 +550,6 @@ CREATE TABLE `scene_to_element_rel` (
 
 LOCK TABLES `scene_to_element_rel` WRITE;
 /*!40000 ALTER TABLE `scene_to_element_rel` DISABLE KEYS */;
-INSERT INTO `scene_to_element_rel` VALUES (1,1),(1,2),(1,5),(2,3),(2,4),(5,6),(5,8),(5,9),(6,7);
 /*!40000 ALTER TABLE `scene_to_element_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -702,4 +687,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-11-11 15:16:37
+-- Dump completed on 2013-11-14 15:50:52

@@ -14,7 +14,7 @@ function ActivityMath( data ){
     this.numbersRangeFrom = data.numbers_range_from;
     this.numbersRangeTo = data.numbers_range_to;
     this.operandsCount = data.n_operands;
-}
+};
 
 ActivityMath.prototype = new Entity(  );
 
@@ -29,7 +29,7 @@ ActivityMath.loadById = function ( id, callback ){
         if ( rows.length == 1 ) ActivityMath.initWithData( rows[0], callback );
         else callback( 'Could not load ActivityMath with id ' + id, false );
     });
-}
+};
 
 ActivityMath.loadByActivityId = function ( activityId, callback ){
     if ( activityId == null ) return callback( null, false );
@@ -40,7 +40,7 @@ ActivityMath.loadByActivityId = function ( activityId, callback ){
         if ( rows.length == 1 ) ActivityMath.initWithData( rows[0], callback );
         else callback( 'Could not load ActivityMath with activity_id ' + activityId, false );
     });
-}
+};
 
 ActivityMath.initWithData = function ( data, callback ){
     if ( data == null ) return callback( null, false );
@@ -55,7 +55,7 @@ ActivityMath.initWithData = function ( data, callback ){
 
         callback( null, new ActivityMath( data ) );
     });
-}
+};
 
 ActivityMath.create = function ( args, callback ){
     var activityId = args.activityId, 
@@ -81,7 +81,7 @@ ActivityMath.create = function ( args, callback ){
             });
         } else return callback( 'Kunne ikke opprette ActivityMath', false );
     });
-}
+};
 
 ActivityMath.prototype.addOperators = function ( operatorIds, callback ){
     if ( operatorIds == null ) return callback( null, false );
@@ -103,6 +103,35 @@ ActivityMath.prototype.addOperators = function ( operatorIds, callback ){
 
         ActivityMath.loadById( self.activityMathId, callback );
     });
-}
+};
+
+ActivityMath.delete = function ( activityMathId, callback ){
+    if ( activityMathId == null ) return callback( 'Kan ikke slette ActivityMath der activityMathId er null', false );
+
+    var query = 'DELETE FROM activity_math WHERE activity_math_id = ?';
+
+    db.query( query, activityMathId, function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        query = 'DELETE FROM activity_math_to_math_operator_rel WHERE activity_math_id = ?';
+
+        db.query( query, activityMathId, function ( error, rows, fields ){
+            if ( error ) return callback( error, false );
+
+            return callback( null, true );
+        });
+    });
+};
+
+ActivityMath.deleteByActivityId = function ( activityId, callback ){
+    if ( activityId == null ) return callback( 'Kan ikke slette ActivityMath der activityId er null', false );
+
+    ActivityMath.loadByActivityId( activityId, function ( error, activity ){
+        if ( error ) return callback( error, false );
+
+        if ( activity ) return ActivityMath.delete( activity.activityMathId, callback );
+        else return callback( null, true );
+    });
+};
 
 module.exports.ActivityMath = ActivityMath;

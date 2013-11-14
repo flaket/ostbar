@@ -89,4 +89,28 @@ ActivityLanguage.prototype.addQuestions = function ( questions, callback ){
     });
 };
 
+
+ActivityLanguage.delete = function ( activityLanguageId, callback ){
+    if ( activityLanguageId == null ) return callback( 'Kan ikke slette ActivityLanguage der activityLanguageId er null', false );
+
+    var query = 'DELETE FROM activity_language WHERE activity_language_id = ?';
+
+    db.query( query, activityLanguageId, function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        return LanguageQuestion.deleteByActivityLanguageId( activityLanguageId, callback );
+    });
+};
+
+ActivityLanguage.deleteByActivityId = function ( activityId, callback ){
+    if ( activityId == null ) return callback( 'Kan ikke slette ActivityLanguage der activityId er null', false );
+
+    ActivityLanguage.loadByActivityId( activityId, function ( error, activity ){
+        if ( error ) return callback( error, false );
+
+        if ( activity ) return ActivityLanguage.delete( activity.activityLanguageId, callback );
+        else return callback( null, true );
+    });
+}
+
 module.exports.ActivityLanguage = ActivityLanguage;
