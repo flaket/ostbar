@@ -42,10 +42,6 @@ module.exports = function ( app ){
         standardGETResponse( req, res, models.World );
     });
 
-    app.get( '/api/element/:id?', function ( req, res ){
-        standardGETResponse( req, res, models.Element );
-    });
-
     app.get( '/api/elementtype/:id?', auth, function ( req, res ){
         standardGETResponse( req, res, models.ElementType );
     });
@@ -125,6 +121,10 @@ module.exports = function ( app ){
             }
             else emptyResponse( res );
         });
+    });
+
+    app.get( '/api/element/:id?', function ( req, res ){
+        standardGETResponse( req, res, models.Element );
     });
 
     app.post( '/api/element/:id?/:method?', auth, function ( req, res ){
@@ -221,6 +221,13 @@ module.exports = function ( app ){
         }
     });
 
+    app.del( '/api/element/:id?', function ( req, res ){
+        var Element = models.Element;
+
+
+        return res.send( { result: 'okok' } );
+    });
+
     app.get( '/api/activitylanguage/:id', auth, function ( req, res ){
         var ActivityLanguage = models.ActivityLanguage;
 
@@ -232,6 +239,10 @@ module.exports = function ( app ){
             if ( activityLanguage ) res.send( activityLanguage );
             else emptyResponse( res );
         })
+    });
+
+    app.get( '/api/mathoperator/:id?', auth, function ( req, res ){
+        standardGETResponse( req, res, models.MathOperator );
     });
 
     app.get( '/api/activitymath/:id', auth, function ( req, res ){

@@ -8,7 +8,7 @@ function MathOperator( data ){
 
     this.mathOperatorId = data.math_operator_id;
     this.operator = data.operator;
-}
+};
 
 MathOperator.prototype = new Entity();
 
@@ -23,7 +23,15 @@ MathOperator.loadById = function ( id, callback ){
         if ( rows.length == 1 ) MathOperator.initWithData( rows[0], callback );
         else callback( 'Could not load MathOperator with id ' + id, false );
     });
-}
+};
+
+MathOperator.loadAll = function ( callback ){
+    db.query( 'SELECT * FROM math_operator', function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        async.map( rows, MathOperator.initWithData, callback );
+    });
+};
 
 MathOperator.loadAllInActivityMath = function ( activityMathId, callback ){
     if ( activityMathId == null ) return callback( null, false );
@@ -37,13 +45,13 @@ MathOperator.loadAllInActivityMath = function ( activityMathId, callback ){
 
         async.map( rows, MathOperator.initWithData, callback );
     });
-}
+};
 
 MathOperator.initWithData = function ( data, callback ){
     if ( data == null ) return callback( null, false );
 
     callback( null, new MathOperator( data ) );
-}
+};
 
 MathOperator.addToMathActivity = function ( params, callback ){
     var mathActivityId = params.mathActivityId,
@@ -62,6 +70,6 @@ MathOperator.addToMathActivity = function ( params, callback ){
 
         callback( null, success );
     });
-}
+};
 
 module.exports.MathOperator = MathOperator;
