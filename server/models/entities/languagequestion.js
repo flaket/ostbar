@@ -2,6 +2,7 @@ var Entity  = require( '../entity' ).Entity;
 var DB      = require( '../db' );
 var db      = DB.instance;
 var async   = require( 'async' );
+var util = require( 'util' );
 
 var Avatar                      = require( './avatar' ).Avatar;
 var Sound                       = require( './sound' ).Sound;
@@ -111,6 +112,42 @@ LanguageQuestion.create = function ( params, callback ){
                 });
             });
         } else return callback( 'Kunne ikke opprette LanguageQuestion med data ' + data, false );
+    });
+};
+
+LanguageQuestion.delete = function ( languageQuestionId, callback ){
+    if ( languageQuestionId == null ) return callback( 'Kan ikke slette languageQuestion der languageQuestionId er null', false );
+
+    var query = 'DELETE FROM language_question WHERE language_question_id = ?';
+
+    db.query( query, languageQuestionId, function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        query = 'DELETE FROM language_question_alternative WHERE language_question_id = ?';
+
+        db.query( query, languageQuestionId, function ( error, rows, fields ){
+            if ( error ) return callback( error, false );
+
+            callback( null, true );
+        });
+    });
+};
+
+LanguageQuestion.deleteByActivityLanguageId = function ( activityLanguageId, callback ){
+    if ( activityLanguageId == null ) return callback( 'Kan ikke slette LanguageQuestion for activityLanguageId null', false );
+
+    var query = 'SELECT * FROM language_question WHERE activity_language_id = ?';
+    
+    db.query( query, activityLanguageId, function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        var languageQuestionIds = new Array();
+
+        for ( key in rows ){
+            languageQuestionIds.push( rows[ key ].language_question_id );
+        }
+
+        async.map( languageQuestionIds, LanguageQuestion.delete, callback );
     });
 };
 

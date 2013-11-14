@@ -5,9 +5,6 @@ var server = require('../../server');
 
 // core routes - base is /
 module.exports.index = function( req, res ){
-
-    console.log('rendeding index');
-
     res.render('index', {
         user: req.user
     });

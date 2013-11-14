@@ -167,18 +167,6 @@ Element.prototype.addActivity = function( activityId, callback ){
 Element.delete = function ( elementId, callback ){
     if ( elementId == null ) return callback( 'Kan ikke slette element med id null', false );
 
-    // var queries = [
-    //     ,
-    //     ,
-    //     
-    // ]
-
-    var queries = [
-        'SELECT * FROM element',
-        'SELECT * FROM game',
-        'SELECT * FROM action_type'
-    ];
-
     db.query( 'DELETE FROM element WHERE element_id = ?', elementId, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
