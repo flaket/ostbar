@@ -68,26 +68,26 @@ function createNewMathActivity(mathObject){
 			}
 			
 			if($(".allOperatorCheckboxes:checked").length == $(".allOperatorCheckboxes").length){
-				currentMathObject.activeOperators[0] = 0;
-				currentMathObject.activeOperators[1] = 1;
-				currentMathObject.activeOperators[2] = 2;
-				currentMathObject.activeOperators[3] = 3;
+				currentMathObject.activeOperators[0] = 1;
+				currentMathObject.activeOperators[1] = 2;
+				currentMathObject.activeOperators[2] = 3;
+				currentMathObject.activeOperators[3] = 4;
 			}	
 			else{
 				if($("#plus").prop('checked'))
-					currentMathObject.activeOperators[0] = 0;
+					currentMathObject.activeOperators[0] = 1;
 				else
 					currentMathObject.activeOperators[0] = -1;
 				if($("#minus").prop('checked'))
-					currentMathObject.activeOperators[1] = 1;
+					currentMathObject.activeOperators[1] = 2;
 				else
 					currentMathObject.activeOperators[1] = -1;
 				if($("#multiply").prop('checked'))
-					currentMathObject.activeOperators[2] = 2;
+					currentMathObject.activeOperators[2] = 3;
 				else
 					currentMathObject.activeOperators[2] = -1;
 				if($("#divide").prop('checked'))
-					currentMathObject.activeOperators[3] = 3;
+					currentMathObject.activeOperators[3] = 4;
 				else
 					currentMathObject.activeOperators[3] = -1;
 			}
@@ -178,10 +178,10 @@ function beforeParametersAreSetView(){
 
 	var arr = currentMathObject.activeOperators;
 	
-	$("#plus").prop('checked',arr[0]==0).change();
-	$("#minus").prop('checked',arr[1]==1).change();
-	$("#multiply").prop('checked',arr[2]==2).change();
-	$("#divide").prop('checked',arr[3]==3).change();
+	$("#plus").prop('checked',arr[0]==1).change();
+	$("#minus").prop('checked',arr[1]==2).change();
+	$("#multiply").prop('checked',arr[2]==3).change();
+	$("#divide").prop('checked',arr[3]==4).change();
 	
 	if($(".operatorCheckboxes:checked").length == 0)
 		$("#all").prop('checked', true).change();
@@ -205,7 +205,7 @@ function afterParametersAreSetView(){
 	$(".operatorsAndOperands").css({"display": "none"})
 	
 	$(".question").css({"display": "block"});
-	$("#questionHeader").text("Hva er svaret, gitt at du starter forfra:");
+	$("#questionHeader").text("Hva er svaret, (husk at * har presedens):");
 	
 	$(".equals").text("=").css({"display": "inline"});
 	$(".answer").css({"display": "inline"});
@@ -424,13 +424,29 @@ function createQuestion(){
 
 function combineAnswer(list){
 	var tempList = list.slice(0);
+
+	var index = 0;
+	console.log(tempList.toString());
+	while(index<tempList.length){
+		if(tempList[index] == "*"){
+			var num1 = tempList[index-1];
+			var op = tempList[index];
+			var num2 = tempList[index+1];
+			var answer = calculateAnswer(num1,num2,op);
+			tempList.splice(index-1,3,answer);
+			console.log(tempList.toString());
+			index = index-2;
+		}
+		index++;
+	}
+
 	while(tempList.length>=2){
 		var num1 = parseFloat(tempList.shift());
 		var op = tempList.shift();
 		var num2 = parseFloat(tempList.shift());
 		var answer = calculateAnswer(num1,num2,op);
 		tempList.unshift(answer);
-		console.log(answer);
+		console.log(tempList.toString());
 	}
 	return tempList[0];
 }
