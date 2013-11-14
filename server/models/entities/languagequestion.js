@@ -68,15 +68,12 @@ LanguageQuestion.initWithData = function ( data, callback ){
 };
 
 LanguageQuestion.create = function ( params, callback ){
-    console.log('LanguageQuestion.create params', params);
-
     var languageQuestionType = params.languageQuestionType,
         alternatives = params.alternatives,
         activityLanguageId = params.activityLanguageId,
         dataId = parseInt( params.data_id );
 
     if ( languageQuestionType == null || alternatives == null || activityLanguageId == null || dataId == null ){
-        console.log('one or more params is null');
         return callback( null, false );
     }
 

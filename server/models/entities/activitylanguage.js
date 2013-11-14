@@ -82,8 +82,6 @@ ActivityLanguage.prototype.addQuestions = function ( questions, callback ){
     }
 
     async.map( questions, LanguageQuestion.create, function ( error, results ){
-        console.log('adding language questions done, results is', results );
-
         if ( error ) return callback( error, false );
         else if ( results.indexOf( false ) != -1 ) return callback( 'Kunne ikke opprette spørsmål nr ' + ( results.indexOf( false ) + 1 ), false );
 

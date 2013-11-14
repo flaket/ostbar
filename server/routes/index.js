@@ -234,9 +234,6 @@ module.exports.new_game = function ( req, res ){
             });
         }
 
-        res.render( 'game', {
-            user: req.user,
-            game: game
-        });
+        res.redirect( '/game/' + game.gameId );
     });
 };
