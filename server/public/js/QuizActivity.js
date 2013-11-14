@@ -1,24 +1,20 @@
-var currentQuestionObject = null;
+var currentQuestion = [];
 var correctQuestionsAnswered = 0;
 
 function QuizActivity(){
 	this.questionsMade = 0;
-	this.list = [];
 	this.questionsAnswered = 0;
+	this.questions = [];
 }
 
-function Question(name, alt1, alt2, alt3, checkboxChecked){
-	this.questionName = name;
-	this.questionAlternative1 = alt1;
-	this.questionAlternative2 = alt2;
-	this.questionAlternative3 = alt3;
-	this.questionCorrectAnswer = checkboxChecked;
+function createQuizActivity(listOfQuestions){
+
 }
 
-function createNewQuizActivity(questionList, newGame){
-	currentQuestionObject = questionList;
-	initializeQuizDialog();	
-	createAnotherQuestion(questionList, newGame);
+function createNewQuizActivity(listOfQuestions, isNewGame){
+	currentQuestion = listOfQuestions;
+	initializeQuizDialog();
+	createAnotherQuestion(listOfQuestions, isNewGame);
 
 	$(".numberOfQuestions").show();
 	$("#numberOfQuestionText").show();
@@ -32,93 +28,11 @@ function createNewQuizActivity(questionList, newGame){
 	$("#alt1").prop("disabled", false);
 	$("#alt2").prop("disabled", false);
 	$("#alt3").prop("disabled", false);
-
 }
 
 function makeNewQuestion(){
-	createAnotherQuestion(currentQuestionObject,false);
+	createAnotherQuestion(currentQuestion, false);
 }
-
-function createAnotherQuestion(questionObject, newGame){
-	resetFields(newGame);
-}
-
-function resetFields(newGame){
-	$(".numberOfQuestions").text(currentQuestionObject.questionsMade);
-	if(!newGame){
-		if( (!$("#quizQuestion").val().length > 0) || (!$("#alt1").val().length > 0) || (!$("#alt2").val().length > 0) || (!$("#alt3").val().length > 0) 
-			|| ( (!$("#checkAlt1").is(":checked")) && (!$("#checkAlt2").is(":checked")) && (!$("#checkAlt3").is(":checked")) ) ){
-			alert("fyll inn verdier i alle felt"); 
-		}
-		else{
-			var checkedAlternative = [];
-			if($("#checkAlt1").is(":checked") && $("#checkAlt2").is(":checked") && $("#checkAlt3").is(":checked")){
-				checkedAlternative.push($("#alt1").val());
-				checkedAlternative.push($("#alt2").val());
-				checkedAlternative.push($("#alt3").val());
-			}
-			else if($("#checkAlt1").is(":checked") && $("#checkAlt2").is(":checked")){
-				checkedAlternative.push($("#alt1").val());
-				checkedAlternative.push($("#alt2").val());
-			}
-			else if($("#checkAlt1").is(":checked") && $("#checkAlt3").is(":checked")){
-				checkedAlternative.push($("#alt1").val());
-				checkedAlternative.push($("#alt3").val());
-			}
-			else if($("#checkAlt2").is(":checked") && $("#checkAlt3").is(":checked")){
-				checkedAlternative.push($("#alt2").val());
-				checkedAlternative.push($("#alt3").val());
-			}	
-			
-			else if($("#checkAlt1").is(":checked")){
-				checkedAlternative.push($("#alt1").val());
-			}
-			else if($("#checkAlt2").is(":checked")){
-				checkedAlternative.push($("#alt2").val());
-			}
-			else{ 
-				checkedAlternative.push($("#alt3").val()); 
-			}
-
-			createNewQuestionObject(checkedAlternative);
-			$("input:text").val("");
-			$("input:checkbox").attr("checked", false);
-		}
-	}
-	else{
-		$("input:text").val("");
-		$("input:checkbox").attr("checked", false);
-	}
-	
-}
-
-function createNewQuestionObject(checkedAlternative){
-	var questionName = $("#quizQuestion").val();
-	var alt1 = $("#alt1").val();
-	var alt2 = $("#alt2").val();
-	var alt3 = $("#alt3").val();
-	
-	currentQuestionObject.questionsMade++;
-	var tempObject = new Question(questionName, alt1, alt2, alt3, checkedAlternative);
-	currentQuestionObject.list.push(tempObject);
-
-	console.log("number of questions made : " + currentQuestionObject.questionsMade);
-	console.log(tempObject);
-	console.log(currentQuestionObject.list);
-	$(".numberOfQuestions").text(currentQuestionObject.questionsMade);
-}
-
-function finalizeQuiz(){
-	if( (!$("#quizQuestion").val().length > 0) || (!$("#alt1").val().length > 0) || (!$("#alt2").val().length > 0) || (!$("#alt3").val().length > 0) 
-			|| ( (!$("#checkAlt1").is(":checked")) && (!$("#checkAlt2").is(":checked")) && (!$("#checkAlt3").is(":checked")) ) ){
-		$(".quizActivity").dialog("close");
-	}
-	else{
-		resetFields(false);
-		$(".quizActivity").dialog("close");
-	}
-}
-
 
 function initializeQuizDialog(){
 	$(".chooseActivityDialog").dialog("close");
@@ -144,15 +58,112 @@ function initializeQuizDialog(){
 			duration: 500
 		}
 	});
-	$(".numberOfQuestions").text(currentQuestionObject.questionsMade);
+	$(".numberOfQuestions").text(currentQuestion.questionsMade);
 
 	$("#numberOfQuestionText").text("Antall spørsmål lagd:");
 }
 
-function createQuizActivity(questionList){
+function createAnotherQuestion(questionObject, isNewGame){
+	resetFields(isNewGame);
+}
+
+function resetFields(isNewGame){
+	console.log("Question object is: ");
+	console.log(currentQuestion);
+	console.log(currentQuestion.questions.question.alternatives);
+	$(".numberOfQuestions").text(currentQuestion.questionsMade);
+	if(!isNewGame){
+		if( (!$("#quizQuestion").val().length > 0) || (!$("#alt1").val().length > 0) || (!$("#alt2").val().length > 0) || (!$("#alt3").val().length > 0) 
+			|| ( (!$("#checkAlt1").is(":checked")) && (!$("#checkAlt2").is(":checked")) && (!$("#checkAlt3").is(":checked")) ) ){
+			alert("fyll inn verdier i alle felt"); 
+		}
+		else{
+			var alternatives = [];
+			if($("#checkAlt1").is(":checked") && $("#checkAlt2").is(":checked") && $("#checkAlt3").is(":checked")){
+				alternatives.push(createAlternativeObject($("#alt1").val(), true));
+				alternatives.push(createAlternativeObject($("#alt2").val(), true));
+				alternatives.push(createAlternativeObject($("#alt3").val(), true));
+			}
+			else if($("#checkAlt1").is(":checked") && $("#checkAlt2").is(":checked")){
+				alternatives.push(createAlternativeObject($("#alt1").val(), true));
+				alternatives.push(createAlternativeObject($("#alt2").val(), true));
+			}
+			else if($("#checkAlt1").is(":checked") && $("#checkAlt3").is(":checked")){
+				alternatives.push(createAlternativeObject($("#alt1").val(), true));
+				alternatives.push(createAlternativeObject($("#alt3").val(), true));
+			}
+			else if($("#checkAlt2").is(":checked") && $("#checkAlt3").is(":checked")){
+				alternatives.push(createAlternativeObject($("#alt2").val(), true));
+				alternatives.push(createAlternativeObject($("#alt3").val(), true));
+			}	
+
+			else if($("#checkAlt1").is(":checked")){
+				alternatives.push(createAlternativeObject($("#alt1").val(), true));
+			}
+			else if($("#checkAlt2").is(":checked")){
+				alternatives.push(createAlternativeObject($("#alt2").val(), true));
+			}
+			else{ 
+				alternatives.push(createAlternativeObject($("#alt3").val(), true)); 
+			}
+
+			var questionName = $("#quizQuestion").val();
+			createNewQuestionObject(questionName, alternatives);
+			$("input:text").val("");
+			$("input:checkbox").attr("checked", false);
+		}
+	}
+	else{
+		$("input:text").val("");
+		$("input:checkbox").attr("checked", false);
+	}
+}
+
+function createAlternativeObject(object, isCorrect){
+	this.alternative = object;
+	this.isCorrect = isCorrect;
+}
+
+function Question(question, alternatives){
+	this.question = question;
+	this.alternatives = alternatives;
+}
+
+function createNewQuestionObject(questionName, alternatives){
+
+	var questionName = $("#quizQuestion").val();
+	var alt1 = $("#alt1").val();
+	var alt2 = $("#alt2").val();
+	var alt3 = $("#alt3").val();
+
+	var questionAlternatives = [];
+	questionAlternatives.push(alt1);
+	questionAlternatives.push(alt2);
+	questionAlternatives.push(alt3);
+	
+	currentQuestion.questionsMade++;
+
+	var tempQuestionObject = new Question(questionName, questionAlternatives);
+	currentQuestion.questions.push(tempQuestionObject);
+
+	$(".numberOfQuestions").text(currentQuestion.questionsMade);
+}	
+
+function finalizeQuiz(){
+	if( (!$("#quizQuestion").val().length > 0) || (!$("#alt1").val().length > 0) || (!$("#alt2").val().length > 0) || (!$("#alt3").val().length > 0) 
+		|| ( (!$("#checkAlt1").is(":checked")) && (!$("#checkAlt2").is(":checked")) && (!$("#checkAlt3").is(":checked")) ) ){
+		$(".quizActivity").dialog("close");
+}
+else{
+	resetFields(false);
+	$(".quizActivity").dialog("close");
+}
+}
+
+function createQuizActivity(listOfQuestions){
 	console.log("quiz activity");
-	currentQuestionObject = questionList;
-	if(currentQuestionObject.questionsAnswered!=currentQuestionObject.list.length){
+	currentQuestion = listOfQuestions;
+	if(currentQuestion.questionsAnswered<currentQuestion.questions.length){
 		initializeQuizDialog();
 	}
 	else{
@@ -168,30 +179,30 @@ function createQuizActivity(questionList){
 }
 
 function showQuestions(){
-	if(currentQuestionObject.questionsAnswered<currentQuestionObject.list.length){
-		for(var i=currentQuestionObject.questionsAnswered; i<currentQuestionObject.list.length; i++){
-		console.log("var i er: " + i);
-		console.log("lengden på lista er: " + currentQuestionObject.list.length);
-		var questionName = currentQuestionObject.list[i].questionName;
-		var alternative1 = currentQuestionObject.list[i].questionAlternative1;
-		var alternative2 = currentQuestionObject.list[i].questionAlternative2;
-		var alternative3 = currentQuestionObject.list[i].questionAlternative3;
+	if(currentQuestion.questionsAnswered<currentQuestion.questions.length){
+		for(var i=currentQuestion.questionsAnswered; i<currentQuestion.questions.length; i++){
+			console.log("var i er: " + i);
+			console.log("lengden på lista er: " + currentQuestion.questions.length);
+			var questionName = currentQuestion.questions[i].question;
+			var alternative1 = currentQuestion.questions[i].alternatives[1];
+			var alternative2 = currentQuestion.questions[i].alternatives[2];
+			var alternative3 = currentQuestion.questions[i].alternatives[3];
 
-		$("#quizQuestion").prop("disabled", true);
-		$("#quizQuestion").val(questionName);
+			$("#quizQuestion").prop("disabled", true);
+			$("#quizQuestion").val(questionName);
 
-		$("#alt1").prop("disabled", true);
-		$("#alt1").val(alternative1);
+			$("#alt1").prop("disabled", true);
+			$("#alt1").val(alternative1);
 
-		$("#alt2").prop("disabled", true);
-		$("#alt2").val(alternative2);
+			$("#alt2").prop("disabled", true);
+			$("#alt2").val(alternative2);
 
-		$("#alt3").prop("disabled", true);
-		$("#alt3").val(alternative3);
+			$("#alt3").prop("disabled", true);
+			$("#alt3").val(alternative3);
 
-		showProperButton();
-		console.log(currentQuestionObject.questionsAnswered);
-		break;
+			showProperButton();
+			console.log(currentQuestion.questionsAnswered);
+			break;
 		}
 	}
 	else{
@@ -201,8 +212,8 @@ function showQuestions(){
 }
 
 function showProperButton(){
-	console.log("lengden på lista er: " + currentQuestionObject.list.length);
-	if(currentQuestionObject.questionsAnswered<currentQuestionObject.list.length-1){
+	console.log("lengden på lista er: " + currentQuestion.questions.length);
+	if(currentQuestion.questionsAnswered<currentQuestion.questions.length-1){
 		$("#lastButtonDiv").hide();
 		$("#nextButtonDiv").show();
 	}
@@ -212,9 +223,15 @@ function showProperButton(){
 	}
 }
 
+function resetAnswer(){
+	$("#checkAlt1").attr("checked", false);
+	$("#checkAlt2").attr("checked", false);
+	$("#checkAlt3").attr("checked", false);
+}
+
 function checkQuizAnswer(){
 
-	var correctAnswer = currentQuestionObject.list[currentQuestionObject.questionsAnswered].questionCorrectAnswer;
+	var correctAnswer = currentQuestion.questions[currentQuestion.questionsAnswered].questionCorrectAnswer;
 	if($("#checkAlt1").is(":checked")){
 		console.log("lengden av riktige svar: " + correctAnswer.length);
 		for(var i=0; i<correctAnswer.length; i++){
@@ -222,7 +239,7 @@ function checkQuizAnswer(){
 				console.log("RIKTIG");
 				correctQuestionsAnswered++;
 				resetAnswer();
-				currentQuestionObject.questionsAnswered++;
+				currentQuestion.questionsAnswered++;
 				showQuestions();
 			}
 			else{
@@ -245,7 +262,7 @@ function checkQuizAnswer(){
 				console.log("RIKTIG");
 				correctQuestionsAnswered++;
 				resetAnswer();
-				currentQuestionObject.questionsAnswered++;
+				currentQuestion.questionsAnswered++;
 				showQuestions();
 			}
 			else{
@@ -268,7 +285,7 @@ function checkQuizAnswer(){
 				console.log("RIKTIG");
 				correctQuestionsAnswered++;
 				resetAnswer();
-				currentQuestionObject.questionsAnswered++;
+				currentQuestion.questionsAnswered++;
 				showQuestions();
 			}
 			else{
@@ -285,10 +302,4 @@ function checkQuizAnswer(){
 			}
 		}
 	}
-}
-
-function resetAnswer(){
-	$("#checkAlt1").attr("checked", false);
-	$("#checkAlt2").attr("checked", false);
-	$("#checkAlt3").attr("checked", false);
 }
