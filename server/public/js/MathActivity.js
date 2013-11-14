@@ -26,8 +26,8 @@ function MathActivity(){
 	this.activeOperators = [-1,-1,-1,-1];
 	this.operandsCount = 2;
 
-	this.randomNumber1 = 0;
-	this.randomNumber2 = 0;
+	// this.randomNumber1 = 0;
+	// this.randomNumber2 = 0;
 
 	this.question = [];
 	
@@ -205,9 +205,9 @@ function afterParametersAreSetView(){
 	$(".operatorsAndOperands").css({"display": "none"})
 	
 	$(".question").css({"display": "block"});
-	$("#questionHeader").text("Hva er:");
+	$("#questionHeader").text("Hva er svaret, gitt at du starter forfra:");
 	
-	$(".equals").css({"display": "inline"});
+	$(".equals").text("=").css({"display": "inline"});
 	$(".answer").css({"display": "inline"});
 
 	$(".lives").css({"display": "inline", "float": "left" ,"width": "50%" });
@@ -221,19 +221,21 @@ function afterParametersAreSetView(){
 }
 
 function initializeNewMathActivity(){
-	setRandomValues();
+	// setRandomValues();
 	createQuestion();
 }
 
 function checkAnswer(){
-	var operator = $(".operator").text(); 
-	var number1 = parseInt($(".randomNumber1").text());
-	var number2 = parseInt($(".randomNumber2").text());
+	// var operator = $(".operator").text(); 
+	// var number1 = parseInt($(".randomNumber1").text());
+	// var number2 = parseInt($(".randomNumber2").text());
 	
-	var answer1 = combineAnswer(currentMathObject.question);
+	var answer = combineAnswer(currentMathObject.question);
 
-	var answer = calculateAnswer(number1, number2, operator);
+	// var answer = calculateAnswer(number1, number2, operator);
 	
+	console.log(answer);
+
 	if($(".answerField").val() == ""){
 		alert("Please type in a number");
 	}
@@ -290,35 +292,35 @@ function getAnotherQuestion(){
 	
 	$(".answerField").val("");
 	
-	setRandomValues();
+	// setRandomValues();
 	createQuestion();
 }
 
-function setRandomValues(){
+// function setRandomValues(){
 	
-	var numLow = currentMathObject.lowestNumber;
-	var numHigh = currentMathObject.highestNumber;
+// 	var numLow = currentMathObject.lowestNumber;
+// 	var numHigh = currentMathObject.highestNumber;
 	
-	var adjustedHigh = (parseFloat(numHigh) - parseFloat(numLow)) + 1;
+// 	var adjustedHigh = (parseFloat(numHigh) - parseFloat(numLow)) + 1;
 	
-    currentMathObject.randomNumber1 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
-    currentMathObject.randomNumber2 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
+//     currentMathObject.randomNumber1 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
+//     currentMathObject.randomNumber2 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
     
-	console.log(currentMathObject);
+// 	console.log(currentMathObject);
 	
-	if(currentMathObject.randomNumber1>currentMathObject.randomNumber2){
-		$(".randomNumber1").text(currentMathObject.randomNumber1);
-	}
-	else{
-		$(".randomNumber1").text(currentMathObject.randomNumber2);
-	}
-	if(currentMathObject.randomNumber2>currentMathObject.randomNumber1){
-		$(".randomNumber2").text(currentMathObject.randomNumber1);
-	}
-	else{
-		$(".randomNumber2").text(currentMathObject.randomNumber2);
-	}
-}
+// 	if(currentMathObject.randomNumber1>currentMathObject.randomNumber2){
+// 		$(".randomNumber1").text(currentMathObject.randomNumber1);
+// 	}
+// 	else{
+// 		$(".randomNumber1").text(currentMathObject.randomNumber2);
+// 	}
+// 	if(currentMathObject.randomNumber2>currentMathObject.randomNumber1){
+// 		$(".randomNumber2").text(currentMathObject.randomNumber1);
+// 	}
+// 	else{
+// 		$(".randomNumber2").text(currentMathObject.randomNumber2);
+// 	}
+// }
 
 
 function pushRandomValue(){
@@ -331,6 +333,25 @@ function pushRandomValue(){
 	currentMathObject.question.push(randNumber);
 }
 
+function updateRandomValueAtPositions(arr,indexes){
+	var numLow = currentMathObject.lowestNumber;
+	var numHigh = currentMathObject.highestNumber;
+	
+	var adjustedHigh = (parseFloat(numHigh) - parseFloat(numLow)) + 1;
+	var randNumber = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
+	for (var i = 0; i < indexes.length; i++) {
+		arr[indexes[i]] = randNumber;
+	};
+}
+
+function createQuestionString(operators){
+	for (var i = 0; i < operators.length; i++) {
+		pushRandomValue();
+		currentMathObject.question.push(operators[i]);
+	};
+	pushRandomValue();
+}
+
 function createQuestion(){
 	// $("#answerField").focus();
 	$(".numberOfQuestionsAnswered").text(currentMathObject.questionsAnswered);
@@ -341,17 +362,21 @@ function createQuestion(){
 	
 	currentMathObject.question = [];
 
-	for (var i = 0; i < operators.length; i++) {
-		pushRandomValue();
-		currentMathObject.question.push(operators[i]);
-	};
-	pushRandomValue();
+	createQuestionString(operators);	
 
 	console.log(currentMathObject.question.toString());
 
 	for (var i = 0; i < operators.length; i++) {
 		var arr = currentMathObject.question;
 		if(operators[i]=="/"){
+			while(arr[i*2]==0){
+				updateRandomValueAtPositions(arr,[i*2]);
+			}
+			while(arr[i*2+2]==0){
+				updateRandomValueAtPositions(arr,[i*2+2]);	
+			}
+			console.log(currentMathObject.question.toString());
+
 			if(arr[i*2] < arr[i*2+2]){
 				console.log("swap")
 				var temp1 = arr[i*2];
@@ -359,47 +384,55 @@ function createQuestion(){
 				arr[i*2] = temp2;
 				arr[i*2+2] = temp1;
 			}
+
+			if(arr[i*2] % arr[i*2+2] != 0){
+				while(arr[i*2] % arr[i*2+2] != 0 || arr[i*2] == 0 || arr[i*2+2] == 0){
+					console.log("changing values");
+					updateRandomValueAtPositions(arr,[i*2,i*2+2]);
+				}
+			}
 		}
 	};
 
 	console.log(currentMathObject.question.toString());
+	$(".questionText").text(currentMathObject.question.join(" "));
 
-	if(operators=='/'){
-		if(currentMathObject.randomNumber1 != 0 || currentMathObject.randomNumber2 != 0){
-			if(currentMathObject.randomNumber2 > currentMathObject.randomNumber1){
-				var temp = currentMathObject.randomNumber1;
-				currentMathObject.randomNumber1 = currentMathObject.randomNumber2;
-				currentMathObject.randomNumber2 = temp;
-			}
+	// if(operators=='/'){
+	// 	if(currentMathObject.randomNumber1 != 0 || currentMathObject.randomNumber2 != 0){
+	// 		if(currentMathObject.randomNumber2 > currentMathObject.randomNumber1){
+	// 			var temp = currentMathObject.randomNumber1;
+	// 			currentMathObject.randomNumber1 = currentMathObject.randomNumber2;
+	// 			currentMathObject.randomNumber2 = temp;
+	// 		}
 			
-			if(currentMathObject.randomNumber1 % currentMathObject.randomNumber2 != 0){
-				while(currentMathObject.randomNumber1 % currentMathObject.randomNumber2 != 0 || (currentMathObject.randomNumber1 == 0 || currentMathObject.randomNumber2 == 0)){
-					var numLow = currentMathObject.lowestNumber;
-					var numHigh = currentMathObject.highestNumber;
+	// 		if(currentMathObject.randomNumber1 % currentMathObject.randomNumber2 != 0){
+	// 			while(currentMathObject.randomNumber1 % currentMathObject.randomNumber2 != 0 || (currentMathObject.randomNumber1 == 0 || currentMathObject.randomNumber2 == 0)){
+	// 				var numLow = currentMathObject.lowestNumber;
+	// 				var numHigh = currentMathObject.highestNumber;
 					
-					var adjustedHigh = (parseFloat(numHigh) - parseFloat(numLow)) + 1;
-					currentMathObject.randomNumber1 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
-					currentMathObject.randomNumber2 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
-				}
-				$(".randomNumber1").text(currentMathObject.randomNumber1);
-				$(".randomNumber2").text(currentMathObject.randomNumber2);
-			}
-		}
-	}
-	$(".operator").text(operators);
-	$(".equals").text("=");
+	// 				var adjustedHigh = (parseFloat(numHigh) - parseFloat(numLow)) + 1;
+	// 				currentMathObject.randomNumber1 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
+	// 				currentMathObject.randomNumber2 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
+	// 			}
+	// 			$(".randomNumber1").text(currentMathObject.randomNumber1);
+	// 			$(".randomNumber2").text(currentMathObject.randomNumber2);
+	// 		}
+	// 	}
+	// }
+	// $(".operator").text(operators);
 }
 
 function combineAnswer(list){
 	var tempList = list.slice(0);
 	while(tempList.length>=2){
-		var num2 = parseFloat(tempList.pop());
-		var op = tempList.pop();
-		var num1 = parseFloat(tempList.pop());
+		var num1 = parseFloat(tempList.shift());
+		var op = tempList.shift();
+		var num2 = parseFloat(tempList.shift());
 		var answer = calculateAnswer(num1,num2,op);
-		tempList.push(answer);
+		tempList.unshift(answer);
 		console.log(answer);
 	}
+	return tempList[0];
 }
 
 function calculateAnswer(param1, param2, operator){
