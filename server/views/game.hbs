@@ -99,54 +99,68 @@
   <div class="mathActivity" title="Matteaktivitet">
     <p class="question1"> Nummerintervall mellom: </p>
     <input type="text" id="lownumber" placeholder="fra" />
-    <p class="question1"> og <p>
+    <p class="question1"> og </p>
     <input type="text" id="highnumber" placeholder="til" onkeypress="submitInputNumbers(event)"/>
-    <form onsubmit="return submitFormFunction();">
-        <fieldset style = "width: 100%">
-          <div class="question1" style="width:50%; float: left"> Operatorer </div><div class="question1" style="width:50%; float: left"> Antall operander</div>
-          <br><br>
-          <div style="float: left; width:10%"> 
-            <label for="+">+</label>
-            <input class="operatorCheckboxes" id="+" type="checkbox"/>
-          </div>
-          <div style="float: left; width:10%">
-            <label for="-">-</label>
-            <input class="operatorCheckboxes" id="-" type="checkbox"/>
-          </div>
-          <div style="float: left; width:10%">
-            <label for="*">*</label>
-            <input class="operatorCheckboxes" id="*" type="checkbox"/>
-          </div>
-          <div style="float: left; width:10%">
-            <label for="/">/</label>
-            <input class="operatorCheckboxes" id="/" type="checkbox"/>
-          </div>
-          <div style="float: left; width:10%">
-            <label for="alle">alle</label>
-            <input class="operatorCheckboxes" id="all" type="checkbox"/>
-          </div>
-          <div style="float: left; width:50%">
-            <input type = "text" id="operands" style="width:20%" value="2" onblur="if (this.value == '') {this.value= '2';}" 
-            onfocus ="if (this.value=='2'){this.value ='';}"/>
-          </div>
-        </fieldset>
-    </form>
+    <div class="operatorsAndOperands">
+        <form onsubmit="return submitFormFunction();">
+            <fieldset style = "width: 100%">
+              <div class="question1" style="width:50%; float: left"> Operatorer </div><div class="question1" style="width:50%; float: left"> Antall operander</div>
+              <br><br>
+              <div style="float: left; width:10%"> 
+                <label for="plus">+</label>
+                <input class="operatorCheckboxes" id="plus" type="checkbox"/>
+              </div>
+              <div style="float: left; width:10%">
+                <label for="minus">-</label>
+                <input class="operatorCheckboxes" id="minus" type="checkbox"/>
+              </div>
+              <div style="float: left; width:10%">
+                <label for="multiply">*</label>
+                <input class="operatorCheckboxes" id="multiply" type="checkbox"/>
+              </div>
+              <div style="float: left; width:10%">
+                <label for="divide">/</label>
+                <input class="operatorCheckboxes" id="divide" type="checkbox"/>
+              </div>
+              <div style="float: left; width:10%">
+                <label for="alle">alle</label>
+                <input class="allOperatorCheckboxes" id="all" type="checkbox"/>
+              </div>
+              <div style="float: left; width:50%">
+                <input type = "text" id="operands" style="width:20%" placeholder="2" onblur="if (this.value == '') {this.value= '2';}" 
+                onfocus ="if (this.value=='2'){this.value ='';}"/>
+              </div>
+            </fieldset>
+        </form>
     <br>
-    <button id="inputValueButton" value="Generer!" /></button>
-  
-    <img id="life1" name = "heart" alt="life" src="/gfx/heart.png" style="display: none;">
-    <img id="life2" name = "heart" alt="life" src="/gfx/heart.png" style="display: none;">
-    <img id="life3" name = "heart" alt="life" src="/gfx/heart.png" style="display: none;">
-    <div class="score" style="display: none;">
-      <div class="questionsAnsweredText" style="float:left"></div>
-      <div class="numberOfQuestionsAnswered" style="float:left"></div>
-    <div class="totalNumberOfQuestions" style="float: left"></div>
-      <!--<input type="text" id="totalNumberOfQuestions" disabled value="10" size="1">-->
     </div>
-    <p class="question2" style="display: none;">Hva er:</p><br>
-    <div class="randomNumber1" style="display: none;"></div>
-    <div class="operator" style="display: none;"></div>
-    <div class="randomNumber2" style="display: none;"></div>
+
+    <button id="inputValueButton" value="Generer!" />Generer!</button>
+
+    <div class="top">
+      <div class= "lives" style = "display: none;">
+          <img id="life1" name = "heart" alt="life" src="/gfx/heart.png" >
+          <img id="life2" name = "heart" alt="life" src="/gfx/heart.png" >
+          <img id="life3" name = "heart" alt="life" src="/gfx/heart.png" >
+      </div>
+      <div class="score" style="display: none;">
+          <div class="questionsAnsweredText" style="float:left"></div>
+          <div class="numberOfQuestionsAnswered" style="float:left"></div>
+          <div class="totalNumberOfQuestions" style="float:left"></div>
+      </div>
+    </div>
+
+    <div class="question" style="display: none;">
+      <br><br><br><br><br>
+      <div class="question2" id="questionHeader"></div>
+      <br>
+      <div class="questionText"></div>
+      <div class="randomNumber1"></div>
+      <div class="operator"></div>
+      <div class="randomNumber2"></div>
+    </div>
+
+
     <div class="equals" style="display: none;"></div>
     <div class="answer" style="display: none;">
       <input class="answerField" id="answerField" type="text" name="answer" size="2" maxlength="4" placeholder="svaret" onkeypress="submitAnswer(event)">

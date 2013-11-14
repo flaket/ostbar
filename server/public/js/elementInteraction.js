@@ -17,13 +17,7 @@ function ObjectList(){
 }
 
 jQuery(document).ready(function(){
-
-	$("#all").change(function(){
-		console.log("checking the boxes!");
-		$(".operatorCheckboxes").prop('checked', $("#all").is(':checked'));
-	});
-	
-	gameId = parseInt($('#gameIdDiv').html());
+	gameId = parseInt(window.location.href.split('/').slice(-1)[0]);
 
 	$("#storylineButton").hide();
 	$(".elements").hide();

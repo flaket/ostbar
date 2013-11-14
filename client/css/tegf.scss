@@ -233,7 +233,6 @@ body
 
 .question2
 {
-    text-align: center;
     font-size: 50px; 
 }
 
@@ -242,6 +241,12 @@ body
     font-size: 16px;
 }
 
+.questionText
+{
+    float: left;
+    margin-left: 5%;
+    font-size: 50px;   
+}
 
 .randomNumber1
 {
