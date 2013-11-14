@@ -17,7 +17,7 @@ function ObjectList(){
 }
 
 jQuery(document).ready(function(){
-	gameId = window.location.href.split('/').slice(-1)[0];
+	gameId = parseInt(window.location.href.split('/').slice(-1)[0]);
 
 	$("#storylineButton").hide();
 	$(".elements").hide();
