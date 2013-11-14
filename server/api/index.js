@@ -2,6 +2,8 @@ var util = require( 'util' );
 var models = require( '../models' );
 var passport = require( 'passport' );
 var jsonschema = require( 'jsonschema' );
+var DB      = require( '../models/db' );
+var db      = DB.instance;
 
 var emptyResponse = function ( res ){
     res.send( 204, ' ' );
@@ -411,9 +413,16 @@ module.exports = function ( app ){
     app.del( '/api/activity/:id', auth, function ( req, res ){
         var Activity = models.Activity;
 
-        req.sanitize( 'id' );
+        req.checkBody( 'element_id', 'element_id (int) is required' ).isInt();
 
-        Activity.delete( req.params.id, function( error, success ){
+        req.sanitize( 'id' );
+        req.sanitize( 'element_id' ).toInt();
+
+        var errors = req.validationErrors();
+
+        if ( errors ) return res.send( { error: errors } );
+
+        Activity.delete( req.params.id, req.body.element_id, function( error, success ){
             if ( error ) return res.send( { error: error } );
 
             return res.send( { success: success } );
