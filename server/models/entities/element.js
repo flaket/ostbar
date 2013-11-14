@@ -167,13 +167,31 @@ Element.prototype.addActivity = function( activityId, callback ){
 Element.delete = function ( elementId, callback ){
     if ( elementId == null ) return callback( 'Kan ikke slette element med id null', false );
 
-    db.query( 'DELETE FROM element WHERE element_id = ?', elementId, function ( error, rows, callback ){
+    // var queries = [
+    //     ,
+    //     ,
+    //     
+    // ]
+
+    var queries = [
+        'SELECT * FROM element',
+        'SELECT * FROM game',
+        'SELECT * FROM action_type'
+    ];
+
+    db.query( 'DELETE FROM element WHERE element_id = ?', elementId, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        if ( rows.affectedRows == 1){
+        db.query( 'DELETE FROM element_to_action_type_rel WHERE element_id = ?', elementId, function ( error, rows, fields ){
+            if ( error ) return callback( error, false );
 
-        } else return callback( 'Kunne ikke slette element med id ' + elementId, false );
-    }); 
+            db.query( 'DELETE FROM scene_to_element_rel WHERE element_id = ?', elementId, function ( error, rows, fields ){
+                if ( error ) return callback( error, false );
+
+                return callback( null, true );
+            });
+        });
+    });
 }
 
 module.exports.Element = Element;

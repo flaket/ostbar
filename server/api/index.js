@@ -221,11 +221,19 @@ module.exports = function ( app ){
         }
     });
 
-    app.del( '/api/element/:id?', function ( req, res ){
+    app.del( '/api/element/:id', function ( req, res ){
+
+    console.log( '!!! ADD AUTH TO ELEMENT DELETE !!!' );
+
         var Element = models.Element;
 
+        req.sanitize( 'id' );
 
-        return res.send( { result: 'okok' } );
+        Element.delete( req.params.id, function ( error, success ){
+            if ( error ) return res.send( { error: error } );
+
+            return res.send( { result: success } );
+        });
     });
 
     app.get( '/api/activitylanguage/:id', auth, function ( req, res ){
