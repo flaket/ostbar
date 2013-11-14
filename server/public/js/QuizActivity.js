@@ -7,10 +7,6 @@ function QuizActivity(){
 	this.questions = [];
 }
 
-function createQuizActivity(listOfQuestions){
-
-}
-
 function createNewQuizActivity(listOfQuestions, isNewGame){
 	currentQuestion = listOfQuestions;
 	initializeQuizDialog();
@@ -70,9 +66,10 @@ function createAnotherQuestion(questionObject, isNewGame){
 function resetFields(isNewGame){
 	console.log("Question object is: ");
 	console.log(currentQuestion);
-	console.log(currentQuestion.questions.question.alternatives);
+
 	$(".numberOfQuestions").text(currentQuestion.questionsMade);
 	if(!isNewGame){
+
 		if( (!$("#quizQuestion").val().length > 0) || (!$("#alt1").val().length > 0) || (!$("#alt2").val().length > 0) || (!$("#alt3").val().length > 0) 
 			|| ( (!$("#checkAlt1").is(":checked")) && (!$("#checkAlt2").is(":checked")) && (!$("#checkAlt3").is(":checked")) ) ){
 			alert("fyll inn verdier i alle felt"); 
@@ -80,31 +77,31 @@ function resetFields(isNewGame){
 		else{
 			var alternatives = [];
 			if($("#checkAlt1").is(":checked") && $("#checkAlt2").is(":checked") && $("#checkAlt3").is(":checked")){
-				alternatives.push(createAlternativeObject($("#alt1").val(), true));
-				alternatives.push(createAlternativeObject($("#alt2").val(), true));
-				alternatives.push(createAlternativeObject($("#alt3").val(), true));
+				alternatives.push(new createAlternativeObject($("#alt1").val(), "true"));
+				alternatives.push(new createAlternativeObject($("#alt2").val(), "true"));
+				alternatives.push(new createAlternativeObject($("#alt3").val(), "true"));
 			}
 			else if($("#checkAlt1").is(":checked") && $("#checkAlt2").is(":checked")){
-				alternatives.push(createAlternativeObject($("#alt1").val(), true));
-				alternatives.push(createAlternativeObject($("#alt2").val(), true));
+				alternatives.push(new createAlternativeObject($("#alt1").val(), "true"));
+				alternatives.push(new createAlternativeObject($("#alt2").val(), "true"));
 			}
 			else if($("#checkAlt1").is(":checked") && $("#checkAlt3").is(":checked")){
-				alternatives.push(createAlternativeObject($("#alt1").val(), true));
-				alternatives.push(createAlternativeObject($("#alt3").val(), true));
+				alternatives.push(new createAlternativeObject($("#alt1").val(), "true"));
+				alternatives.push(new createAlternativeObject($("#alt3").val(), "true"));
 			}
 			else if($("#checkAlt2").is(":checked") && $("#checkAlt3").is(":checked")){
-				alternatives.push(createAlternativeObject($("#alt2").val(), true));
-				alternatives.push(createAlternativeObject($("#alt3").val(), true));
+				alternatives.push(new createAlternativeObject($("#alt2").val(), "true"));
+				alternatives.push(new createAlternativeObject($("#alt3").val(), "true"));
 			}	
 
 			else if($("#checkAlt1").is(":checked")){
-				alternatives.push(createAlternativeObject($("#alt1").val(), true));
+				alternatives.push(new createAlternativeObject($("#alt1").val(), "true"));
 			}
 			else if($("#checkAlt2").is(":checked")){
-				alternatives.push(createAlternativeObject($("#alt2").val(), true));
+				alternatives.push(new createAlternativeObject($("#alt2").val(), "true"));
 			}
 			else{ 
-				alternatives.push(createAlternativeObject($("#alt3").val(), true)); 
+				alternatives.push(new createAlternativeObject($("#alt3").val(), "true")); 
 			}
 
 			var questionName = $("#quizQuestion").val();
@@ -121,7 +118,7 @@ function resetFields(isNewGame){
 
 function createAlternativeObject(object, isCorrect){
 	this.alternative = object;
-	this.isCorrect = isCorrect;
+	this.correct = isCorrect;
 }
 
 function Question(question, alternatives){
@@ -132,9 +129,14 @@ function Question(question, alternatives){
 function createNewQuestionObject(questionName, alternatives){
 
 	var questionName = $("#quizQuestion").val();
-	var alt1 = $("#alt1").val();
-	var alt2 = $("#alt2").val();
-	var alt3 = $("#alt3").val();
+
+	console.log($("#checkAlt1").attr("checked")?true:false);
+	console.log($("#checkAlt2").attr("checked")?true:false);
+	console.log($("#checkAlt3").attr("checked")?true:false);
+
+	var alt1 = new createAlternativeObject($("#alt1").val(), "true");
+	var alt2 = new createAlternativeObject($("#alt2").val(), "false");
+	var alt3 = new createAlternativeObject($("#alt3").val(), "true");
 
 	var questionAlternatives = [];
 	questionAlternatives.push(alt1);
@@ -150,17 +152,41 @@ function createNewQuestionObject(questionName, alternatives){
 }	
 
 function finalizeQuiz(){
+
 	if( (!$("#quizQuestion").val().length > 0) || (!$("#alt1").val().length > 0) || (!$("#alt2").val().length > 0) || (!$("#alt3").val().length > 0) 
 		|| ( (!$("#checkAlt1").is(":checked")) && (!$("#checkAlt2").is(":checked")) && (!$("#checkAlt3").is(":checked")) ) ){
 		$(".quizActivity").dialog("close");
-}
-else{
-	resetFields(false);
-	$(".quizActivity").dialog("close");
-}
+	}
+	else{
+		resetFields(false);
+		$(".quizActivity").dialog("close");
+	}
 }
 
 function createQuizActivity(listOfQuestions){
+	console.log(currentQuestion.questions);
+
+	$.ajax({
+		type: "POST",
+		url: "/api/activity/",
+		data: {
+			questions: currentQuestion.questions,
+			activity_type: "QUIZ",
+			element_id: 1,
+		},
+		success: function (response) {
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				console.log(response);
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('post element error:', jqXHR, textStatus, errorThrown);
+		},
+		dataType: "json"
+	}); 
+
 	console.log("quiz activity");
 	currentQuestion = listOfQuestions;
 	if(currentQuestion.questionsAnswered<currentQuestion.questions.length){
@@ -181,12 +207,10 @@ function createQuizActivity(listOfQuestions){
 function showQuestions(){
 	if(currentQuestion.questionsAnswered<currentQuestion.questions.length){
 		for(var i=currentQuestion.questionsAnswered; i<currentQuestion.questions.length; i++){
-			console.log("var i er: " + i);
-			console.log("lengden på lista er: " + currentQuestion.questions.length);
 			var questionName = currentQuestion.questions[i].question;
-			var alternative1 = currentQuestion.questions[i].alternatives[1];
-			var alternative2 = currentQuestion.questions[i].alternatives[2];
-			var alternative3 = currentQuestion.questions[i].alternatives[3];
+			var alternative1 = currentQuestion.questions[i].alternatives[0].alternative;
+			var alternative2 = currentQuestion.questions[i].alternatives[1].alternative;
+			var alternative3 = currentQuestion.questions[i].alternatives[2].alternative;
 
 			$("#quizQuestion").prop("disabled", true);
 			$("#quizQuestion").val(questionName);
@@ -201,7 +225,7 @@ function showQuestions(){
 			$("#alt3").val(alternative3);
 
 			showProperButton();
-			console.log(currentQuestion.questionsAnswered);
+			
 			break;
 		}
 	}
@@ -212,7 +236,7 @@ function showQuestions(){
 }
 
 function showProperButton(){
-	console.log("lengden på lista er: " + currentQuestion.questions.length);
+	
 	if(currentQuestion.questionsAnswered<currentQuestion.questions.length-1){
 		$("#lastButtonDiv").hide();
 		$("#nextButtonDiv").show();
@@ -231,11 +255,12 @@ function resetAnswer(){
 
 function checkQuizAnswer(){
 
-	var correctAnswer = currentQuestion.questions[currentQuestion.questionsAnswered].questionCorrectAnswer;
+	var correctAnswer = currentQuestion.questions[currentQuestion.questionsAnswered].alternatives;
+	console.log(correctAnswer);
 	if($("#checkAlt1").is(":checked")){
-		console.log("lengden av riktige svar: " + correctAnswer.length);
 		for(var i=0; i<correctAnswer.length; i++){
-			if($("#alt1").val()==correctAnswer[i]){
+			console.log(correctAnswer.length);
+			if($("#alt1").val()==correctAnswer[i].alternative){
 				console.log("RIKTIG");
 				correctQuestionsAnswered++;
 				resetAnswer();
@@ -258,7 +283,7 @@ function checkQuizAnswer(){
 	}
 	else if($("#checkAlt2").is(":checked")){
 		for(var i=0; i<correctAnswer.length; i++){
-			if($("#alt2").val()==correctAnswer[i]){
+			if($("#alt2").val()==correctAnswer[i].alternative){
 				console.log("RIKTIG");
 				correctQuestionsAnswered++;
 				resetAnswer();
@@ -281,7 +306,7 @@ function checkQuizAnswer(){
 	}
 	else if($("#checkAlt3").is(":checked")){
 		for(var i=0; i<correctAnswer.length; i++){
-			if($("#alt3").val()==correctAnswer[i]){
+			if($("#alt3").val()==correctAnswer[i].alternative){
 				console.log("RIKTIG");
 				correctQuestionsAnswered++;
 				resetAnswer();
