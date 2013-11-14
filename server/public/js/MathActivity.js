@@ -55,7 +55,7 @@ function MathActivity(response){
 
 function saveFields(){
 	if($("#lownumber").val()=="" || $("#highnumber").val() == ""){
-			alert("Du må skrive inn i alle feltene");
+		alert("Du må skrive inn i alle feltene");
 	}
 	else if($(".operatorCheckboxes:checked").length == 0)
 		alert("Du må huke av på minst en mulig operator");
@@ -63,11 +63,11 @@ function saveFields(){
 		alert("Du må ha med minst 2 operander");
 	else if($("#operands").val() >= 3  && $("#divide").prop("checked")){
 		alert("Med deling kan du ikke ha mer enn 2 operander");
-		console.log($("#operands").val());
 	}
 	else{
+		//Delete old mathObject
 
-			
+		
 		var numLow = $("#lownumber").val();
 		var numHigh = $("#highnumber").val();
 		
@@ -109,8 +109,11 @@ function saveFields(){
 		
 		afterParametersAreSetView();
 		$(".mathActivity").dialog("close");
-		// initializeNewMathActivity();
+
+
 		saveActivityByElementId(currentDialog.activityIndex, currentDialog.activityObject, currentDialog.element_id);
+
+		$("#inputValueButton").off("click",saveFields);
 	}
 }
 
@@ -122,67 +125,6 @@ function createNewMathActivity(mathObject){
 	initializeMathDialog();
 
 	$("#inputValueButton").on("click",saveFields);
-	// $("#inputValueButton").on(click,function createRandomNumber(){
-		// if($("#lownumber").val()=="" || $("#highnumber").val() == ""){
-		// 	alert("Du må skrive inn i alle feltene");
-		// }
-		// else if($(".operatorCheckboxes:checked").length == 0)
-		// 	alert("Du må huke av på minst en mulig operator");
-		// else if($("#operands").val() <= 1)
-		// 	alert("Du må ha med minst 2 operander");
-		// else if($("#operands").val() >= 3  && $("#divide").prop("checked")){
-		// 	alert("Med deling kan du ikke ha mer enn 2 operander");
-		// 	console.log($("#operands").val());
-		// }
-		// else{
-		// 	// $(".mathActivity").dialog("close");
-			
-		// 	var numLow = $("#lownumber").val();
-		// 	var numHigh = $("#highnumber").val();
-			
-		// 	if(numLow>numHigh){
-		// 		var temp = numLow;
-		// 		numLow = numHigh;
-		// 		numHigh = temp;
-		// 	}
-			
-		// 	if($(".allOperatorCheckboxes:checked").length == $(".allOperatorCheckboxes").length){
-		// 		currentMathObject.activeOperators[0] = 1;
-		// 		currentMathObject.activeOperators[1] = 2;
-		// 		currentMathObject.activeOperators[2] = 3;
-		// 		currentMathObject.activeOperators[3] = 4;
-		// 	}	
-		// 	else{
-		// 		if($("#plus").prop('checked'))
-		// 			currentMathObject.activeOperators[0] = 1;
-		// 		else
-		// 			currentMathObject.activeOperators[0] = -1;
-		// 		if($("#minus").prop('checked'))
-		// 			currentMathObject.activeOperators[1] = 2;
-		// 		else
-		// 			currentMathObject.activeOperators[1] = -1;
-		// 		if($("#multiply").prop('checked'))
-		// 			currentMathObject.activeOperators[2] = 3;
-		// 		else
-		// 			currentMathObject.activeOperators[2] = -1;
-		// 		if($("#divide").prop('checked'))
-		// 			currentMathObject.activeOperators[3] = 4;
-		// 		else
-		// 			currentMathObject.activeOperators[3] = -1;
-		// 	}
-			
-		// 	currentMathObject.operandsCount = $("#operands").val();
-
-		// 	currentMathObject.lowestNumber = numLow;
-		// 	currentMathObject.highestNumber = numHigh;
-			
-		// 	afterParametersAreSetView();
-		// 	$(".mathActivity").dialog("close");
-		// 	// initializeNewMathActivity();
-		// 	saveActivityByElementId(currentDialog.activityIndex, currentDialog.activityObject, currentDialog.element_id);
-		// }
-	// });
-	
 }
 
 function submitAnswer(e){
@@ -298,23 +240,15 @@ function afterParametersAreSetView(){
 	});
 	$(".questionsAnsweredText").text("Spørsmål besvart: (");
 	$(".totalNumberOfQuestions").text(") / 10");
-
-	$("#inputValueButton").off("click",saveFields);
 }
 
 function initializeNewMathActivity(){
-	// setRandomValues();
 	createQuestion();
 }
 
 function checkAnswer(){
-	// var operator = $(".operator").text(); 
-	// var number1 = parseInt($(".randomNumber1").text());
-	// var number2 = parseInt($(".randomNumber2").text());
 	
 	var answer = combineAnswer(currentMathObject.question);
-
-	// var answer = calculateAnswer(number1, number2, operator);
 	
 	console.log(answer);
 
@@ -374,36 +308,8 @@ function getAnotherQuestion(){
 	
 	$(".answerField").val("");
 	
-	// setRandomValues();
 	createQuestion();
 }
-
-// function setRandomValues(){
-	
-// 	var numLow = currentMathObject.lowestNumber;
-// 	var numHigh = currentMathObject.highestNumber;
-	
-// 	var adjustedHigh = (parseFloat(numHigh) - parseFloat(numLow)) + 1;
-	
-//     currentMathObject.randomNumber1 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
-//     currentMathObject.randomNumber2 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
-    
-// 	console.log(currentMathObject);
-	
-// 	if(currentMathObject.randomNumber1>currentMathObject.randomNumber2){
-// 		$(".randomNumber1").text(currentMathObject.randomNumber1);
-// 	}
-// 	else{
-// 		$(".randomNumber1").text(currentMathObject.randomNumber2);
-// 	}
-// 	if(currentMathObject.randomNumber2>currentMathObject.randomNumber1){
-// 		$(".randomNumber2").text(currentMathObject.randomNumber1);
-// 	}
-// 	else{
-// 		$(".randomNumber2").text(currentMathObject.randomNumber2);
-// 	}
-// }
-
 
 function pushRandomValue(){
 	var numLow = currentMathObject.lowestNumber;
@@ -435,7 +341,6 @@ function createQuestionString(operators){
 }
 
 function createQuestion(){
-	// $("#answerField").focus();
 	$(".numberOfQuestionsAnswered").text(currentMathObject.questionsAnswered);
 	
 	
@@ -479,29 +384,6 @@ function createQuestion(){
 	console.log(currentMathObject.question.toString());
 	$(".questionText").text(currentMathObject.question.join(" "));
 
-	// if(operators=='/'){
-	// 	if(currentMathObject.randomNumber1 != 0 || currentMathObject.randomNumber2 != 0){
-	// 		if(currentMathObject.randomNumber2 > currentMathObject.randomNumber1){
-	// 			var temp = currentMathObject.randomNumber1;
-	// 			currentMathObject.randomNumber1 = currentMathObject.randomNumber2;
-	// 			currentMathObject.randomNumber2 = temp;
-	// 		}
-			
-	// 		if(currentMathObject.randomNumber1 % currentMathObject.randomNumber2 != 0){
-	// 			while(currentMathObject.randomNumber1 % currentMathObject.randomNumber2 != 0 || (currentMathObject.randomNumber1 == 0 || currentMathObject.randomNumber2 == 0)){
-	// 				var numLow = currentMathObject.lowestNumber;
-	// 				var numHigh = currentMathObject.highestNumber;
-					
-	// 				var adjustedHigh = (parseFloat(numHigh) - parseFloat(numLow)) + 1;
-	// 				currentMathObject.randomNumber1 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
-	// 				currentMathObject.randomNumber2 = Math.floor(Math.random()*adjustedHigh) + parseFloat(numLow);
-	// 			}
-	// 			$(".randomNumber1").text(currentMathObject.randomNumber1);
-	// 			$(".randomNumber2").text(currentMathObject.randomNumber2);
-	// 		}
-	// 	}
-	// }
-	// $(".operator").text(operators);
 }
 
 function combineAnswer(list){

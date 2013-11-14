@@ -99,7 +99,7 @@ jQuery(document).ready(function(){
 		var previousVersionDialog = $.extend(true,{},currentDialog); // copy
 		
 		saveElements();
-		
+
 		resetCheckBoxes(currentDialog);
 		
 		var index = inList(currentObjectList.objectList,target);
@@ -456,6 +456,7 @@ function saveActivityByElementId(activityIndex,activityObject,elementID){
 					window.location.href = response.redirect;
 				} else {
 					console.log(response);
+					activityObject.activity_id = response.activityId;
 				}
 			},
 			error: function ( jqXHR, textStatus, errorThrown ){
@@ -504,3 +505,21 @@ function addActivityByIdToElement(dialogObject,activityID,callBack){
 		},
 	});
 }
+
+// function deleteActivityByIdFromElement(dialogObject,activityID){
+// 	$.ajax({
+// 		type: "DELETE",
+// 		url: "/api/activity/" + activityID,
+// 		success: function (response) {
+// 			if ( response.redirect ){
+// 				window.location.href = response.redirect;
+// 			} else {
+// 				console.log(response);
+
+// 			}
+// 		},
+// 		error: function ( jqXHR, textStatus, errorThrown ){
+// 			console.log('get activity error:', jqXHR, "", textStatus, "", errorThrown);
+// 		},
+// 	});	
+// }
