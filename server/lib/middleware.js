@@ -20,6 +20,8 @@ module.exports = {
     },
 
     ensureAuthenticatedAjax: function ( req, res, next ){
+        req.session.returnTo = '/';
+
         if ( req.isAuthenticated() ) next();
         else {
             res.send( { redirect: '/login' } );
