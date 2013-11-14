@@ -1,6 +1,7 @@
 var util = require( 'util' );
 var models = require( '../models' );
 var passport = require( 'passport' );
+var jsonschema = require( 'jsonschema' );
 
 var emptyResponse = function ( res ){
     res.send( 204, ' ' );
@@ -39,10 +40,6 @@ module.exports = function ( app ){
 
     app.get( '/api/world/:id?', auth, function ( req, res  ){
         standardGETResponse( req, res, models.World );
-    });
-
-    app.get( '/api/element/:id?', function ( req, res ){
-        standardGETResponse( req, res, models.Element );
     });
 
     app.get( '/api/elementtype/:id?', auth, function ( req, res ){
@@ -124,6 +121,10 @@ module.exports = function ( app ){
             }
             else emptyResponse( res );
         });
+    });
+
+    app.get( '/api/element/:id?', function ( req, res ){
+        standardGETResponse( req, res, models.Element );
     });
 
     app.post( '/api/element/:id?/:method?', auth, function ( req, res ){
@@ -220,6 +221,13 @@ module.exports = function ( app ){
         }
     });
 
+    app.del( '/api/element/:id?', function ( req, res ){
+        var Element = models.Element;
+
+
+        return res.send( { result: 'okok' } );
+    });
+
     app.get( '/api/activitylanguage/:id', auth, function ( req, res ){
         var ActivityLanguage = models.ActivityLanguage;
 
@@ -231,6 +239,10 @@ module.exports = function ( app ){
             if ( activityLanguage ) res.send( activityLanguage );
             else emptyResponse( res );
         })
+    });
+
+    app.get( '/api/mathoperator/:id?', auth, function ( req, res ){
+        standardGETResponse( req, res, models.MathOperator );
     });
 
     app.get( '/api/activitymath/:id', auth, function ( req, res ){
@@ -276,6 +288,50 @@ module.exports = function ( app ){
             rewardId = req.body.rewardId;
         }
 
+        var validator = new jsonschema.Validator(),
+            questions = req.body.questions,
+            questionsSchema = {
+                type: 'array',
+                items: {
+                    type: 'object',
+                    properties: {
+                        question: {
+                            type: 'string',
+                            required: true
+                        },
+                        alternatives: {
+                            type: 'array',
+                            required: true,
+                            items: {
+                                type: 'object',
+                                required: true,
+                                properties: {
+                                    alternative: {
+                                        type: 'string',
+                                        required: true
+                                    },
+                                    correct: {
+                                        booleanString: 'yes',
+                                        required: true
+                                    }                                        
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+        validator.attributes.booleanString = function validateBooleanString ( instance, schema, options, ctx ){
+            var result = new jsonschema.ValidatorResult( instance, schema, options, ctx );
+
+            if ( typeof instance == 'string' && instance == 'true' || instance == 'false') return result;
+            else if ( typeof instance == 'boolean' ) return result;
+            else {
+                result.addError( 'is not of a type(s) boolean string' );
+                return result;
+            }
+        };
+
         switch ( activityType ){
             case 'MATH':
                 req.checkBody( 'numbers_range_from', 'numbers_range_from (int) is required' ).isInt();
@@ -308,16 +364,22 @@ module.exports = function ( app ){
                 }
 
                 break;
+            case 'LANGUAGE':
+
+                questionsSchema.items.properties.languageQuestionType = {
+                    type: 'string',
+                    required: true
+                };
+
+                questionsSchema.items.properties.data_id = {
+                    type: 'string',
+                    required: true
+                }
+            
             case 'QUIZ':
-                // req.checkBody( 'questions', 'questions (json object) is required' ).notEmpty();
-
-                // req.sanitize( 'questions' ).xss();
-
-                // var errors = req.validationErrors();
-
-                // if ( errors ) res.send( { error: errors } );
-
-                var questions = req.body.questions;
+                var result = validator.validate( questions, questionsSchema );
+                
+                if ( result.errors.length ) return res.send( { error: result.errors } );
 
                 params = {
                     questions: questions
@@ -330,9 +392,6 @@ module.exports = function ( app ){
         }
 
         Activity.create( activityType, rewardId, elementId, params, function ( error, activity ){
-            
-            console.log('got object', util.inspect(activity, false, null));
-
             if ( error ) return requestError( res, error );
 
             if ( activity ) return res.send( 201, activity );

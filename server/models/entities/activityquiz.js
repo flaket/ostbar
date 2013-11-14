@@ -57,9 +57,7 @@ ActivityQuiz.create = function ( params, callback ){
     var activityId = params.activityId,
         questions = params.questions;
 
-    if ( activityId == null || questions == null ){
-        return callback( null, false );
-    }
+    if ( activityId == null || questions == null ) return callback( null, false );
 
     db.query( 'INSERT INTO activity_quiz VALUES (NULL, ?)', activityId, function ( error, rows, fields ){
         if ( error ) return callback( error, null );
@@ -80,14 +78,15 @@ ActivityQuiz.prototype.addQuestions = function ( questions, callback ){
     var self = this;
 
     for ( key in questions ){
-        questions[key].activityQuizId = this.activityQuizId;
+        questions[ key ].activityQuizId = this.activityQuizId;
     }
 
     async.map( questions, QuizQuestion.create, function ( error, results){
-        if ( error ) callback( error, false );
+        if ( error ) return callback( error, false );
+        else if ( results.indexOf( false ) != -1 ) return callback( 'Kunne ikke opprette spørsmål nr ' + ( results.indexOf( false ) + 1 ), false );
 
-        return ActivityQuiz.loadById( self.activityQuizId, callback );
+        ActivityQuiz.loadById( self.activityQuizId, callback );
     });
-}
+};
 
 module.exports.ActivityQuiz = ActivityQuiz;

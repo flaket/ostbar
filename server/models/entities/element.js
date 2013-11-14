@@ -164,4 +164,16 @@ Element.prototype.addActivity = function( activityId, callback ){
     });
 }
 
+Element.delete = function ( elementId, callback ){
+    if ( elementId == null ) return callback( 'Kan ikke slette element med id null', false );
+
+    db.query( 'DELETE FROM element WHERE element_id = ?', elementId, function ( error, rows, callback ){
+        if ( error ) return callback( error, false );
+
+        if ( rows.affectedRows == 1){
+
+        } else return callback( 'Kunne ikke slette element med id ' + elementId, false );
+    }); 
+}
+
 module.exports.Element = Element;

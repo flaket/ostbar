@@ -5,6 +5,9 @@ var server = require('../../server');
 
 // core routes - base is /
 module.exports.index = function( req, res ){
+
+    console.log('rendeding index');
+
     res.render('index', {
         user: req.user
     });
@@ -234,9 +237,6 @@ module.exports.new_game = function ( req, res ){
             });
         }
 
-        res.render( 'game', {
-            user: req.user,
-            game: game
-        });
+        res.redirect( '/game/' + game.gameId );
     });
 };

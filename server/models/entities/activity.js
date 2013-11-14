@@ -52,7 +52,7 @@ Activity.loadById = function ( id, callback ){
                 callback( null, new Activity( data ) );
             });
         }
-        else callback( 'Could not load activity', false );
+        else callback( 'Could not load activity with id ' + id, false );
     });
 }
 
