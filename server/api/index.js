@@ -381,10 +381,6 @@ module.exports = function ( app ){
         }
 
         Activity.create( activityType, rewardId, elementId, params, function ( error, activity ){
-            console.log( 'called activity create with params', params );
-            console.log( 'error:', error );
-            console.log( 'activity:', activity );
-
             if ( error ) return requestError( res, error );
 
             if ( activity ) return res.send( 201, activity );
