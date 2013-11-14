@@ -98,6 +98,8 @@ jQuery(document).ready(function(){
 		
 		var previousVersionDialog = $.extend(true,{},currentDialog); // copy
 		
+		saveElements();
+		
 		resetCheckBoxes(currentDialog);
 		
 		var index = inList(currentObjectList.objectList,target);
@@ -121,8 +123,6 @@ jQuery(document).ready(function(){
 					addPickUp(target,previousVersionDialog,index);
 					addAnimation(target,previousVersionDialog,index);
 					addSound(target,previousVersionDialog,index);
-
-					saveElements();
 
 					$(this).dialog("close");
 				},
@@ -412,6 +412,24 @@ function loadElementsByScene(elements){
 		// console.log("");
 		var dia = new Dialog(target);
 		dia.element_id = elements[i].elementId;
+
+		for (var j = 0; j < elements[i].actionTypes.length; j++) {
+			if(elements[i].actionTypes[j].name == "TO_ACTIVITY"){
+				var activityId = elements[i].actionTypes[j].data;
+				addActivityByIdToElement(dia,activityId,function(error,success){
+					if(error){ console.log("error thrown" + error); return;}
+					
+					console.log(success);
+					
+					if(success){
+						console.log("yay");
+					}
+					return;
+				});
+			}
+		};
+		
+
 		currentDialog = dia;
 		currentObjectList.objectList.push(dia);
 	};
@@ -421,28 +439,68 @@ function loadElementsByScene(elements){
 }
 
 function saveActivityByElementId(activityIndex,activityObject,elementID){
+	if(activityIndex == 0){
+		$.ajax({
+			type: "POST",
+			url: "/api/activity/",
+			data: {
+				activity_type: "MATH",
+				element_id: elementID,
+				numbers_range_from: activityObject.lowestNumber,
+				numbers_range_to: activityObject.highestNumber,
+				n_operands: activityObject.operandsCount,
+				operators: getActiveOperators(activityObject),
+			},
+			success: function (response) {
+				if ( response.redirect ){
+					window.location.href = response.redirect;
+				} else {
+					console.log(response);
+				}
+			},
+			error: function ( jqXHR, textStatus, errorThrown ){
+				console.log('post activity error:', jqXHR, "", textStatus, "", errorThrown);
+			},
+
+			dataType: "json"
+		});
+	}
+}
+
+function addActivityByIdToElement(dialogObject,activityID,callBack){
 	$.ajax({
-		type: "POST",
-		url: "/api/activity/",
-		data: {
-			activity_type: "MATH",
-			element_id: elementID,
-			numbers_range_from: activityObject.lowestNumber,
-			numbers_range_to: activityObject.highestNumber,
-			n_operands: "1",
-			operators: "1",
-		},
+		type: "GET",
+		url: "/api/activity/" + activityID,
 		success: function (response) {
 			if ( response.redirect ){
 				window.location.href = response.redirect;
 			} else {
 				console.log(response);
+				var error = response.error;
+				if(response.activityType == "MATH")
+					var mathObject = new MathActivity(response);
+					dialogObject.activityObject = mathObject;
+					dialogObject.activityIndex = 0;
+					return callBack(error,true);
+				//TODO
+				if(response.activityType == "LANGUAGE"){
+					dialogObject.activityObject = null; //create new language object based on database stored object and attach
+					dialogObject.activityIndex = 1;
+					return callBack(error,true);
+				}
+				//TODO
+				if(response.activityType == "QUIZ"){
+					dialogObject.activityObject = null; //create new quiz object based on database stored object and attach
+					dialogObject.activityIndex = 2;
+					return callBack(error,true);
+				}
+				else{
+					return callBack(error,false);
+				}
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('post activity error:', jqXHR, "", textStatus, "", errorThrown);
+			console.log('get activity error:', jqXHR, "", textStatus, "", errorThrown);
 		},
-
-		dataType: "json"
 	});
 }

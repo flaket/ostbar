@@ -15,25 +15,103 @@ $(document).ready(function(){
 	});
 });
 
-function MathActivity(){
+function MathActivity(response){
 	this.questionsAnswered = 0;
 	this.correctAnswers = 0;
 	
+	this.question = [];
+	this.life = 3;
+
 	this.lowestNumber = "";
 	this.highestNumber = "";
 	
 	this.operators = ["+","-","*","/"];
 	this.activeOperators = [-1,-1,-1,-1];
-	this.operandsCount = 2;
+		
+	if(response==null){
+		this.operandsCount = 2;
 
-	// this.randomNumber1 = 0;
-	// this.randomNumber2 = 0;
+		this.activity_id = -1;
+	}
+	else{
+		var sub = response.subclass;
+		this.lowestNumber = sub.numbersRangeFrom;
+		this.highestNumber = sub.numbersRangeTo;
+	
+		if(sub.operators!=null){
+			for (var i = 0; i < sub.operators.length; i++) {
+				var inArray = jQuery.inArray(sub.operators[i].operator,this.operators);
+				var operatorValue = sub.operators[i].mathOperatorId;
+				if(inArray>-1)
+					this.activeOperators[inArray] = operatorValue;
+			};
+		}
 
-	this.question = [];
-	
-	this.life = 3;
-	
-	// resetScore();
+		this.operandsCount = sub.operandsCount;
+		
+		this.activity_id = response.activityId;
+	}	
+}
+
+function saveFields(){
+	if($("#lownumber").val()=="" || $("#highnumber").val() == ""){
+			alert("Du må skrive inn i alle feltene");
+	}
+	else if($(".operatorCheckboxes:checked").length == 0)
+		alert("Du må huke av på minst en mulig operator");
+	else if($("#operands").val() <= 1)
+		alert("Du må ha med minst 2 operander");
+	else if($("#operands").val() >= 3  && $("#divide").prop("checked")){
+		alert("Med deling kan du ikke ha mer enn 2 operander");
+		console.log($("#operands").val());
+	}
+	else{
+
+			
+		var numLow = $("#lownumber").val();
+		var numHigh = $("#highnumber").val();
+		
+		if(numLow>numHigh){
+			var temp = numLow;
+			numLow = numHigh;
+			numHigh = temp;
+		}
+		
+		if($(".allOperatorCheckboxes:checked").length == $(".allOperatorCheckboxes").length){
+			currentMathObject.activeOperators[0] = 1;
+			currentMathObject.activeOperators[1] = 2;
+			currentMathObject.activeOperators[2] = 3;
+			currentMathObject.activeOperators[3] = 4;
+		}	
+		else{
+			if($("#plus").prop('checked'))
+				currentMathObject.activeOperators[0] = 1;
+			else
+				currentMathObject.activeOperators[0] = -1;
+			if($("#minus").prop('checked'))
+				currentMathObject.activeOperators[1] = 2;
+			else
+				currentMathObject.activeOperators[1] = -1;
+			if($("#multiply").prop('checked'))
+				currentMathObject.activeOperators[2] = 3;
+			else
+				currentMathObject.activeOperators[2] = -1;
+			if($("#divide").prop('checked'))
+				currentMathObject.activeOperators[3] = 4;
+			else
+				currentMathObject.activeOperators[3] = -1;
+		}
+		
+		currentMathObject.operandsCount = $("#operands").val();
+
+		currentMathObject.lowestNumber = numLow;
+		currentMathObject.highestNumber = numHigh;
+		
+		afterParametersAreSetView();
+		$(".mathActivity").dialog("close");
+		// initializeNewMathActivity();
+		saveActivityByElementId(currentDialog.activityIndex, currentDialog.activityObject, currentDialog.element_id);
+	}
 }
 
 function createNewMathActivity(mathObject){
@@ -43,65 +121,67 @@ function createNewMathActivity(mathObject){
 	beforeParametersAreSetView();
 	initializeMathDialog();
 
-	$("#inputValueButton").click(function createRandomNumber(){
-		if($("#lownumber").val()=="" || $("#highnumber").val() == ""){
-			alert("Du må skrive inn i alle feltene");
-		}
-		else if($(".operatorCheckboxes:checked").length == 0)
-			alert("Du må huke av på minst en mulig operator");
-		else if($("#operands").val() <= 1)
-			alert("Du må ha med minst 2 operander");
-		else if($("#operands").val() >= 3  && $("#divide").prop("checked")){
-			alert("Med deling kan du ikke ha mer enn 2 operander");
-			console.log($("#operands").val());
-		}
-		else{
-			// $(".mathActivity").dialog("close");
+	$("#inputValueButton").on("click",saveFields);
+	// $("#inputValueButton").on(click,function createRandomNumber(){
+		// if($("#lownumber").val()=="" || $("#highnumber").val() == ""){
+		// 	alert("Du må skrive inn i alle feltene");
+		// }
+		// else if($(".operatorCheckboxes:checked").length == 0)
+		// 	alert("Du må huke av på minst en mulig operator");
+		// else if($("#operands").val() <= 1)
+		// 	alert("Du må ha med minst 2 operander");
+		// else if($("#operands").val() >= 3  && $("#divide").prop("checked")){
+		// 	alert("Med deling kan du ikke ha mer enn 2 operander");
+		// 	console.log($("#operands").val());
+		// }
+		// else{
+		// 	// $(".mathActivity").dialog("close");
 			
-			var numLow = $("#lownumber").val();
-			var numHigh = $("#highnumber").val();
+		// 	var numLow = $("#lownumber").val();
+		// 	var numHigh = $("#highnumber").val();
 			
-			if(numLow>numHigh){
-				var temp = numLow;
-				numLow = numHigh;
-				numHigh = temp;
-			}
+		// 	if(numLow>numHigh){
+		// 		var temp = numLow;
+		// 		numLow = numHigh;
+		// 		numHigh = temp;
+		// 	}
 			
-			if($(".allOperatorCheckboxes:checked").length == $(".allOperatorCheckboxes").length){
-				currentMathObject.activeOperators[0] = 1;
-				currentMathObject.activeOperators[1] = 2;
-				currentMathObject.activeOperators[2] = 3;
-				currentMathObject.activeOperators[3] = 4;
-			}	
-			else{
-				if($("#plus").prop('checked'))
-					currentMathObject.activeOperators[0] = 1;
-				else
-					currentMathObject.activeOperators[0] = -1;
-				if($("#minus").prop('checked'))
-					currentMathObject.activeOperators[1] = 2;
-				else
-					currentMathObject.activeOperators[1] = -1;
-				if($("#multiply").prop('checked'))
-					currentMathObject.activeOperators[2] = 3;
-				else
-					currentMathObject.activeOperators[2] = -1;
-				if($("#divide").prop('checked'))
-					currentMathObject.activeOperators[3] = 4;
-				else
-					currentMathObject.activeOperators[3] = -1;
-			}
+		// 	if($(".allOperatorCheckboxes:checked").length == $(".allOperatorCheckboxes").length){
+		// 		currentMathObject.activeOperators[0] = 1;
+		// 		currentMathObject.activeOperators[1] = 2;
+		// 		currentMathObject.activeOperators[2] = 3;
+		// 		currentMathObject.activeOperators[3] = 4;
+		// 	}	
+		// 	else{
+		// 		if($("#plus").prop('checked'))
+		// 			currentMathObject.activeOperators[0] = 1;
+		// 		else
+		// 			currentMathObject.activeOperators[0] = -1;
+		// 		if($("#minus").prop('checked'))
+		// 			currentMathObject.activeOperators[1] = 2;
+		// 		else
+		// 			currentMathObject.activeOperators[1] = -1;
+		// 		if($("#multiply").prop('checked'))
+		// 			currentMathObject.activeOperators[2] = 3;
+		// 		else
+		// 			currentMathObject.activeOperators[2] = -1;
+		// 		if($("#divide").prop('checked'))
+		// 			currentMathObject.activeOperators[3] = 4;
+		// 		else
+		// 			currentMathObject.activeOperators[3] = -1;
+		// 	}
 			
-			currentMathObject.operandsCount = $("#operands").val();
+		// 	currentMathObject.operandsCount = $("#operands").val();
 
-			currentMathObject.lowestNumber = numLow;
-			currentMathObject.highestNumber = numHigh;
+		// 	currentMathObject.lowestNumber = numLow;
+		// 	currentMathObject.highestNumber = numHigh;
 			
-			afterParametersAreSetView();
-			$(".mathActivity").dialog("close");
-			// initializeNewMathActivity();
-		}
-	});
+		// 	afterParametersAreSetView();
+		// 	$(".mathActivity").dialog("close");
+		// 	// initializeNewMathActivity();
+		// 	saveActivityByElementId(currentDialog.activityIndex, currentDialog.activityObject, currentDialog.element_id);
+		// }
+	// });
 	
 }
 
@@ -218,6 +298,8 @@ function afterParametersAreSetView(){
 	});
 	$(".questionsAnsweredText").text("Spørsmål besvart: (");
 	$(".totalNumberOfQuestions").text(") / 10");
+
+	$("#inputValueButton").off("click",saveFields);
 }
 
 function initializeNewMathActivity(){
@@ -423,7 +505,7 @@ function createQuestion(){
 }
 
 function combineAnswer(list){
-	var tempList = list.slice(0);
+	var tempList = list.slice(0); //copy
 
 	var index = 0;
 	console.log(tempList.toString());
@@ -433,7 +515,7 @@ function combineAnswer(list){
 			var op = tempList[index];
 			var num2 = tempList[index+1];
 			var answer = calculateAnswer(num1,num2,op);
-			tempList.splice(index-1,3,answer);
+			tempList.splice(index-1,3,answer); //remove the 3 affected fields and insert the answer on that position.
 			console.log(tempList.toString());
 			index = index-2;
 		}
@@ -484,4 +566,16 @@ function chooseRandomOperators(possibleNumbersOfOperators){
 	}
 	console.log("chosen operators are : " + chosenOperator);
 	return chosenOperator;
+}
+
+function getActiveOperators(mathObject){
+	var arr = mathObject.activeOperators.slice(0);
+	var index = 0;
+	while(index < arr.length){
+		if(arr[index]<=-1){
+			arr.splice(index,1);
+		}
+		index++;
+	}
+	return arr;
 }
