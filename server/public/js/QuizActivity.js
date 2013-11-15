@@ -67,6 +67,7 @@ function resetFields(isNewGame){
 	console.log("Question object is: ");
 	console.log(currentQuestion);
 
+
 	$(".numberOfQuestions").text(currentQuestion.questionsMade);
 	if(!isNewGame){
 
@@ -84,24 +85,33 @@ function resetFields(isNewGame){
 			else if($("#checkAlt1").is(":checked") && $("#checkAlt2").is(":checked")){
 				alternatives.push(new createAlternativeObject($("#alt1").val(), "true"));
 				alternatives.push(new createAlternativeObject($("#alt2").val(), "true"));
+				alternatives.push(new createAlternativeObject($("#alt3").val(), "false"));
 			}
 			else if($("#checkAlt1").is(":checked") && $("#checkAlt3").is(":checked")){
 				alternatives.push(new createAlternativeObject($("#alt1").val(), "true"));
 				alternatives.push(new createAlternativeObject($("#alt3").val(), "true"));
+				alternatives.push(new createAlternativeObject($("#alt2").val(), "false"));
 			}
 			else if($("#checkAlt2").is(":checked") && $("#checkAlt3").is(":checked")){
 				alternatives.push(new createAlternativeObject($("#alt2").val(), "true"));
 				alternatives.push(new createAlternativeObject($("#alt3").val(), "true"));
+				alternatives.push(new createAlternativeObject($("#alt1").val(), "false"));
 			}	
 
 			else if($("#checkAlt1").is(":checked")){
 				alternatives.push(new createAlternativeObject($("#alt1").val(), "true"));
+				alternatives.push(new createAlternativeObject($("#alt2").val(), "false"));
+				alternatives.push(new createAlternativeObject($("#alt3").val(), "false"));
 			}
 			else if($("#checkAlt2").is(":checked")){
 				alternatives.push(new createAlternativeObject($("#alt2").val(), "true"));
+				alternatives.push(new createAlternativeObject($("#alt1").val(), "false"));
+				alternatives.push(new createAlternativeObject($("#alt3").val(), "false"));
 			}
-			else{ 
-				alternatives.push(new createAlternativeObject($("#alt3").val(), "true")); 
+			else { 
+				alternatives.push(new createAlternativeObject($("#alt3").val(), "true"));
+				alternatives.push(new createAlternativeObject($("#alt1").val(), "false"))
+				alternatives.push(new createAlternativeObject($("#alt2").val(), "false")) 
 			}
 
 			var questionName = $("#quizQuestion").val();
@@ -130,13 +140,9 @@ function createNewQuestionObject(questionName, alternatives){
 
 	var questionName = $("#quizQuestion").val();
 
-	console.log($("#checkAlt1").attr("checked")?true:false);
-	console.log($("#checkAlt2").attr("checked")?true:false);
-	console.log($("#checkAlt3").attr("checked")?true:false);
-
-	var alt1 = new createAlternativeObject($("#alt1").val(), "true");
-	var alt2 = new createAlternativeObject($("#alt2").val(), "false");
-	var alt3 = new createAlternativeObject($("#alt3").val(), "true");
+	var alt1 = alternatives[0].alternative;
+	var alt2 = alternatives[1].alternative;
+	var alt3 = alternatives[2].alternative;
 
 	var questionAlternatives = [];
 	questionAlternatives.push(alt1);
