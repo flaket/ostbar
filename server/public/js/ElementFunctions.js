@@ -2,6 +2,7 @@ function dialogFunction(e){
 	$("#writtenText").val(currentObjectList.objectList[inList(currentObjectList.objectList,e.target)].dialogData);
 	$(".writtenDialog").dialog({
 		modal: true,
+		height: $(window).height()*0.5,
 		buttons: {
 			Ok: function(){
 					$(this).dialog("close");

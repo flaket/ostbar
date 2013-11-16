@@ -90,7 +90,6 @@ function addActivity(target,previousVersionDialog,index){
 		});
 	};
 	if(!currentDialog.activityChecked){
-		console.log("woot");
 		if(currentDialog.activityIndex == 0)
 			$(target).off("click", mathActivityFunction);
 		if(currentDialog.activityIndex == 1)
@@ -106,6 +105,7 @@ function addDialog(target,previousVersionDialog,index){
 		//make a new dialog
 		$(".userInputDialog").dialog({
 			title: "type in dialog",
+			height: $(window).height()*0.5,
 			buttons:{
 				"Bekreft": function(){
 					if(!$("#dialogText").val()){
@@ -155,6 +155,7 @@ function addAnimation(target,previousVersionDialog,index){
 			$(target).on("click", animationFunction);
 			currentDialog.animationClickActionMade = true;
 		}
+		addAnimationToElement(currentDialog,getActionTypeByName("ANIMATION"));
 	}
 	if(!currentDialog.animationChecked){
 		$(target).off("click", animationFunction);

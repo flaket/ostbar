@@ -350,8 +350,6 @@ function createQuestion(){
 
 	createQuestionString(operators);	
 
-	console.log(currentMathObject.question.toString());
-
 	for (var i = 0; i < operators.length; i++) {
 		var arr = currentMathObject.question;
 		if(operators[i]=="/"){
@@ -404,11 +402,11 @@ function combineAnswer(list){
 	}
 
 	while(tempList.length>=2){
-		var num1 = parseFloat(tempList.shift());
+		var num1 = parseFloat(tempList.shift()); //pop from the start of list
 		var op = tempList.shift();
 		var num2 = parseFloat(tempList.shift());
 		var answer = calculateAnswer(num1,num2,op);
-		tempList.unshift(answer);
+		tempList.unshift(answer); //insert at the start of the list
 		console.log(tempList.toString());
 	}
 	return tempList[0];
