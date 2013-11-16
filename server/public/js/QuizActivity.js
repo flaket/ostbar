@@ -282,53 +282,52 @@ function resetAnswer(){
 
 function checkQuizAnswer(){
 
-	var correctAnswer = currentQuestion.questions[currentQuestion.questionsAnswered].alternatives;
-	console.log(correctAnswer);
-	for(var i=0; i<correctAnswer.length; i++){
-		if($("#checkAlt1").is(":checked")){
-			if($("#alt1").val()==correctAnswer[i].alternative){
-				console.log("RIKTIG");
-				correctQuestionsAnswered++;
-				resetAnswer();
-				currentQuestion.questionsAnswered++;
-				showQuestions();
-			}
-			else{
-				console.log("FEIL");
-				resetAnswer();
-				alert("Feil svar, du må svare riktig for å gå videre");
-			}
+	var correctAnswer = currentQuestion.questions[currentQuestion.questionsAnswered];
+	console.log("correct = ", correctAnswer);
+	console.log("lengde = ", correctAnswer.alternatives.length);
+
+	console.log("ID = ", correctAnswer.alternatives[0].quizQuestionAlternativeId);
+	console.log("SVAR = ", correctAnswer.correctAlternatives);
+	if($("#checkAlt1").is(":checked")){
+		if(correctAnswer.alternatives[0].quizQuestionAlternativeId == correctAnswer.correctAlternatives){
+			console.log("RIKTIG");
+			correctQuestionsAnswered++;
+			resetAnswer();
+			currentQuestion.questionsAnswered++;
+			showQuestions();
 		}
-		else if($("#checkAlt2").is(":checked")){
-			if($("#alt2").val()==correctAnswer[i].alternative){
-				console.log("RIKTIG");
-				correctQuestionsAnswered++;
-				resetAnswer();
-				currentQuestion.questionsAnswered++;
-				showQuestions();
-			}
-			else{
-				console.log("FEIL");
-				resetAnswer();
-				alert("Feil svar, du må svare riktig for å gå videre");
-			}
-		}
-		else if($("#checkAlt3").is(":checked")){
-			console.log($("#alt3").val());
-			console.log(correctAnswer[i].alternative);
-			if($("#alt3").val()==correctAnswer[i].alternative){
-				console.log("RIKTIG");
-				correctQuestionsAnswered++;
-				resetAnswer();
-				currentQuestion.questionsAnswered++;
-				showQuestions();
-			}
-			else{
-				console.log("FEIL");
-				resetAnswer();
-				alert("Feil svar, du må svare riktig for å gå videre");
-			}
+		else{
+			console.log("FEIL");
+			resetAnswer();
+			alert("Feil svar, du må svare riktig for å gå videre");
 		}
 	}
-	
+	else if($("#checkAlt2").is(":checked")){
+		if(correctAnswer.alternatives[1].quizQuestionAlternativeId == correctAnswer.correctAlternatives){
+			console.log("RIKTIG");
+			correctQuestionsAnswered++;
+			resetAnswer();
+			currentQuestion.questionsAnswered++;
+			showQuestions();
+		}
+		else{
+			console.log("FEIL");
+			resetAnswer();
+			alert("Feil svar, du må svare riktig for å gå videre");
+		}
+	}
+	else if($("#checkAlt3").is(":checked")){
+		if(correctAnswer.alternatives[2].quizQuestionAlternativeId == correctAnswer.correctAlternatives){
+			console.log("RIKTIG");
+			correctQuestionsAnswered++;
+			resetAnswer();
+			currentQuestion.questionsAnswered++;
+			showQuestions();
+		}
+		else{
+			console.log("FEIL");
+			resetAnswer();
+			alert("Feil svar, du må svare riktig for å gå videre");
+		}
+	}
 }
