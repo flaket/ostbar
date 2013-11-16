@@ -160,6 +160,7 @@ function addAnimation(target,previousVersionDialog,index){
 	if(!currentDialog.animationChecked){
 		$(target).off("click", animationFunction);
 		currentDialog.animationClickActionMade = false;
+		// deleteAnimationFromElement(currentDialog,getActionTypeByName("ANIMATION"));
 	}
 }
 

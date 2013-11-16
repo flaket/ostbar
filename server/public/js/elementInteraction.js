@@ -502,7 +502,7 @@ function saveActivityByElementId(activityIndex,activityObject,elementID){
 				}
 			},
 			error: function ( jqXHR, textStatus, errorThrown ){
-				console.log('post element error:', jqXHR, textStatus, errorThrown);
+				console.log('post activity error:', jqXHR, textStatus, errorThrown);
 			},
 			dataType: "json"
 		}); 
@@ -577,7 +577,7 @@ function deleteActivityByIdFromElement(elementID,activityID){
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('get activity error:', jqXHR, "", textStatus, "", errorThrown);
+			console.log('delete activity error:', jqXHR, "", textStatus, "", errorThrown);
 		},
 	});	
 }
@@ -599,7 +599,7 @@ function addDialogDataToElement(dialogObject,actionType){
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('get activity error:', jqXHR, "", textStatus, "", errorThrown);
+			console.log('post dialog error:', jqXHR, "", textStatus, "", errorThrown);
 		},
 	});	
 }
@@ -621,9 +621,30 @@ function addAnimationToElement(dialogObject,actionType){
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('get activity error:', jqXHR, "", textStatus, "", errorThrown);
+			console.log('post animation error:', jqXHR, "", textStatus, "", errorThrown);
 		},
 	});
+}
+
+function deleteAnimationFromElement(dialogObject,actionType){
+	$.ajax({
+		type: "DELETE",
+		url: "/api/element/" + dialogObject.element_id + "/actiontype/",
+		data:{
+			actiontype_id: actionType.actionTypeId,
+		},
+		success: function (response) {
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				console.log(response);
+
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('Delete animation error:', jqXHR, "", textStatus, "", errorThrown);
+		},
+	});	
 }
 
 function getActionTypes(){
