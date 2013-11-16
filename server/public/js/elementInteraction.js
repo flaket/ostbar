@@ -469,6 +469,29 @@ function saveActivityByElementId(activityIndex,activityObject,elementID){
 			dataType: "json"
 		});
 	}
+	else if(activityIndex == 2){
+		$.ajax({
+			type: "POST",
+			url: "/api/activity/",
+			data: {
+				questions: activityObject.questions,
+				activity_type: "QUIZ",
+				element_id: elementID,
+			},
+			success: function (response) {
+				if ( response.redirect ){
+					window.location.href = response.redirect;
+				} else {
+					console.log(response);
+					activityObject.activity_id = response.activityId;
+				}
+			},
+			error: function ( jqXHR, textStatus, errorThrown ){
+				console.log('post element error:', jqXHR, textStatus, errorThrown);
+			},
+			dataType: "json"
+		}); 
+	}
 }
 
 function addActivityByIdToElement(target,dialogObject,activityID,callBack){
