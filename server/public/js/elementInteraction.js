@@ -426,24 +426,28 @@ function loadElementsByScene(elements){
 				addActivityByIdToElement(target,dia,activityId,function(error,success){
 					if(error){ console.log("error thrown" + error); return;}
 					
-					console.log(success);
-					
 					if(success){
-						console.log("yay");
+						console.log("added existing activity to the element");
 					}
 					return;
 				});
 			}
 			if(elements[i].actionTypes[j].name.localeCompare("DIALOG") == 0){
-				console.log("skjer");
+				console.log("adding existing dialog to the element");
 				dia.dialogData = elements[i].actionTypes[j].data;
 				dia.dialogChecked = true;
 				$(target).on("click", dialogFunction);
 				dia.dialogClickActionMade = true;
 			}
+			if(elements[i].actionTypes[j].name.localeCompare("ANIMATION") == 0){
+				console.log("adding the existing animation to the element");
+				dia.animationIndex = elements[i].actionTypes[j].data;
+				dia.animationChecked = true;
+				$(target).on("click", animationFunction);
+				dia.animationClickActionMade = true;
+			}
 		};
 		
-
 		currentDialog = dia;
 		currentObjectList.objectList.push(dia);
 	};
@@ -598,6 +602,28 @@ function addDialogDataToElement(dialogObject,actionType){
 			console.log('get activity error:', jqXHR, "", textStatus, "", errorThrown);
 		},
 	});	
+}
+
+function addAnimationToElement(dialogObject,actionType){
+	$.ajax({
+		type: "POST",
+		url: "/api/element/" + dialogObject.element_id + "/actiontype/",
+		data:{
+			actiontype_id: actionType.actionTypeId,
+			data: dialogObject.animationIndex,
+		},
+		success: function (response) {
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				console.log(response);
+
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('get activity error:', jqXHR, "", textStatus, "", errorThrown);
+		},
+	});
 }
 
 function getActionTypes(){
