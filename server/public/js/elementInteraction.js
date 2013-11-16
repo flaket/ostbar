@@ -12,6 +12,9 @@ var sceneTypes = null;
 var currentGame = null;
 var gameId = 0;
 
+var actionTypes = null;
+var elementTypes = null;
+
 function ObjectList(){
 	this.objectList = [];
 }
@@ -223,7 +226,8 @@ function setupAfterCallsReturns() {
 	console.log(currentScene);
 	if ( initialCallsReturned == initialCallsShouldReturn ){
 		if ( currentScene != null ){
-
+			getActionTypes();
+			getElementTypes();
 			currentSceneType = currentScene.sceneType;
 			loadElementsByScene(currentScene.elements);
 
@@ -417,7 +421,7 @@ function loadElementsByScene(elements){
 		dia.element_id = elements[i].elementId;
 
 		for (var j = 0; j < elements[i].actionTypes.length; j++) {
-			if(elements[i].actionTypes[j].name == "TO_ACTIVITY"){
+			if(elements[i].actionTypes[j].name.localeCompare("TO_ACTIVITY") == 0){
 				var activityId = elements[i].actionTypes[j].data;
 				addActivityByIdToElement(target,dia,activityId,function(error,success){
 					if(error){ console.log("error thrown" + error); return;}
@@ -429,6 +433,13 @@ function loadElementsByScene(elements){
 					}
 					return;
 				});
+			}
+			if(elements[i].actionTypes[j].name.localeCompare("DIALOG") == 0){
+				console.log("skjer");
+				dia.dialogData = elements[i].actionTypes[j].data;
+				dia.dialogChecked = true;
+				$(target).on("click", dialogFunction);
+				dia.dialogClickActionMade = true;
 			}
 		};
 		
@@ -563,4 +574,69 @@ function deleteActivityByIdFromElement(elementID,activityID){
 			console.log('get activity error:', jqXHR, "", textStatus, "", errorThrown);
 		},
 	});	
+}
+
+function addDialogDataToElement(dialogObject,actionType){
+	$.ajax({
+		type: "POST",
+		url: "/api/element/" + dialogObject.element_id + "/actiontype/",
+		data:{
+			actiontype_id: actionType.actionTypeId,
+			data: dialogObject.dialogData,
+		},
+		success: function (response) {
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				console.log(response);
+
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('get activity error:', jqXHR, "", textStatus, "", errorThrown);
+		},
+	});	
+}
+
+function getActionTypes(){
+	$.ajax({
+		type: "GET",
+		url: "/api/actiontype",
+		success: function (response) {
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				console.log(response);
+				actionTypes = response;
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('get activityType error:', jqXHR, "", textStatus, "", errorThrown);
+		},
+	});
+}
+
+function getElementTypes(){
+	$.ajax({
+		type: "GET",
+		url: "/api/elementtype",
+		success: function (response) {
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				console.log(response);
+				elementTypes = response;
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('get elementType error:', jqXHR, "", textStatus, "", errorThrown);
+		},
+	});	
+}
+
+function getActionTypeByName(nameString){
+	for (var i = 0; i < actionTypes.length; i++) {
+		if(actionTypes[i].name.localeCompare(nameString) == 0)
+			return actionTypes[i];
+	};
 }

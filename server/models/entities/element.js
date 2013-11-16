@@ -123,13 +123,13 @@ Element.prototype.update = function ( callback ){
 Element.prototype.addActionType = function( actionTypeId, data, callback ){
     if ( actionTypeId == null || data == null ) return callback( null, false );
     
-    var query = 'INSERT INTO element_to_action_type_rel SET ?';
-    var post = {
-        element_id: this.elementId, 
-        action_type_id: actionTypeId,
-        data: data
-    };
-    var self = this;
+    var query = 'INSERT INTO element_to_action_type_rel SET ?',
+        post = {
+            element_id: this.elementId, 
+            action_type_id: actionTypeId,
+            data: data
+        },
+        self = this;
 
     db.query( query, post, function ( error, rows, fields ){
         if ( error && error.code == 'ER_DUP_ENTRY' ) {
@@ -151,14 +151,17 @@ Element.prototype.addActionType = function( actionTypeId, data, callback ){
 };
 
 Element.prototype.removeActionType = function ( actionTypeId, callback ){
+    console.log( 'Element.removeActionType', actionTypeId );
+
     if ( actionTypeId == null ) return callback( null, false );
 
-    var query = 'DELETE FROM element_to_action_type_rel WHERE element_id = ? AND action_type_id = ?';
+    var query = 'DELETE FROM element_to_action_type_rel WHERE element_id = ? AND action_type_id = ?',
+        self = this;
 
     db.query( query, [ this.elementId, actionTypeId ], function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        callback( null, true );
+        Element.loadById( self.elementId, callback );
     });
 };
 
@@ -184,6 +187,16 @@ Element.prototype.removeActivity = function ( callback ){
         if ( rows.length == 1 ) self.removeActionType( rows[0].action_type_id, callback );
     });
 };
+
+Element.prototype.hasActivity = function (){
+    for ( key in this.actionTypes ){
+        var actionType = this.actionTypes[ key ];
+
+        if ( actionType.name == 'TO_ACTIVITY' ) return true;
+    }
+
+    return false;
+}
 
 Element.delete = function ( elementId, callback ){
     if ( elementId == null ) return callback( 'Kan ikke slette element med id null', false );
