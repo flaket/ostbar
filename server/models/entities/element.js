@@ -188,6 +188,16 @@ Element.prototype.removeActivity = function ( callback ){
     });
 };
 
+Element.prototype.hasActivity = function (){
+    for ( key in this.actionTypes ){
+        var actionType = this.actionTypes[ key ];
+
+        if ( actionType.name == 'TO_ACTIVITY' ) return true;
+    }
+
+    return false;
+}
+
 Element.delete = function ( elementId, callback ){
     if ( elementId == null ) return callback( 'Kan ikke slette element med id null', false );
 

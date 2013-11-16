@@ -59,44 +59,46 @@ Activity.loadById = function ( id, callback ){
 Activity.create = function ( activityType, rewardId, elementId, params, callback ){
     if ( activityType == null ) callback( null, false );
 
-    if (activityType == 'MATH' || activityType == 'LANGUAGE' || activityType == 'QUIZ' ){
-        db.query('INSERT INTO activity VALUES (NULL, ?, ?)', [activityType, rewardId], function ( error, rows, fields ){
-            if ( error ) return callback( error, false );
+    Element.loadById( elementId, function ( error, element ){
+        if ( error ) return callback( error, false );
 
-            var activityId = rows.insertId;
+        if ( element ){
+            if ( !element.hasActivity() ){
+                if (activityType == 'MATH' || activityType == 'LANGUAGE' || activityType == 'QUIZ' ){
+                    db.query('INSERT INTO activity VALUES (NULL, ?, ?)', [activityType, rewardId], function ( error, rows, fields ){
+                        if ( error ) return callback( error, false );
 
-            if (!activityId) return callback( 'Kunne ikke opprette aktivitet', false );
+                        var activityId = rows.insertId;
 
-            var subclass;
+                        if (!activityId) return callback( 'Kunne ikke opprette aktivitet', false );
 
-            switch ( activityType ){
-                case 'LANGUAGE': subclass = ActivityLanguage; break;
-                case 'MATH': subclass = ActivityMath; break;
-                case 'QUIZ': subclass = ActivityQuiz; break;
-            }
+                        var subclass;
 
-            params.activityId = activityId;
+                        switch ( activityType ){
+                            case 'LANGUAGE': subclass = ActivityLanguage; break;
+                            case 'MATH': subclass = ActivityMath; break;
+                            case 'QUIZ': subclass = ActivityQuiz; break;
+                        }
 
-            subclass.create( params, function ( error, subclassInstance ){
-                if ( error ) return callback( error, false );
+                        params.activityId = activityId;
 
-                if ( subclassInstance ){
-                    Element.loadById( elementId, function ( error, element ){
-                        if ( error ) return callback( error );
+                        subclass.create( params, function ( error, subclassInstance ){
+                            if ( error ) return callback( error, false );
 
-                        if ( element ){
-                            element.addActivity( activityId, function ( error, element ){
-                                if ( error ) return callback( error, false );
+                            if ( subclassInstance ){
+                                element.addActivity( activityId, function ( error, element ){
+                                    if ( error ) return callback( error, false );
 
-                                if ( element ) return Activity.loadById( activityId, callback );
-                                else return callback( 'Kunne ikke legge til aktivitet av type ' + activityType, false );
-                            });
-                        } else return callback( 'Kunne ikke laste element med id ' + elementId, false );
+                                    if ( element ) return Activity.loadById( activityId, callback );
+                                    else return callback( 'Kunne ikke legge til aktivitet av type ' + activityType, false );
+                                });
+                            } else return callback( 'Kunne ikke opprette aktivitet av type ' + activityType, false );
+                        });
                     });
-                } else return callback( 'Kunne ikke opprette aktivitet av type ' + activityType, false );
-            });
-        });
-    } else return callback( 'Ugyldig aktivitetstype, ' + activityType, false );
+                } else return callback( 'Ugyldig aktivitetstype, ' + activityType, false );
+            } else return callback( 'Elementet du vil legge til en aktivitet på har allerede en aktivitet', false );
+        } else return callback( 'Elementet du vil legge til en aktivitet på eksisterer ikke', false );
+    });
 }
 
 Activity.delete = function ( activityId, elementId, callback ){
