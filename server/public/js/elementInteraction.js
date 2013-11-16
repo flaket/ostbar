@@ -505,7 +505,7 @@ function addActivityByIdToElement(target,dialogObject,activityID,callBack){
 				console.log("resp",response);
 				console.log("respActivity", response.activityType);
 				var error = response.error;
-				if(response.activityType == "MATH")
+				if(response.activityType.localeCompare("MATH") == 0)
 					var mathObject = new MathActivity(response);
 					dialogObject.activityObject = mathObject;
 					dialogObject.activityIndex = 0;
@@ -515,7 +515,7 @@ function addActivityByIdToElement(target,dialogObject,activityID,callBack){
 					dialogObject.activityClickActionMade = true;
 					return callBack(error,true);
 				//TODO
-				if(response.activityType == "LANGUAGE"){
+				if(response.activityType.localeCompare("LANGUAGE") == 0){
 					dialogObject.activityObject = null; //create new language object based on database stored object and attach
 					dialogObject.activityIndex = 1;
 					dialogObject.activityChecked = true;
@@ -525,7 +525,7 @@ function addActivityByIdToElement(target,dialogObject,activityID,callBack){
 					return callBack(error,true);
 				}
 				//TODO
-				if(response.activityType == "QUIZ"){
+				if(response.activityType.localeCompare("QUIZ") == 0){
 					dialogObject.activityObject = new QuizActivity(response); 
 					dialogObject.activityIndex = 2;
 					dialogObject.activityChecked = true;
