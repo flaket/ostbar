@@ -451,7 +451,7 @@ function chooseRandomOperators(possibleNumbersOfOperators){
 }
 
 function getActiveOperators(mathObject){
-	var arr = mathObject.activeOperators.slice(0);
+	var arr = mathObject.activeOperators.slice(0); //clone
 	var index = 0;
 	while(index < arr.length){
 		if(arr[index]<=-1){
