@@ -1,11 +1,23 @@
 var currentQuestion = [];
 var correctQuestionsAnswered = 0;
 
-function QuizActivity(){
+function QuizActivity(response){
 	this.questionsMade = 0;
 	this.questionsAnswered = 0;
 	this.questions = [];
 	this.activity_id = -1;
+
+	if(response==null){
+		this.questionsMade = 0;
+		this.questions = [];
+		this.activity_id = -1;
+	}
+	else{
+		var sub = response.subclass;
+		console.log("sub");
+		console.log(sub);
+		this.activity_id = response.activityId;
+	}
 }
 
 function createNewQuizActivity(listOfQuestions, isNewGame){

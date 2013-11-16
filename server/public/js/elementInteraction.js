@@ -502,7 +502,8 @@ function addActivityByIdToElement(target,dialogObject,activityID,callBack){
 			if ( response.redirect ){
 				window.location.href = response.redirect;
 			} else {
-				console.log(response);
+				console.log("resp",response);
+				console.log("respActivity", response.activityType);
 				var error = response.error;
 				if(response.activityType == "MATH")
 					var mathObject = new MathActivity(response);
@@ -525,7 +526,7 @@ function addActivityByIdToElement(target,dialogObject,activityID,callBack){
 				}
 				//TODO
 				if(response.activityType == "QUIZ"){
-					dialogObject.activityObject = null; //create new quiz object based on database stored object and attach
+					dialogObject.activityObject = new QuizActivity(response); 
 					dialogObject.activityIndex = 2;
 					dialogObject.activityChecked = true;
 					console.log("quiz");
