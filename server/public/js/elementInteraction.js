@@ -321,12 +321,13 @@ function saveContentFromMainFrame(){
 
 
 function saveElements(){
-	//May need more stuff here
+	//may need to include the actionType later at some point (for dialog, pickup etc)
 
 	//Save call for database
 	for(var i = 0; i < currentObjectList.objectList.length; i++){
 		var temp = currentObjectList.objectList[i];
-		console.log(temp);
+		var elemId = temp.element_id;
+		// console.log(temp);
 		if (temp.element_id < 0){
 			$.ajax({
 				type: "POST",
@@ -343,6 +344,7 @@ function saveElements(){
 					if ( response.redirect ){
 						window.location.href = response.redirect;
 					} else {
+						console.log("new element:")
 						console.log(response);
 						temp.element_id = response.elementId;
 					}
@@ -356,7 +358,7 @@ function saveElements(){
 		else{
 			$.ajax({
 				type: "POST",
-				url: "/api/element/"  +temp.element_id,
+				url: "/api/element/"  +elemId,
 				data: {
 					element_type_id: "1",
 					frame_x : temp.div.offsetParent.offsetLeft,
@@ -369,6 +371,7 @@ function saveElements(){
 					if ( response.redirect ){
 						window.location.href = response.redirect;
 					} else {
+						console.log("updated element:");
 						console.log(response);
 					}
 				},
@@ -416,7 +419,7 @@ function loadElementsByScene(elements){
 		for (var j = 0; j < elements[i].actionTypes.length; j++) {
 			if(elements[i].actionTypes[j].name == "TO_ACTIVITY"){
 				var activityId = elements[i].actionTypes[j].data;
-				addActivityByIdToElement(dia,activityId,function(error,success){
+				addActivityByIdToElement(target,dia,activityId,function(error,success){
 					if(error){ console.log("error thrown" + error); return;}
 					
 					console.log(success);
@@ -468,7 +471,7 @@ function saveActivityByElementId(activityIndex,activityObject,elementID){
 	}
 }
 
-function addActivityByIdToElement(dialogObject,activityID,callBack){
+function addActivityByIdToElement(target,dialogObject,activityID,callBack){
 	$.ajax({
 		type: "GET",
 		url: "/api/activity/" + activityID,
@@ -482,17 +485,29 @@ function addActivityByIdToElement(dialogObject,activityID,callBack){
 					var mathObject = new MathActivity(response);
 					dialogObject.activityObject = mathObject;
 					dialogObject.activityIndex = 0;
+					dialogObject.activityChecked = true;
+					console.log("matte");
+					$(target).on("click", mathActivityFunction);
+					dialogObject.activityClickActionMade = true;
 					return callBack(error,true);
 				//TODO
 				if(response.activityType == "LANGUAGE"){
 					dialogObject.activityObject = null; //create new language object based on database stored object and attach
 					dialogObject.activityIndex = 1;
+					dialogObject.activityChecked = true;
+					console.log("lang");
+					$(target).on("click", languageActivityFunction);
+					dialogObject.activityClickActionMade = true;
 					return callBack(error,true);
 				}
 				//TODO
 				if(response.activityType == "QUIZ"){
 					dialogObject.activityObject = null; //create new quiz object based on database stored object and attach
 					dialogObject.activityIndex = 2;
+					dialogObject.activityChecked = true;
+					console.log("quiz");
+					$(target).on("click", quizActivityFunction);
+					dialogObject.activityClickActionMade = true;
 					return callBack(error,true);
 				}
 				else{
@@ -506,20 +521,24 @@ function addActivityByIdToElement(dialogObject,activityID,callBack){
 	});
 }
 
-// function deleteActivityByIdFromElement(dialogObject,activityID){
-// 	$.ajax({
-// 		type: "DELETE",
-// 		url: "/api/activity/" + activityID,
-// 		success: function (response) {
-// 			if ( response.redirect ){
-// 				window.location.href = response.redirect;
-// 			} else {
-// 				console.log(response);
+function deleteActivityByIdFromElement(elementID,activityID){
+	$.ajax({
+		type: "DELETE",
+		url: "/api/activity/" + activityID,
+		data:{
+			element_id: elementId,
+		},
 
-// 			}
-// 		},
-// 		error: function ( jqXHR, textStatus, errorThrown ){
-// 			console.log('get activity error:', jqXHR, "", textStatus, "", errorThrown);
-// 		},
-// 	});	
-// }
+		success: function (response) {
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				console.log(response);
+
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('get activity error:', jqXHR, "", textStatus, "", errorThrown);
+		},
+	});	
+}

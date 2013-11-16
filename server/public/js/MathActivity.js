@@ -107,7 +107,7 @@ function saveFields(){
 		currentMathObject.lowestNumber = numLow;
 		currentMathObject.highestNumber = numHigh;
 		
-		afterParametersAreSetView();
+
 		$(".mathActivity").dialog("close");
 
 
@@ -120,7 +120,7 @@ function saveFields(){
 function createNewMathActivity(mathObject){
 	
 	currentMathObject = mathObject;
-	
+	$(".chooseActivityDialog").dialog("close");
 	beforeParametersAreSetView();
 	initializeMathDialog();
 
@@ -159,6 +159,7 @@ function resetScoreAndFields(){
 
 function createMathActivity(mathObject){
 	console.log("math activity");
+	afterParametersAreSetView();
 	currentMathObject = mathObject;
 	
 	currentMathObject.questionsAnswered = 0;
@@ -172,8 +173,6 @@ function createMathActivity(mathObject){
 }
 
 function initializeMathDialog(){
-	$(".chooseActivityDialog").dialog("close");
-	
 	var Wwidth = $(window).width();
 	var Wheight = $(window).height();
 	

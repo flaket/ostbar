@@ -389,8 +389,6 @@ module.exports = function ( app ){
                     }
                 });
 
-                return res.send({ error: 'none'});
-
                 params = {
                     numbersRangeFrom: req.body.numbers_range_from,
                     numbersRangeTo: req.body.numbers_range_to,

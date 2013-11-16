@@ -15,6 +15,7 @@ function animationFunction(e){
 }
 
 function mathActivityFunction(e){
+	console.log("clicked me");
 	createMathActivity(currentObjectList.objectList[inList(currentObjectList.objectList,e.target)].activityObject);
 }
 
