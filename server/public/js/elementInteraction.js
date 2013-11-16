@@ -417,7 +417,7 @@ function loadElementsByScene(elements){
 		dia.element_id = elements[i].elementId;
 
 		for (var j = 0; j < elements[i].actionTypes.length; j++) {
-			if(elements[i].actionTypes[j].name == "TO_ACTIVITY"){
+			if(elements[i].actionTypes[j].name.localeCompare("TO_ACTIVITY") == 0){
 				var activityId = elements[i].actionTypes[j].data;
 				addActivityByIdToElement(target,dia,activityId,function(error,success){
 					if(error){ console.log("error thrown" + error); return;}
@@ -559,6 +559,64 @@ function deleteActivityByIdFromElement(elementID,activityID){
 			} else {
 				console.log(response);
 
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('get activity error:', jqXHR, "", textStatus, "", errorThrown);
+		},
+	});	
+}
+
+function addDialogDataToElement(dialogObject,actionType){
+	$.ajax({
+		type: "POST",
+		url: "/api/element/" + dialogObject.element_id + "/actiontype/",
+		data:{
+			actionType_id: actionType.actionType_id,
+			data: dialogObject.dialogData,
+		},
+		success: function (response) {
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				console.log(response);
+
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('get activity error:', jqXHR, "", textStatus, "", errorThrown);
+		},
+	});	
+}
+
+function getActionTypes(){
+	$.ajax({
+		type: "GET",
+		url: "/api/actiontype",
+		success: function (response) {
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				console.log(response);
+				var actionTypes = response;
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('get activity error:', jqXHR, "", textStatus, "", errorThrown);
+		},
+	});
+}
+
+function getElementTypes(){
+	$.ajax({
+		type: "GET",
+		url: "/api/elementtype",
+		success: function (response) {
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				console.log(response);
+				var elementTypes = response;
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
