@@ -14,12 +14,10 @@ function QuizActivity(response){
 	}
 	else{
 		var sub = response.subclass;
-		console.log("sub");
-		console.log(sub);
+
 		this.questions = sub.questions;
 		this.questionsMade = sub.questions.length;
 
-		console.log("antall spørsmål lagd: ", sub.questions.length);
 
 		this.activity_id = response.activityId;
 	}
@@ -171,12 +169,10 @@ function createNewQuestionObject(questionName, alternatives){
 
 	var correctAlternatives = [];
 	
-	console.log("alternative 1: ", questionAlternatives[0]);
 
 	for(var i=0; i<questionAlternatives.length; i++){
 		if(questionAlternatives[i].correct == "true"){
 			correctAlternatives.push(questionAlternatives[i].alternative);
-			console.log("tester ut correctAlternatives : ", correctAlternatives);
 		}
 		else{
 			console.log(questionAlternatives[i]);
@@ -206,9 +202,7 @@ function finalizeQuiz(){
 	
 	saveActivityByElementId(currentDialog.activityIndex, currentDialog.activityObject, currentDialog.element_id);
 	console.log("lagrer...");
-	console.log(currentDialog.activityIndex);
-	console.log(currentDialog.activityObject);
-	console.log(currentDialog.element_id);
+
 }
 
 function createQuizActivity(listOfQuestions){
@@ -283,11 +277,6 @@ function resetAnswer(){
 function checkQuizAnswer(){
 
 	var correctAnswer = currentQuestion.questions[currentQuestion.questionsAnswered];
-	console.log("correct = ", correctAnswer);
-	console.log("lengde = ", correctAnswer.alternatives.length);
-
-	console.log("ID = ", correctAnswer.alternatives[0].quizQuestionAlternativeId);
-	console.log("SVAR = ", correctAnswer.correctAlternatives);
 	if($("#checkAlt1").is(":checked")){
 		if(correctAnswer.alternatives[0].quizQuestionAlternativeId == correctAnswer.correctAlternatives){
 			console.log("RIKTIG");
