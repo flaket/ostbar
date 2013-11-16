@@ -123,13 +123,13 @@ Element.prototype.update = function ( callback ){
 Element.prototype.addActionType = function( actionTypeId, data, callback ){
     if ( actionTypeId == null || data == null ) return callback( null, false );
     
-    var query = 'INSERT INTO element_to_action_type_rel SET ?';
-    var post = {
-        element_id: this.elementId, 
-        action_type_id: actionTypeId,
-        data: data
-    };
-    var self = this;
+    var query = 'INSERT INTO element_to_action_type_rel SET ?',
+        post = {
+            element_id: this.elementId, 
+            action_type_id: actionTypeId,
+            data: data
+        },
+        self = this;
 
     db.query( query, post, function ( error, rows, fields ){
         if ( error && error.code == 'ER_DUP_ENTRY' ) {
@@ -151,16 +151,17 @@ Element.prototype.addActionType = function( actionTypeId, data, callback ){
 };
 
 Element.prototype.removeActionType = function ( actionTypeId, callback ){
+    console.log( 'Element.removeActionType', actionTypeId );
+
     if ( actionTypeId == null ) return callback( null, false );
 
-    var query = 'DELETE FROM element_to_action_type_rel WHERE element_id = ? AND action_type_id = ?';
+    var query = 'DELETE FROM element_to_action_type_rel WHERE element_id = ? AND action_type_id = ?',
+        self = this;
 
     db.query( query, [ this.elementId, actionTypeId ], function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        console.log('deleted, rows is', rows);
-
-        callback( null, true );
+        Element.loadById( self.elementId, callback );
     });
 };
 
