@@ -565,7 +565,7 @@ function deleteActivityByIdFromElement(elementID,activityID){
 		type: "DELETE",
 		url: "/api/activity/" + activityID,
 		data:{
-			element_id: elementId,
+			element_id: elementID,
 		},
 
 		success: function (response) {
