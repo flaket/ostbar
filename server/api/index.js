@@ -192,7 +192,6 @@ module.exports = function ( app ){
             req.assert( 'id', 'urlparam id (int) is required' ).isInt();
         }
 
-
         var errors = req.validationErrors();
 
         if ( errors ) return res.send( { error: errors } );
