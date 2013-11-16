@@ -155,9 +155,6 @@
       <div class="question2" id="questionHeader"></div>
       <br>
       <div class="questionText"></div>
-      <div class="randomNumber1"></div>
-      <div class="operator"></div>
-      <div class="randomNumber2"></div>
     </div>
 
 
@@ -212,69 +209,7 @@
 
 <div id="newWorldDialog" title="Velg verden">
   <div class="img-grid">
-    <div class="img-wrapper img-wrapper1">
-      <div class="img-container">
-        <img name = "Farm" alt="farm_bg" src="/gfx/bg1.svg" width ="200" height="200">
-      </div>
-    </div>
-    
-    <div class="img-wrapper img-wrapper2">
-      <div class="img-container">
-        <img name = "Space" alt="space_bg" src="/gfx/bg2.jpg" width ="200" height="200">
-      </div>
-    </div>
-    
-    <div class="img-wrapper img-wrapper3">
-      <div class="img-container">
-        <img name = "Schoolyard" alt="schoolyard_bg" src="/gfx/bg3.jpg" width ="200" height="200">
-      </div>
-    </div>
-    
-    <div class="img-wrapper img-wrapper4">
-      <div class="img-container">
-        <img name = "Home" alt="home_bg" src="/gfx/bg4.jpg" width ="200" height="200">
-      </div>
-    </div>
-    
-    <div class="img-wrapper img-wrapper5">
-      <div class="img-container">
-        <img name = "Snow" alt="snow_bg" src="/gfx/bg5.jpg" width ="200" height="200">
-      </div>
-    </div>
-    
-    <div class="img-wrapper img-wrapper6">
-      <div class="img-container">
-        <img name = "Kitchen" alt="kitchen_bg" src="/gfx/bg6.jpg" width ="200" height="200">
-      </div>
-    </div>
   </div>
 </div>
 
 <div id="gameIdDiv" style="display: none;">{{game.gameId}}</div>
-
-<script type="text/javascript">
-$(document).ready(function() {
-
-  // var gameId = $('#gameIdDiv').html();
-
-  // $.ajax({ 
-  //   type: 'GET', 
-  //   url: '/api/game/' + gameId, 
-  //   dataType:"json", 
-  //   data: { },
-  //   success: function ( response ){ 
-  //     if (response.redirect) {
-  //       window.location.href = response.redirect;
-  //     } else {
-  //       // console.log('received response', response);
-  //     }
-  //   }, 
-  //   error: function( xhr, textStatus, errorThrown ){ 
-  //     alert('Error!  Status = ' + xhr.status); 
-  //     console.log('textStatus', textStatus);
-  //     console.log('errorThrown', errorThrown);
-  //   } 
-  // });
-});
-
-</script>

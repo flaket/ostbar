@@ -12,6 +12,9 @@ var sceneTypes = null;
 var currentGame = null;
 var gameId = 0;
 
+var actionTypes = null;
+var elementTypes = null;
+
 function ObjectList(){
 	this.objectList = [];
 }
@@ -223,7 +226,8 @@ function setupAfterCallsReturns() {
 	console.log(currentScene);
 	if ( initialCallsReturned == initialCallsShouldReturn ){
 		if ( currentScene != null ){
-
+			getActionTypes();
+			getElementTypes();
 			currentSceneType = currentScene.sceneType;
 			loadElementsByScene(currentScene.elements);
 
@@ -430,6 +434,13 @@ function loadElementsByScene(elements){
 					return;
 				});
 			}
+			if(elements[i].actionTypes[j].name.localeCompare("DIALOG") == 0){
+				console.log("skjer");
+				dia.dialogData = elements[i].actionTypes[j].data;
+				dia.dialogChecked = true;
+				$(target).on("click", dialogFunction);
+				dia.dialogClickActionMade = true;
+			}
 		};
 		
 
@@ -572,7 +583,7 @@ function addDialogDataToElement(dialogObject,actionType){
 		type: "POST",
 		url: "/api/element/" + dialogObject.element_id + "/actiontype/",
 		data:{
-			actionType_id: actionType.actionType_id,
+			actiontype_id: actionType.actionTypeId,
 			data: dialogObject.dialogData,
 		},
 		success: function (response) {
@@ -598,11 +609,11 @@ function getActionTypes(){
 				window.location.href = response.redirect;
 			} else {
 				console.log(response);
-				var actionTypes = response;
+				actionTypes = response;
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('get activity error:', jqXHR, "", textStatus, "", errorThrown);
+			console.log('get activityType error:', jqXHR, "", textStatus, "", errorThrown);
 		},
 	});
 }
@@ -616,11 +627,18 @@ function getElementTypes(){
 				window.location.href = response.redirect;
 			} else {
 				console.log(response);
-				var elementTypes = response;
+				elementTypes = response;
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('get activity error:', jqXHR, "", textStatus, "", errorThrown);
+			console.log('get elementType error:', jqXHR, "", textStatus, "", errorThrown);
 		},
 	});	
+}
+
+function getActionTypeByName(nameString){
+	for (var i = 0; i < actionTypes.length; i++) {
+		if(actionTypes[i].name.localeCompare(nameString) == 0)
+			return actionTypes[i];
+	};
 }

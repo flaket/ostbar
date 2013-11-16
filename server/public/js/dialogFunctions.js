@@ -90,6 +90,7 @@ function addActivity(target,previousVersionDialog,index){
 		});
 	};
 	if(!currentDialog.activityChecked){
+		console.log("woot");
 		if(currentDialog.activityIndex == 0)
 			$(target).off("click", mathActivityFunction);
 		if(currentDialog.activityIndex == 1)
@@ -116,6 +117,7 @@ function addDialog(target,previousVersionDialog,index){
 							currentDialog.dialogClickActionMade = true;
 						}
 						currentDialog.dialogData = $('#dialogText').val();
+						addDialogDataToElement(currentDialog,getActionTypeByName("DIALOG"));
 						$(this).dialog("close");
 					}
 				},
