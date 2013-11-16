@@ -14,9 +14,22 @@ var requestError = function ( res, error ){
 }
 
 var standardGETResponse = function ( req, res, Entity ){
+    if ( req.params.id ){
+        req.assert( 'id', 'urlparam id (int) is required' ).isInt();
+        var errors = req.validationErrors();
+        if ( errors ) return res.send( { error: errors } );
+    }
+
     req.sanitize( 'id' ).toInt();
 
     if ( req.params.id ){
+
+        req.assert( 'id', 'urlparam id (int) is required' ).isInt();
+
+        var errors = req.validationErrors();
+
+        if ( errors ) return res.send( { error: errors } );
+
         Entity.loadById( req.params.id, function ( error, entity ){
             if ( error ) return requestError( res, error );
 
@@ -48,13 +61,7 @@ module.exports = function ( app ){
         standardGETResponse( req, res, models.World );
     });
 
-    // -- ELEMENT TYPE ------------------------------------------------------------------
-
-    app.get( '/api/elementtype/:id?', auth, function ( req, res ){
-        standardGETResponse( req, res, models.ElementType );
-    });
-
-    // -- ELEMENT TYPE ------------------------------------------------------------------
+    // -- ACTION TYPE ------------------------------------------------------------------
 
     app.get( '/api/actiontype/:id?', auth, function ( req, res ){
         standardGETResponse( req, res, models.ActionType );
@@ -65,6 +72,12 @@ module.exports = function ( app ){
     app.get( '/api/game/:id?', auth, function ( req, res ){
         var Game = models.Game;
 
+        if ( req.params.id ){
+            req.assert( 'id', 'urlparam id (int) is required' ).isInt();
+            var errors = req.validationErrors();
+            if ( errors ) return res.send( { error: errors } );
+        }
+        
         req.sanitize( 'id' ).toInt();
 
         if ( req.params.id ){
@@ -143,17 +156,88 @@ module.exports = function ( app ){
         });
     });
 
+    // -- ELEMENT TYPE ------------------------------------------------------------------
+
+    app.get( '/api/elementtype/:id?', auth, function ( req, res ){
+        standardGETResponse( req, res, models.ElementType );
+    });
+
     // -- ELEMENT -----------------------------------------------------------------------
 
-    app.get( '/api/element/:id?', function ( req, res ){
+    app.get( '/api/element/:id?', auth, function ( req, res ){
         standardGETResponse( req, res, models.Element );
     });
 
-    app.post( '/api/element/:id?/:method?', auth, function ( req, res ){
+    app.post( '/api/element/:id?', auth, function ( req, res ){
         var Element = models.Element,
             Scene = models.Scene;
 
+        req.checkBody( 'element_type_id', 'element_type_id (int) is required' ).isInt();
+        req.checkBody( 'frame_x', 'frame_x (float) is required' ).isFloat();
+        req.checkBody( 'frame_y', 'frame_y (float) is required' ).isFloat();
+        req.checkBody( 'frame_width', 'frame_width (float) is required' ).isFloat();
+        req.checkBody( 'frame_height', 'frame_height (float) is required' ).isFloat();
+        
         req.sanitize( 'id' ).toInt();
+        req.sanitize( 'element_type_id' ).toInt();
+        req.sanitize( 'frame_x' ).xss();
+        req.sanitize( 'frame_y' ).xss();
+        req.sanitize( 'frame_width' ).xss();
+        req.sanitize( 'frame_height' ).xss();
+        
+        if ( !req.params.id ){
+            req.checkBody( 'scene_id', 'scene_id (int) is required' ).isInt();
+            req.sanitize( 'scene_id').toInt();
+        } else {
+            req.assert( 'id', 'urlparam id (int) is required' ).isInt();
+        }
+
+        var errors = req.validationErrors();
+
+        if ( errors ) return res.send( { error: errors } );
+
+        var elementTypeId = req.body.element_type_id,
+            frame = {
+                x: req.body.frame_x,
+                y: req.body.frame_y,
+                width: req.body.frame_width,
+                height: req.body.frame_height
+            }
+
+        if ( req.params.id ){
+            Element.loadById( req.params.id, function ( error, element ){
+                if ( error ) return requestError( res, error );
+
+                if ( element ){
+                    element.elementTypeId = elementTypeId;
+
+                    element.frameX = frame.x;
+                    element.frameY = frame.y;
+                    element.frameWidth = frame.width;
+                    element.frameHeight = frame.height;
+
+                    element.update( function ( error, element ){
+                        if ( error ) return requestError( res, error );
+
+                        if ( element ) return res.send( element );
+                        else return emptyResponse( res );
+                    });
+                } else return emptyResponse( res );
+            });
+        } else {
+            var sceneId = req.body.scene_id;
+
+            Element.create( elementTypeId, frame, sceneId, function ( error, createdElement ){
+                if ( error ) return requestError( res, error );
+
+                if ( createdElement ) return res.send( 201, createdElement );
+                else return emptyResponse( res );
+            });
+        }
+    });
+    
+    app.post( '/api/element/:id/:method', auth, function ( req, res ){
+        var Element = models.Element;
 
         if ( req.params.id && req.params.method == 'actiontype' ){
             req.checkBody( 'actiontype_id', 'actiontype_id (int) is required' ).isInt();
@@ -178,84 +262,60 @@ module.exports = function ( app ){
                     });
                 } else return emptyResponse( res );
             });
-
         } else {
-            req.checkBody( 'element_type_id', 'element_type_id (int) is required' ).isInt();
-            req.checkBody( 'frame_x', 'frame_x (float) is required' ).isFloat();
-            req.checkBody( 'frame_y', 'frame_y (float) is required' ).isFloat();
-            req.checkBody( 'frame_width', 'frame_width (float) is required' ).isFloat();
-            req.checkBody( 'frame_height', 'frame_height (float) is required' ).isFloat();
-            
-            req.sanitize( 'element_type_id' ).toInt();
-            req.sanitize( 'frame_x' ).xss();
-            req.sanitize( 'frame_y' ).xss();
-            req.sanitize( 'frame_width' ).xss();
-            req.sanitize( 'frame_height' ).xss();
-            
-            if ( !req.params.id ){
-                req.checkBody( 'scene_id', 'scene_id (int) is required' ).isInt();
-                req.sanitize( 'scene_id').toInt();
-            }
-
-            var errors = req.validationErrors();
-
-            if ( errors ) return res.send( { error: errors } );
-
-            var elementTypeId = req.body.element_type_id,
-                frame = {
-                    x: req.body.frame_x,
-                    y: req.body.frame_y,
-                    width: req.body.frame_width,
-                    height: req.body.frame_height
-                }
-
-            if ( req.params.id ){
-                Element.loadById( req.params.id, function ( error, element ){
-                    if ( error ) return requestError( res, error );
-
-                    if ( element ){
-                        element.elementTypeId = elementTypeId;
-
-                        element.frameX = frame.x;
-                        element.frameY = frame.y;
-                        element.frameWidth = frame.width;
-                        element.frameHeight = frame.height;
-
-                        element.update( function ( error, element ){
-                            if ( error ) return requestError( res, error );
-
-                            if ( element ) return res.send( element );
-                            else return emptyResponse( res );
-                        });
-                    } else return emptyResponse( res );
-                });
-            } else {
-                var sceneId = req.body.scene_id;
-
-                Element.create( elementTypeId, frame, sceneId, function ( error, createdElement ){
-                    if ( error ) return requestError( res, error );
-
-                    if ( createdElement ) return res.send( 201, createdElement );
-                    else return emptyResponse( res );
-                });
-            }
+            emptyResponse( res );
         }
     });
 
-    app.del( '/api/element/:id/:method?', auth, function ( req, res ){
+    app.del( '/api/element/:id', auth, function ( req, res ){
         var Element = models.Element;
 
+        req.assert( 'id', 'urlparam id (int) is required' ).isInt();
         req.sanitize( 'id' );
-
-        if ( req.params.method ){
-
-        }
+        var errors = req.validationErrors();
+        if ( errors ) return res.send( { error: errors } );
 
         Element.delete( req.params.id, function ( error, success ){
             if ( error ) return res.send( { error: error } );
 
             return res.send( { success: success } );
         });
+    });
+
+    app.del( '/api/element/:id/:method', auth, function ( req, res ){
+        var Element = models.Element;
+
+        if ( req.params.method == 'actiontype' ){
+            req.assert( 'id', 'urlparam id (int) is required' ).isInt();
+            req.checkBody( 'actiontype_id', 'actiontype_id (int) is required' ).isInt();
+
+            req.sanitize( 'id' );
+            req.sanitize( 'actiontype_id' ).toInt();
+            var errors = req.validationErrors();
+            if ( errors ) return res.send( { error: errors } );
+
+            console.log('rpc actiontype');
+
+            Element.loadById( req.params.id, function ( error, element ){
+                console.log('element load', error, element);
+
+                if ( error ) return requestError( res, error );
+
+                if ( element ){
+                    var actionTypeId = req.body.actiontype_id;
+                    
+                    element.removeActionType( actionTypeId, function ( error, element ){
+                        console.log('element removeActionType', error, element);
+                        if ( error ) return requestError( res, error );
+
+                        if ( element ) return res.send( element );
+                        else return emptyResponse( res );
+                    });
+                } else return emptyResponse( res );
+            });
+        } else {
+            emptyResponse( res );
+        }
     });
 
     // -- MATHOPERATOR ------------------------------------------------------------------
@@ -268,7 +328,12 @@ module.exports = function ( app ){
     
     app.get( '/api/activity/:id', auth, function ( req, res ){
         var Activity = models.Activity;
-
+        
+        if ( req.params.id ){
+            req.assert( 'id', 'urlparam id (int) is required' ).isInt();
+            var errors = req.validationErrors();
+            if ( errors ) return res.send( { error: errors } );
+        }
         req.sanitize( 'id' ).toInt();
 
         Activity.loadById( req.params.id, function ( error, activity ){
@@ -449,6 +514,7 @@ module.exports = function ( app ){
     app.del( '/api/activity/:id', auth, function ( req, res ){
         var Activity = models.Activity;
 
+        req.assert( 'id', 'urlparam id (int) is required' ).isInt();    
         req.checkBody( 'element_id', 'element_id (int) is required' ).isInt();
 
         req.sanitize( 'id' );
@@ -470,6 +536,8 @@ module.exports = function ( app ){
     app.get( '/api/activityquiz/:id', auth, function ( req, res ){
         var ActivityQuiz = models.ActivityQuiz;
 
+        req.assert( 'id', 'urlparam id (int) is required' ).isInt();
+
         req.sanitize( 'id' ).toInt();
 
         ActivityQuiz.loadById( req.params.id, function ( error, activityQuiz ){
@@ -485,6 +553,8 @@ module.exports = function ( app ){
     app.get( '/api/activitylanguage/:id', auth, function ( req, res ){
         var ActivityLanguage = models.ActivityLanguage;
 
+        req.assert( 'id', 'urlparam id (int) is required' ).isInt();
+        
         req.sanitize( 'id' ).toInt();
 
         ActivityLanguage.loadById( req.params.id, function ( error, activityLanguage ){
@@ -499,6 +569,8 @@ module.exports = function ( app ){
 
     app.get( '/api/activitymath/:id', auth, function ( req, res ){
         var ActivityMath = models.ActivityMath;
+
+        req.assert( 'id', 'urlparam id (int) is required' ).isInt();
 
         req.sanitize( 'id' ).toInt();
 
