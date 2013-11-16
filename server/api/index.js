@@ -54,6 +54,12 @@ module.exports = function ( app ){
         standardGETResponse( req, res, models.ElementType );
     });
 
+    // -- ELEMENT TYPE ------------------------------------------------------------------
+
+    app.get( '/api/actiontype/:id?', auth, function ( req, res ){
+        standardGETResponse( req, res, models.ActionType );
+    });
+
     // -- GAME --------------------------------------------------------------------------
 
     app.get( '/api/game/:id?', auth, function ( req, res ){
@@ -236,10 +242,14 @@ module.exports = function ( app ){
         }
     });
 
-    app.del( '/api/element/:id', auth, function ( req, res ){
+    app.del( '/api/element/:id/:method?', auth, function ( req, res ){
         var Element = models.Element;
 
         req.sanitize( 'id' );
+
+        if ( req.params.method ){
+
+        }
 
         Element.delete( req.params.id, function ( error, success ){
             if ( error ) return res.send( { error: error } );
@@ -371,7 +381,7 @@ module.exports = function ( app ){
                 validator.attributes.intString = function validateIntString( instance, schema, options, ctx ){
                     var result = new jsonschema.ValidatorResult( instance, schema, options, ctx );
                     var intValue = parseInt( instance );
-                    console.log('intvalue is', intValue);
+
                     if ( typeof instance == 'string' && !isNaN( intValue ) ) return result;
                     else if ( typeof instance == 'number' ) return result;
                     else {

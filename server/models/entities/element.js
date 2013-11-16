@@ -158,6 +158,8 @@ Element.prototype.removeActionType = function ( actionTypeId, callback ){
     db.query( query, [ this.elementId, actionTypeId ], function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
+        console.log('deleted, rows is', rows);
+
         callback( null, true );
     });
 };

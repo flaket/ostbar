@@ -28,6 +28,14 @@ ActionType.loadById = function ( id, callback ){
     });
 }
 
+ActionType.loadAll = function ( callback ){
+    db.query( 'SELECT * FROM action_type', function ( error, rows, fields){
+        if ( error ) return callback( error, false );
+
+        async.map( rows, ActionType.initWithData, callback );
+    });
+};
+
 ActionType.loadAllInElement = function ( elementId, callback ){
     if ( elementId == null ) return callback( null, false );
 

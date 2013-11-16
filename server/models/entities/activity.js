@@ -103,8 +103,6 @@ Activity.delete = function ( activityId, elementId, callback ){
     if ( activityId == null ) return callback( 'Kan ikke slette aktivitet med id null', false );
     else if ( elementId == null ) return callback( 'Kan ikke slette aktivitet når elementId er null', false );
 
-    var transaction = db.startTransaction();
-
     Activity.loadById( activityId, function ( error, activity ){
         if ( error ) return callback( error, false );
 
@@ -127,6 +125,8 @@ Activity.delete = function ( activityId, elementId, callback ){
 
                         Element.loadById( elementId, function ( error, element ){
                             if ( error ) return calback( error, false );
+
+                            console.log('loaded element', element);
 
                             element.removeActivity( callback );
                         });
