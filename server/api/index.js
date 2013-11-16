@@ -17,7 +17,7 @@ var standardGETResponse = function ( req, res, Entity ){
     if ( req.params.id ){
         req.assert( 'id', 'urlparam id (int) is required' ).isInt();
         var errors = req.validationErrors();
-        if ( errors ) return res.send( { error: errors } );
+        if ( errors ) return requestError( res, errors );
     }
 
     req.sanitize( 'id' ).toInt();
@@ -28,7 +28,7 @@ var standardGETResponse = function ( req, res, Entity ){
 
         var errors = req.validationErrors();
 
-        if ( errors ) return res.send( { error: errors } );
+        if ( errors ) return requestError( res, errors );
 
         Entity.loadById( req.params.id, function ( error, entity ){
             if ( error ) return requestError( res, error );
@@ -75,7 +75,7 @@ module.exports = function ( app ){
         if ( req.params.id ){
             req.assert( 'id', 'urlparam id (int) is required' ).isInt();
             var errors = req.validationErrors();
-            if ( errors ) return res.send( { error: errors } );
+            if ( errors ) return requestError( res, errors );
         }
         
         req.sanitize( 'id' ).toInt();
@@ -111,11 +111,9 @@ module.exports = function ( app ){
         standardGETResponse( req, res, models.Scene );
     });
 
-    app.post( '/api/scene/:id?', auth, function ( req, res ){
+    app.post( '/api/scene', auth, function ( req, res ){
         var Scene = models.Scene;
         var Game = models.Game;
-
-        if ( req.params.id ) return res.send( { error: 'not implemented' } );
 
         req.checkBody( 'game_id', 'game_id (int) is required' ).isInt();
         req.checkBody( 'scenetype_id', 'scenetype_id (int) is required' ).isInt();
@@ -126,22 +124,22 @@ module.exports = function ( app ){
 
         var errors = req.validationErrors();
 
-        if ( errors ) return res.send( { error: errors } );
+        if ( errors ) return requestError( res, errors );
 
         var game_id                 = req.body.game_id,
             scenetype_id            = req.body.scenetype_id;
 
         Scene.create( scenetype_id, game_id, function ( error, scene ){
-            if ( error ) res.send( { error: error } );
+            if ( error ) requestError( res, error );
 
             if ( scene ){
                 if ( req.body.is_initial_scene ){
                     Game.loadById( game_id, function ( error, game ){
-                        if ( error ) return res.send( { error: error } );
+                        if ( error ) return requestError( res, error );
 
                         if ( game ){
                             game.setInitialSceneId( scene.sceneId, function ( error, success ){
-                                if ( error ) return res.send( { error: error } );
+                                if ( error ) return requestError( res, error );
 
                                 if ( success ) return res.send( 201, scene );
                                 else return requestError( res, 'Kunne ikke sette initialSceneId på game' + game_id);
@@ -194,7 +192,7 @@ module.exports = function ( app ){
 
         var errors = req.validationErrors();
 
-        if ( errors ) return res.send( { error: errors } );
+        if ( errors ) return requestError( res, errors );
 
         var elementTypeId = req.body.element_type_id,
             frame = {
@@ -246,7 +244,7 @@ module.exports = function ( app ){
 
             var errors = req.validationErrors();
 
-            if ( errors ) return res.send( { error: errors } );
+            if ( errors ) return requestError( res, errors );
 
             Element.loadById( req.params.id, function ( error, element ){
                 if ( error ) return requestError( res, error );
@@ -257,7 +255,7 @@ module.exports = function ( app ){
                     element.addActionType( actionTypeId, data, function ( error, element ){
                         if ( error ) return requestError( res, error );
 
-                        if ( element ) return res.send( { element: element } );
+                        if ( element ) return res.send( element );
                         else return emptyResponse( res );
                     });
                 } else return emptyResponse( res );
@@ -274,10 +272,10 @@ module.exports = function ( app ){
         req.assert( 'id', 'urlparam id (int) is required' ).isInt();
         req.sanitize( 'id' );
         var errors = req.validationErrors();
-        if ( errors ) return res.send( { error: errors } );
+        if ( errors ) return requestError( res, errors );
 
         Element.delete( req.params.id, function ( error, success ){
-            if ( error ) return res.send( { error: error } );
+            if ( error ) return requestError( res, error );
 
             return res.send( { success: success } );
         });
@@ -294,20 +292,15 @@ module.exports = function ( app ){
             req.sanitize( 'id' );
             req.sanitize( 'actiontype_id' ).toInt();
             var errors = req.validationErrors();
-            if ( errors ) return res.send( { error: errors } );
-
-            console.log('rpc actiontype');
+            if ( errors ) return requestError( res, errors );
 
             Element.loadById( req.params.id, function ( error, element ){
-                console.log('element load', error, element);
-
                 if ( error ) return requestError( res, error );
 
                 if ( element ){
                     var actionTypeId = req.body.actiontype_id;
                     
                     element.removeActionType( actionTypeId, function ( error, element ){
-                        console.log('element removeActionType', error, element);
                         if ( error ) return requestError( res, error );
 
                         if ( element ) return res.send( element );
@@ -334,7 +327,7 @@ module.exports = function ( app ){
         if ( req.params.id ){
             req.assert( 'id', 'urlparam id (int) is required' ).isInt();
             var errors = req.validationErrors();
-            if ( errors ) return res.send( { error: errors } );
+            if ( errors ) return requestError( res, errors );
         }
         req.sanitize( 'id' ).toInt();
 
@@ -354,7 +347,9 @@ module.exports = function ( app ){
 
         req.sanitize( 'id' ).toInt();
         
-        if ( req.params.id ) return res.send( { error: 'not implemented' } );
+        if ( req.params.id ) {
+            req.assert( 'id', 'urlparam id (int) is required' ).isInt();
+        }
 
         req.checkBody( 'activity_type', 'activity_type (string) is required' ).notEmpty();
         req.checkBody( 'element_id', 'element_id (int) is required' ).isInt();
@@ -364,7 +359,7 @@ module.exports = function ( app ){
 
         var errors = req.validationErrors();
 
-        if ( errors ) return res.send( { error: errors } );
+        if ( errors ) return requestError( res, errors );
 
         var activityType = req.body.activity_type,
             elementId = req.body.element_id,
@@ -432,7 +427,7 @@ module.exports = function ( app ){
 
                 var errors = req.validationErrors();
 
-                if ( errors ) return res.send( { error: errors } );
+                if ( errors ) return requestError( res, errors );
 
                 var operators = req.body.operators,
                     operatorsSchema = {
@@ -443,7 +438,7 @@ module.exports = function ( app ){
                         }
                     };
 
-                if ( operators == null ) return res.send( { error: 'operators (array of ints) is required'} );
+                if ( operators == null ) return requestError( res, 'operators (array of ints) is required' );
 
                 validator.attributes.intString = function validateIntString( instance, schema, options, ctx ){
                     var result = new jsonschema.ValidatorResult( instance, schema, options, ctx );
@@ -459,12 +454,7 @@ module.exports = function ( app ){
 
                 var result = validator.validate( operators, operatorsSchema );
 
-                if ( result.errors.length ) return res.send( {
-                    error: {
-                        msg: result.errors,
-                        param: 'operators',
-                    }
-                });
+                if ( result.errors.length ) return requestError( res, { msg: result.errors, param: 'operators' } );
 
                 params = {
                     numbersRangeFrom: req.body.numbers_range_from,
@@ -488,12 +478,7 @@ module.exports = function ( app ){
             case 'QUIZ':
                 var result = validator.validate( questions, questionsSchema );
                 
-                if ( result.errors.length ) return res.send( {
-                    error: {
-                        msg: result.errors,
-                        param: 'questions'
-                    }
-                });
+                if ( result.errors.length ) return requestError( res, { msg: result.errors, param: 'questions' } );
 
                 params = {
                     questions: questions
@@ -501,16 +486,28 @@ module.exports = function ( app ){
 
                 break;
             default:
-                res.send( { error: 'Ugyldig aktivitetstype, ' + activityType } );
+                requestError( res, 'Ugyldig aktivitetstype, ' + activityType );
                 break;
         }
 
-        Activity.create( activityType, rewardId, elementId, params, function ( error, activity ){            
-            if ( error ) return requestError( res, error );
+        if ( req.params.id ){
+            Activity.update( req.params.id, activityType, rewardId, elementId, params, function ( error, activity ){
+                console.log( 'activity update', error, activity );
 
-            if ( activity ) return res.send( 201, activity );
-            else return requestError( res, 'Kunne ikke opprette aktivitet' );
-        });
+                if ( error ) return requestError( res, error );
+
+                if ( activity ) return res.send( activity );
+                else return requestError( res, 'Kunne ikke oppdatere aktivitet' );
+            });
+        } else {
+            Activity.create( activityType, rewardId, elementId, params, function ( error, activity ){            
+                console.log( 'activity create', error, activity );
+                if ( error ) return requestError( res, error );
+
+                if ( activity ) return res.send( 201, activity );
+                else return requestError( res, 'Kunne ikke opprette aktivitet' );
+            });
+        }
     });
 
     app.del( '/api/activity/:id', auth, function ( req, res ){
@@ -524,10 +521,10 @@ module.exports = function ( app ){
 
         var errors = req.validationErrors();
 
-        if ( errors ) return res.send( { error: errors } );
+        if ( errors ) return requestError( res, errors );
 
         Activity.delete( req.params.id, req.body.element_id, function( error, success ){
-            if ( error ) return res.send( { error: error } );
+            if ( error ) return requestError( res, error );
 
             return res.send( { success: success } );
         });

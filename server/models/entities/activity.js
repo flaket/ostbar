@@ -57,7 +57,7 @@ Activity.loadById = function ( id, callback ){
 }
 
 Activity.create = function ( activityType, rewardId, elementId, params, callback ){
-    if ( activityType == null ) callback( null, false );
+    if ( activityType == null || elementId == null || params == null ) callback( null, false );
 
     Element.loadById( elementId, function ( error, element ){
         if ( error ) return callback( error, false );
@@ -97,6 +97,73 @@ Activity.create = function ( activityType, rewardId, elementId, params, callback
                     });
                 } else return callback( 'Ugyldig aktivitetstype, ' + activityType, false );
             } else return callback( 'Elementet du vil legge til en aktivitet på har allerede en aktivitet', false );
+        } else return callback( 'Elementet du vil legge til en aktivitet på eksisterer ikke', false );
+    });
+}
+
+Activity.update = function ( activityId, activityType, rewardId, elementId, params, callback ){
+    if ( activityId == null || activityType == null || elementId == null || params == null ) callback( null, false );
+
+    Element.loadById( elementId, function ( error, element ){
+        if ( error ) return callback( error, false );
+
+        if ( element ){
+            if ( element.hasActivity() ){
+                if (activityType == 'MATH' || activityType == 'LANGUAGE' || activityType == 'QUIZ' ){
+                    Activity.loadById( activityId, function( error, activity ){
+                        if ( error ) return callback( error, false );
+
+                        if ( activity ){
+
+                            var subclass,
+                                subclassId;
+
+                            switch ( activity.activityType ){
+                                case 'LANGUAGE': subclass = ActivityLanguage; break;
+                                case 'MATH': subclass = ActivityMath; break;
+                                case 'QUIZ': subclass = ActivityQuiz; break;
+                            }
+
+                            params.activityId = activityId;
+                            
+                            console.log('deleting subclass');
+                            subclass.deleteByActivityId( activityId, function ( error, success ){
+                                console.log('deleted subclass', error, success);
+                                if ( error ) return callback( error, false );
+
+                                if ( success ){
+                                    switch ( activityType ){
+                                        case 'LANGUAGE': subclass = ActivityLanguage; break;
+                                        case 'MATH': subclass = ActivityMath; break;
+                                        case 'QUIZ': subclass = ActivityQuiz; break;
+                                    }
+
+                                    console.log('creating new subclass')
+                                    subclass.create( params, function ( error, subclassInstance ){
+                                        console.log('created new subclass', error, subclassInstance);
+                                        if ( error ) return callback( error, false );
+
+                                        if ( subclassInstance ){
+                                            var query = 'UPDATE activity SET activity_type = ? WHERE activity_id = ?';
+                                            
+                                            db.query( query, [ activityType, activityId ], function ( error, rows, fields ){
+                                                if ( error ) return callback( error, false );
+
+                                                element.addActivity( activityId, function ( error, element ){
+                                                    if ( error ) return callback( error, false );
+
+                                                    if ( element ) return Activity.loadById( activityId, callback );
+                                                    else return callback( 'Kunne ikke legge til aktivitet av type ' + activityType, false );
+                                                });
+                                            });
+                                        } else return callback( 'Kunne ikke lagre ny data for ' + activityType );
+                                    });
+                                } else return callback( 'Kunne ikke oppdatere aktivitet med id ' + activityId, false );
+                            });
+                        } else return callback( 'Aktivitet med id ' + activityId + ' finnes ikke' );
+                    });
+                } else return callback( 'Ugyldig aktivitetstype, ' + activityType, false );                    
+            } else return callback( 'Elementet du vil oppdatere aktiviteten til har ikke en aktivitet', false );
         } else return callback( 'Elementet du vil legge til en aktivitet på eksisterer ikke', false );
     });
 }
