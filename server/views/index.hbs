@@ -6,57 +6,82 @@
 </section>
 
 
-<!-- <script type="text/javascript">
+<script type="text/javascript">
   $( document ).ready( function () {
-    $.ajax({ 
-      type: 'POST', 
-      url: '/api/activity/', 
-      dataType:"json", 
-      data: {
-        activity_type: 'QUIZ',
-        element_id: 1,
-        questions: [
-          {
-            question: 'spm 1',
-            alternatives: [
-              {
-                alternative: 'spm 1, alt 1 (riktig)',
-                correct: 'true'
-              },
-              {
-                alternative: 'spm 1, alt 2',
-                correct: 'false'
-              }
-            ],
-          },
-          {
-            question: 'spm 2',
-            alternatives: [
-              {
-                alternative: 'spm 2, alt 1',
-                correct: 'false'
-              },
-              {
-                alternative: 'spm 2, alt 2',
-                correct: 'false'
-              },
-              {
-                alternative: 'spm 2, alt 3 (riktig)',
-                correct: 'true'
-              }
-            ]
-          }
-        ]
-      },
-      success: function ( response ){ 
-        console.log('success');
-        console.log(response);
-      }, 
-      error: function( xhr, textStatus, errorThrown ){ 
-        alert('Error!  Status = ' + xhr.status); 
-        console.log('textStatus', textStatus);
-        console.log('errorThrown', errorThrown);
-      } 
-    });
+    // $.ajax({ 
+    //   type: 'POST', 
+    //   url: '/api/activity/', 
+    //   dataType:"json", 
+    //   data: {
+    //     activity_type: 'QUIZ',
+    //     element_id: 1,
+    //     questions: [
+    //       {
+    //         question: 'spm 1',
+    //         alternatives: [
+    //           {
+    //             alternative: 'spm 1, alt 1 (riktig)',
+    //             correct: 'true'
+    //           },
+    //           {
+    //             alternative: 'spm 1, alt 2',
+    //             correct: 'false'
+    //           }
+    //         ],
+    //       },
+    //       {
+    //         question: 'spm 2',
+    //         alternatives: [
+    //           {
+    //             alternative: 'spm 2, alt 1',
+    //             correct: 'false'
+    //           },
+    //           {
+    //             alternative: 'spm 2, alt 2',
+    //             correct: 'false'
+    //           },
+    //           {
+    //             alternative: 'spm 2, alt 3 (riktig)',
+    //             correct: 'true'
+    //           }
+    //         ]
+    //       }
+    //     ]
+    //   },
+    //   success: function ( response ){ 
+    //     console.log('success');
+    //     console.log(response);
+    //   }, 
+    //   error: function( xhr, textStatus, errorThrown ){ 
+    //     alert('Error!  Status = ' + xhr.status); 
+    //     console.log('textStatus', textStatus);
+    //     console.log('errorThrown', errorThrown);
+    //   } 
+    // });
+
+    // $.ajax({ 
+    //   type: 'POST', 
+    //   url: '/api/activity/', 
+    //   dataType:"json", 
+    //   data: {
+    //     activity_type: 'MATH',
+    //     element_id: 1,
+    //     numbers_range_from: 1,
+    //     numbers_range_to: 2,
+    //     n_operands: 2,
+    //     operators: [
+    //       1, 2, 3
+    //     ]
+    //   },
+    //   success: function ( response ){ 
+    //     console.log('success');
+    //     console.log(response);
+    //   }, 
+    //   error: function( xhr, textStatus, errorThrown ){ 
+    //     alert('Error!  Status = ' + xhr.status); 
+    //     console.log('textStatus', textStatus);
+    //     console.log('errorThrown', errorThrown);
+    //   } 
+    // });
   });
-</script> -->
+</script>

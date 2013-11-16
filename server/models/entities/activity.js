@@ -99,8 +99,11 @@ Activity.create = function ( activityType, rewardId, elementId, params, callback
     } else return callback( 'Ugyldig aktivitetstype, ' + activityType, false );
 }
 
-Activity.delete = function ( activityId, callback ){
+Activity.delete = function ( activityId, elementId, callback ){
     if ( activityId == null ) return callback( 'Kan ikke slette aktivitet med id null', false );
+    else if ( elementId == null ) return callback( 'Kan ikke slette aktivitet når elementId er null', false );
+
+    var transaction = db.startTransaction();
 
     Activity.loadById( activityId, function ( error, activity ){
         if ( error ) return callback( error, false );
@@ -122,7 +125,11 @@ Activity.delete = function ( activityId, callback ){
                     db.query( 'DELETE FROM activity WHERE activity_id = ?', activityId, function ( error, rows, fields ){
                         if ( error ) return callback( error, false );
 
-                        return callback( null, true );
+                        Element.loadById( elementId, function ( error, element ){
+                            if ( error ) return calback( error, false );
+
+                            element.removeActivity( callback );
+                        });
                     }); 
                 } else return callback( 'Kunne ikke slette aktivitet med type ' + activityType, false );
             });
