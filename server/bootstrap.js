@@ -16,8 +16,9 @@ module.exports.boot = function(app) {
     app.configure(function(){
         // -- Parses x-www-form-urlencoded request bodies (and json)
         app.use(express.bodyParser());
+
         app.use(expressValidator({
-            errorFormatter: function(param, msg, value) {
+            errorFormatter: function(param, msg, value) {            
                 var namespace = param.split('.'),
                     root = namespace.shift(),
                     formParam = root;
