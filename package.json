@@ -27,12 +27,12 @@
     "passport": "",
     "passport-local": "",
     "passport-google-oauth": "",
-    "express-validator":"",
+    "express-validator":"< 1.0",
     "connect-flash": "~0.1.0",
     "connect-redis": "",
-    "mysql": "",
-    "mysql-queues": "",
-    "jsonschema": ""
+    "mysql": "~2.0.0-alpha9",
+    "jsonschema": "",
+    "util": ""
   },
   "devDependencies": {
     "uglify-js": "",
