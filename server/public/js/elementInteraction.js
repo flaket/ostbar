@@ -497,7 +497,7 @@ function saveActivityByElementId(activityIndex,activityObject,elementID){
 				if ( response.redirect ){
 					window.location.href = response.redirect;
 				} else {
-					console.log(response);
+					//console.log(response);
 					activityObject.activity_id = response.activityId;
 				}
 			},
@@ -517,10 +517,8 @@ function addActivityByIdToElement(target,dialogObject,activityID,callBack){
 			if ( response.redirect ){
 				window.location.href = response.redirect;
 			} else {
-				console.log("resp",response);
-				console.log("respActivity", response.activityType);
 				var error = response.error;
-				if(response.activityType.localeCompare("MATH") == 0)
+				if(response.activityType.localeCompare("MATH") == 0){
 					var mathObject = new MathActivity(response);
 					dialogObject.activityObject = mathObject;
 					dialogObject.activityIndex = 0;
@@ -528,7 +526,7 @@ function addActivityByIdToElement(target,dialogObject,activityID,callBack){
 					console.log("matte");
 					$(target).on("click", mathActivityFunction);
 					dialogObject.activityClickActionMade = true;
-					return callBack(error,true);
+					return callBack(error,true);}
 				//TODO
 				if(response.activityType.localeCompare("LANGUAGE") == 0){
 					dialogObject.activityObject = null; //create new language object based on database stored object and attach

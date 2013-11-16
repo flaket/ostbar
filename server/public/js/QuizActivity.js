@@ -2,25 +2,31 @@ var currentQuestion = [];
 var correctQuestionsAnswered = 0;
 
 function QuizActivity(response){
-	this.questionsMade = 0;
 	this.questionsAnswered = 0;
 	this.questions = [];
+	this.questionsMade = 0;
 	this.activity_id = -1;
 
 	if(response==null){
-		this.questionsMade = 0;
 		this.questions = [];
 		this.activity_id = -1;
+		this.questionsMade = 0;
 	}
 	else{
 		var sub = response.subclass;
 		console.log("sub");
 		console.log(sub);
+		this.questions = sub.questions;
+		this.questionsMade = sub.questions.length;
+
+		console.log("antall spørsmål lagd: ", sub.questions.length);
+
 		this.activity_id = response.activityId;
 	}
 }
 
 function createNewQuizActivity(listOfQuestions, isNewGame){
+	$(".chooseActivityDialog").dialog("close");
 	currentQuestion = listOfQuestions;
 	initializeQuizDialog();
 	createAnotherQuestion(listOfQuestions, isNewGame);
@@ -44,7 +50,7 @@ function makeNewQuestion(){
 }
 
 function initializeQuizDialog(){
-	$(".chooseActivityDialog").dialog("close");
+	
 	
 	var Wwidth = $(window).width();
 	var Wheight = $(window).height();
@@ -144,9 +150,10 @@ function createAlternativeObject(object, isCorrect){
 	this.correct = isCorrect;
 }
 
-function Question(question, alternatives){
+function Question(question, alternatives, correctAlternatives){
 	this.question = question;
 	this.alternatives = alternatives;
+	this.correctAlternatives = correctAlternatives;
 }
 
 function createNewQuestionObject(questionName, alternatives){
@@ -161,10 +168,24 @@ function createNewQuestionObject(questionName, alternatives){
 	questionAlternatives.push(alt1);
 	questionAlternatives.push(alt2);
 	questionAlternatives.push(alt3);
+
+	var correctAlternatives = [];
+	
+	console.log("alternative 1: ", questionAlternatives[0]);
+
+	for(var i=0; i<questionAlternatives.length; i++){
+		if(questionAlternatives[i].correct == "true"){
+			correctAlternatives.push(questionAlternatives[i].alternative);
+			console.log("tester ut correctAlternatives : ", correctAlternatives);
+		}
+		else{
+			console.log(questionAlternatives[i]);
+		}
+	}
 	
 	currentQuestion.questionsMade++;
 
-	var tempQuestionObject = new Question(questionName, questionAlternatives);
+	var tempQuestionObject = new Question(questionName, questionAlternatives, correctAlternatives);
 	currentQuestion.questions.push(tempQuestionObject);
 
 	$(".numberOfQuestions").text(currentQuestion.questionsMade);
@@ -180,10 +201,18 @@ function finalizeQuiz(){
 		resetFields(false);
 		$(".quizActivity").dialog("close");
 	}
+
+	console.log(currentQuestion);
+	
+	saveActivityByElementId(currentDialog.activityIndex, currentDialog.activityObject, currentDialog.element_id);
+	console.log("lagrer...");
+	console.log(currentDialog.activityIndex);
+	console.log(currentDialog.activityObject);
+	console.log(currentDialog.element_id);
 }
 
 function createQuizActivity(listOfQuestions){
-	console.log(currentQuestion.questions);
+	console.log(listOfQuestions.questions);
 
 	console.log("quiz activity");
 	currentQuestion = listOfQuestions;
@@ -253,58 +282,52 @@ function resetAnswer(){
 
 function checkQuizAnswer(){
 
-	var correctAnswer = currentQuestion.questions[currentQuestion.questionsAnswered].alternatives;
+	var correctAnswer = currentQuestion.questions[currentQuestion.questionsAnswered];
+	console.log("correct = ", correctAnswer);
+	console.log("lengde = ", correctAnswer.alternatives.length);
 
-	for(var i=0; i<correctAnswer.length; i++){
-		if($("#checkAlt1").is(":checked")){
-			if($("#alt1").val()==correctAnswer[i].alternative){
-				if(correctAnswer[i].correct=="true"){
-					console.log("RIKTIG");
-					correctQuestionsAnswered++;
-					resetAnswer();
-					currentQuestion.questionsAnswered++;
-					showQuestions();
-				}
-				else{
-					console.log("FEIL");
-					resetAnswer();
-					alert("Feil svar, du må svare riktig for å gå videre");
-				}
-			}
+	console.log("ID = ", correctAnswer.alternatives[0].quizQuestionAlternativeId);
+	console.log("SVAR = ", correctAnswer.correctAlternatives);
+	if($("#checkAlt1").is(":checked")){
+		if(correctAnswer.alternatives[0].quizQuestionAlternativeId == correctAnswer.correctAlternatives){
+			console.log("RIKTIG");
+			correctQuestionsAnswered++;
+			resetAnswer();
+			currentQuestion.questionsAnswered++;
+			showQuestions();
 		}
-		else if($("#checkAlt2").is(":checked")){
-			//for(var i=0; i<correctAnswer.length; i++){
-			if($("#alt2").val()==correctAnswer[i].alternative){
-				if(correctAnswer[i].correct=="true"){
-					console.log("RIKTIG");
-					correctQuestionsAnswered++;
-					resetAnswer();
-					currentQuestion.questionsAnswered++;
-					showQuestions();
-				}
-				else{
-					console.log("FEIL");
-					resetAnswer();
-					alert("Feil svar, du må svare riktig for å gå videre");
-				}
-			}
-		}
-		else if($("#checkAlt3").is(":checked")){
-			if($("#alt3").val()==correctAnswer[i].alternative){
-				if(correctAnswer[i].correct=="true"){
-					console.log("RIKTIG");
-					correctQuestionsAnswered++;
-					resetAnswer();
-					currentQuestion.questionsAnswered++;
-					showQuestions();
-				}
-				else{
-					console.log("FEIL");
-					resetAnswer();
-					alert("Feil svar, du må svare riktig for å gå videre");
-				}
-			}
+		else{
+			console.log("FEIL");
+			resetAnswer();
+			alert("Feil svar, du må svare riktig for å gå videre");
 		}
 	}
-	
+	else if($("#checkAlt2").is(":checked")){
+		if(correctAnswer.alternatives[1].quizQuestionAlternativeId == correctAnswer.correctAlternatives){
+			console.log("RIKTIG");
+			correctQuestionsAnswered++;
+			resetAnswer();
+			currentQuestion.questionsAnswered++;
+			showQuestions();
+		}
+		else{
+			console.log("FEIL");
+			resetAnswer();
+			alert("Feil svar, du må svare riktig for å gå videre");
+		}
+	}
+	else if($("#checkAlt3").is(":checked")){
+		if(correctAnswer.alternatives[2].quizQuestionAlternativeId == correctAnswer.correctAlternatives){
+			console.log("RIKTIG");
+			correctQuestionsAnswered++;
+			resetAnswer();
+			currentQuestion.questionsAnswered++;
+			showQuestions();
+		}
+		else{
+			console.log("FEIL");
+			resetAnswer();
+			alert("Feil svar, du må svare riktig for å gå videre");
+		}
+	}
 }
