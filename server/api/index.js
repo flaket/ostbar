@@ -268,6 +268,7 @@ module.exports = function ( app ){
     });
 
     app.del( '/api/element/:id', auth, function ( req, res ){
+        console.log("del elem");
         var Element = models.Element;
 
         req.assert( 'id', 'urlparam id (int) is required' ).isInt();
@@ -283,6 +284,7 @@ module.exports = function ( app ){
     });
 
     app.del( '/api/element/:id/:method', auth, function ( req, res ){
+        console.log("del elem/type");
         var Element = models.Element;
 
         if ( req.params.method == 'actiontype' ){

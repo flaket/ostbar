@@ -109,6 +109,7 @@ jQuery(document).ready(function(){
 		
 		// a new dialog should me made for each element, and should remember check boxes checked 
 		$(".dialog").dialog({
+			open: function() { $(".ui-dialog-titlebar-close").hide(); },
 			title: name,
 			resizable: false,
 			appendTo: ".draggable",
@@ -126,6 +127,7 @@ jQuery(document).ready(function(){
 					addPickUp(target,previousVersionDialog,index);
 					addAnimation(target,previousVersionDialog,index);
 					addSound(target,previousVersionDialog,index);
+					deleteActionTypesWhereChanged(previousVersionDialog);
 
 					$(this).dialog("close");
 				},
@@ -602,6 +604,27 @@ function addDialogDataToElement(dialogObject,actionType){
 	});	
 }
 
+function deleteActionTypeFromElement(dialogObject,actionType){
+	$.ajax({
+		type: "DELETE",
+		url: "/api/element/" + dialogObject.element_id + "/actiontype/",
+		data:{
+			actiontype_id: actionType.actionTypeId,
+		},
+		success: function (response) {
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				console.log(response);
+
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('Delete actionType error:', jqXHR, "", textStatus, "", errorThrown);
+		},
+	});	
+}
+
 function addAnimationToElement(dialogObject,actionType){
 	$.ajax({
 		type: "POST",
@@ -622,27 +645,6 @@ function addAnimationToElement(dialogObject,actionType){
 			console.log('post animation error:', jqXHR, "", textStatus, "", errorThrown);
 		},
 	});
-}
-
-function deleteAnimationFromElement(dialogObject,actionType){
-	$.ajax({
-		type: "DELETE",
-		url: "/api/element/" + dialogObject.element_id + "/actiontype/",
-		data:{
-			actiontype_id: actionType.actionTypeId,
-		},
-		success: function (response) {
-			if ( response.redirect ){
-				window.location.href = response.redirect;
-			} else {
-				console.log(response);
-
-			}
-		},
-		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('Delete animation error:', jqXHR, "", textStatus, "", errorThrown);
-		},
-	});	
 }
 
 function getActionTypes(){

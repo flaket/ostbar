@@ -132,6 +132,7 @@ function addDialog(target,previousVersionDialog,index){
 	if(!currentDialog.dialogChecked){
 		$(target).off("click", dialogFunction);
 		currentDialog.dialogClickActionMade = false;
+		// deleteActionTypeFromElement(currentDialog,getActionTypeByName("DIALOG"));
 	}
 }
 
@@ -160,7 +161,7 @@ function addAnimation(target,previousVersionDialog,index){
 	if(!currentDialog.animationChecked){
 		$(target).off("click", animationFunction);
 		currentDialog.animationClickActionMade = false;
-		// deleteAnimationFromElement(currentDialog,getActionTypeByName("ANIMATION"));
+		// deleteActionTypeFromElement(currentDialog,getActionTypeByName("ANIMATION"));
 	}
 }
 
@@ -168,4 +169,11 @@ function addSound(target,previousVersionDialog,index){
 	//append sound on target
 	if(currentDialog.soundChecked){
 	}
+}
+
+function deleteActionTypesWhereChanged(previousVersionDialog){
+	if(!currentDialog.animationChecked && previousVersionDialog.animationChecked)
+		deleteActionTypeFromElement(currentDialog,getActionTypeByName("ANIMATION"));
+	if(!currentDialog.dialogChecked && previousVersionDialog.dialogChecked)
+		deleteActionTypeFromElement(currentDialog,getActionTypeByName("DIALOG"));
 }
