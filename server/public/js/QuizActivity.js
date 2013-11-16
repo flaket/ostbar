@@ -5,6 +5,7 @@ function QuizActivity(){
 	this.questionsMade = 0;
 	this.questionsAnswered = 0;
 	this.questions = [];
+	this.activity_id = -1;
 }
 
 function createNewQuizActivity(listOfQuestions, isNewGame){
@@ -171,27 +172,6 @@ function finalizeQuiz(){
 
 function createQuizActivity(listOfQuestions){
 	console.log(currentQuestion.questions);
-
-	$.ajax({
-		type: "POST",
-		url: "/api/activity/",
-		data: {
-			questions: currentQuestion.questions,
-			activity_type: "QUIZ",
-			element_id: 1,
-		},
-		success: function (response) {
-			if ( response.redirect ){
-				window.location.href = response.redirect;
-			} else {
-				console.log(response);
-			}
-		},
-		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('post element error:', jqXHR, textStatus, errorThrown);
-		},
-		dataType: "json"
-	}); 
 
 	console.log("quiz activity");
 	currentQuestion = listOfQuestions;
