@@ -22,6 +22,9 @@ function ObjectList(){
 jQuery(document).ready(function(){
 	gameId = parseInt(window.location.href.split('/').slice(-1)[0]);
 
+	getActionTypes();
+	getElementTypes();
+
 	$("#storylineButton").hide();
 	$(".elements").hide();
 	$(".draggable").tooltip({disabled: true});
@@ -93,11 +96,8 @@ jQuery(document).ready(function(){
 				console.log("new object");
 			}
 		}
-		console.log(currentDialog);
-		console.log(currentObjectList);
 		console.log(currentScene);
 		console.log(sceneList);
-		console.log(currentScene.sceneId);
 		
 		var previousVersionDialog = $.extend(true,{},currentDialog); // copy
 		
@@ -228,11 +228,8 @@ function setupAfterCallsReturns() {
 	console.log(currentScene);
 	if ( initialCallsReturned == initialCallsShouldReturn ){
 		if ( currentScene != null ){
-			getActionTypes();
-			getElementTypes();
 			currentSceneType = currentScene.sceneType;
 			loadElementsByScene(currentScene.elements);
-
 			var imgUrl = currentSceneType.backgroundAvatar.url;
 			$("#mainFrame").css({
 				"background-image": "url('"+ imgUrl + "')",
@@ -252,83 +249,123 @@ function setupAfterCallsReturns() {
 }
 
 function choseSceneFromSceneChooser() {
-	$(".img-grid").on("dblclick", "img", function(e){
-		var sceneTypeId = e.target.getAttribute('name');
-
-		var currentSceneType = null;
-		for ( key in sceneTypes ){
-			var sceneType = sceneTypes[key];
-
-			if ( sceneType.sceneTypeId == sceneTypeId ){
-				currentSceneType = sceneType;
-				break;
-			}
-		}
-
-		if ( currentSceneType != null ){
-			$.ajax({
-				type: "POST",
-				url: "/api/scene",
-				data: {
-					game_id: gameId,
-					scenetype_id: currentSceneType.sceneTypeId,
-					is_initial_scene: true
-				},
-				success: function ( response ){
-					sceneList.push(response);
-					currentScene = response;
-					currentScene.ObjectList = new ObjectList();
-					currentObjectList = currentScene.ObjectList;
-					currentGame.initialSceneId = currentScene.sceneId;
-
-					var imgUrl = currentSceneType.backgroundAvatar.url;
-					$("#mainFrame").css({
-						"background-image": "url('"+ imgUrl + "')",
-						"background-repeat": "no-repeat",
-						"background-position": "center",
-						"background-size": "cover"
-					});
-					$("#newWorldButton").hide();
-					$(".elements").show();
-					$(".schoolbagImage").show();
-					$(".draggable").tooltip({disabled: false});
-					$("#storylineButton").show();
-					$("#newWorldDialog").dialog("close");
-				},
-				error: function ( jqXHR, textStatus, errorThrown ){
-					console.log('post scene error:', jqXHR, textStatus, errorThrown);
-				},
-				dataType: "json" 
-			});
-		}
-	});	
+	$(".img-grid").on("dblclick", "img", initialDoubleClickSceneAddingFunction);
 }
 
-//Broken!!!
-function saveContentFromMainFrame(){
-	$(".textarea").hide();
-	var cloneOfMainFrame = $("#mainFrame").clone();
-	cloneOfMainFrame.css({"position": "relative"}).addClass("inStoryline").appendTo("#storylineDialog");
-	$("#mainFrame").empty();
-	
-	//trying to make an element inside storyline clickable, when clicked it should be placed on mainframe
-	/*
-	 * problem:
-	 * 		elements are not interactive anymore
-	 * 		elements not placable in mainframe, they are placed in storyline
-	 */
-	$(".inStoryline").on("click", function(e){
-		var target = e.target;
-		$(target).appendTo("#mainFrame");
-		target.removeClass("inStoryline");
-		$("#storylineDialog").dialog("close");
+function initialDoubleClickSceneAddingFunction(e){
+	console.log(e);
+	var sceneTypeId = e.target.getAttribute('name');
+
+	var currentSceneType = null;
+	for ( key in sceneTypes ){
+		var sceneType = sceneTypes[key];
+
+		if ( sceneType.sceneTypeId == sceneTypeId ){
+			currentSceneType = sceneType;
+			break;
+		}
+	}
+
+	if ( currentSceneType != null ){
+		$.ajax({
+			type: "POST",
+			url: "/api/scene",
+			data: {
+				game_id: gameId,
+				scenetype_id: currentSceneType.sceneTypeId,
+				is_initial_scene: true
+			},
+			success: function ( response ){
+				sceneList.push(response);
+				currentScene = response;
+				currentScene.ObjectList = new ObjectList();
+				currentObjectList = currentScene.ObjectList;
+				currentGame.initialSceneId = currentScene.sceneId;
+
+				var imgUrl = currentSceneType.backgroundAvatar.url;
+				$("#mainFrame").css({
+					"background-image": "url('"+ imgUrl + "')",
+					"background-repeat": "no-repeat",
+					"background-position": "center",
+					"background-size": "cover"
+				});
+				$("#newWorldButton").hide();
+				$(".elements").show();
+				$(".schoolbagImage").show();
+				$(".draggable").tooltip({disabled: false});
+				$("#storylineButton").show();
+				$("#newWorldDialog").dialog("close");
+				$(".img-grid").off("dblclick", "img", initialDoubleClickSceneAddingFunction);
+			},
+			error: function ( jqXHR, textStatus, errorThrown ){
+				console.log('post scene error:', jqXHR, textStatus, errorThrown);
+			},
+			dataType: "json" 
+		});
+	}
+}
+
+function addSceneToGame(){
+	$(".img-grid").on("dblclick", "img", doubleClickSceneAddingFunction);
+}
+
+function doubleClickSceneAddingFunction(e){
+	console.log("getting here");
+	var sceneTypeId = e.target.getAttribute('name');
+
+	var currentSceneType = null;
+	for ( key in sceneTypes ){
+		var sceneType = sceneTypes[key];
+
+		if ( sceneType.sceneTypeId == sceneTypeId ){
+			currentSceneType = sceneType;
+			break;
+		}
+	}
+
+	if ( currentSceneType != null ){
+		$.ajax({
+			type: "POST",
+			url: "/api/scene",
+			data: {
+				game_id: gameId,
+				scenetype_id: currentSceneType.sceneTypeId,
+			},
+			success: function ( response ){
+				console.log(response);
+				sceneList.push(response);
+				currentDialog.sceneIndex = response.sceneId;
+				addSceneToElement(currentDialog,getActionTypeByName("TO_SCENE"));
+
+				$(".img-grid").off("dblclick", "img", doubleClickSceneAddingFunction);
+				$("#newWorldDialog").dialog("close");
+			},
+			error: function ( jqXHR, textStatus, errorThrown ){
+				console.log('post scene error:', jqXHR, textStatus, errorThrown);
+			},
+			dataType: "json" 
+		});
+	}
+}
+
+function loadSelectedScene(scene){
+
+	currentScene = response;
+	currentScene.ObjectList = new ObjectList();
+	currentObjectList = currentScene.ObjectList;
+
+	var imgUrl = currentSceneType.backgroundAvatar.url;
+	$("#mainFrame").css({
+		"background-image": "url('"+ imgUrl + "')",
+		"background-repeat": "no-repeat",
+		"background-position": "center",
+		"background-size": "cover"
 	});
-}
 
+	removeElementsFromView();
+}
 
 function saveElements(){
-	//may need to include the actionType later at some point (for dialog, pickup etc)
-
 	//Save call for database
 	for(var i = 0; i < currentObjectList.objectList.length; i++){
 		var temp = currentObjectList.objectList[i];
@@ -339,7 +376,7 @@ function saveElements(){
 				type: "POST",
 				url: "/api/element/?",
 				data: {
-					element_type_id: "1",
+					element_type_id: temp.elementType_id,
 					frame_x : temp.div.offsetParent.offsetLeft,
 					frame_y : temp.div.offsetParent.offsetTop,
 					frame_width: temp.div.offsetParent.offsetWidth,
@@ -366,7 +403,7 @@ function saveElements(){
 				type: "POST",
 				url: "/api/element/"  +elemId,
 				data: {
-					element_type_id: "1",
+					element_type_id: temp.elementType_id,
 					frame_x : temp.div.offsetParent.offsetLeft,
 					frame_y : temp.div.offsetParent.offsetTop,
 					frame_width: temp.div.offsetParent.offsetWidth,
@@ -390,18 +427,16 @@ function saveElements(){
 	}
 }
 
-
 function loadElementsByScene(elements){
 	console.log("");
 	for(element in elements){
 		// console.log(elements[element]);
 		var elem = elements[element];
-
-		//TODO, get the actual avatar (as in gfx)
-
+		var elementType = getElementTypeById(elem.elementTypeId);
+		var url = elementType.avatar.url;
 		$("<div></div>").html("<div class =\"elements ui-draggable\" style=\"display:block;\">" + 
 								"<img width=\""  + elem.frameWidth + "\" height=\"" + elem.frameHeight + 
-								"\" src=\"/gfx/Penguins.jpg\"" + "name = \"Penguin\">" +
+								"\" src=\"" + url +"\"" + "name = \"Penguin\">" +
 								"</img></div>")
 		.css({
 			"position": "absolute",
@@ -414,13 +449,20 @@ function loadElementsByScene(elements){
 	}
 	var temp = document.getElementsByClassName("element");
 	// console.log(temp);
+
+	if(currentObjectList.objectList.length>0){
+		currentObjectList.objectList.length = 0;
+	}
+
 	for (var i = 0; i < temp.length ; i++) {
 		// console.log(temp[i]);
 		// console.log(temp[i].children[0].children[0]);
 		var target = temp[i].children[0].children[0];
 		// console.log("");
+		
 		var dia = new Dialog(target);
 		dia.element_id = elements[i].elementId;
+		dia.elementType_id = elements[i].elementTypeId;
 
 		for (var j = 0; j < elements[i].actionTypes.length; j++) {
 			if(elements[i].actionTypes[j].name.localeCompare("TO_ACTIVITY") == 0){
@@ -443,71 +485,137 @@ function loadElementsByScene(elements){
 			}
 			if(elements[i].actionTypes[j].name.localeCompare("ANIMATION") == 0){
 				console.log("adding the existing animation to the element");
-				dia.animationIndex = elements[i].actionTypes[j].data;
+				dia.animationIndex = parseInt(elements[i].actionTypes[j].data);
 				dia.animationChecked = true;
 				$(target).on("click", animationFunction);
 				dia.animationClickActionMade = true;
 			}
+			if(elements[i].actionTypes[j].name.localeCompare("TO_SCENE") == 0){
+				console.log("adding the existing scene to the element");
+				dia.sceneIndex = parseInt(elements[i].actionTypes[j].data);
+				dia.sceneChecked = true;
+				$(target).on("click", sceneFunction);
+				dia.sceneClickActionMade = true;
+			}
 		};
-		
 		currentDialog = dia;
 		currentObjectList.objectList.push(dia);
+	
 	};
 	console.log(currentScene);
-
-	//TODO, update the internal properties and "pointers" of the dialog object based on the element action types
 }
 
-function saveActivityByElementId(activityIndex,activityObject,elementID){
-	if(activityIndex == 0){
-		$.ajax({
-			type: "POST",
-			url: "/api/activity/",
-			data: {
-				activity_type: "MATH",
-				element_id: elementID,
-				numbers_range_from: activityObject.lowestNumber,
-				numbers_range_to: activityObject.highestNumber,
-				n_operands: activityObject.operandsCount,
-				operators: getActiveOperators(activityObject),
-			},
-			success: function (response) {
-				if ( response.redirect ){
-					window.location.href = response.redirect;
-				} else {
-					console.log(response);
-					activityObject.activity_id = response.activityId;
-				}
-			},
-			error: function ( jqXHR, textStatus, errorThrown ){
-				console.log('post activity error:', jqXHR, "", textStatus, "", errorThrown);
-			},
+function removeElementsFromView(){
+	$(".element").remove();
+}
 
-			dataType: "json"
-		});
+
+function saveActivityByElementId(activityIndex,activityObject,elementID){
+	//Create
+	if(activityObject.activity_id<0){
+		if(activityIndex == 0){
+			$.ajax({
+				type: "POST",
+				url: "/api/activity/",
+				data: {
+					activity_type: "MATH",
+					element_id: elementID,
+					numbers_range_from: activityObject.lowestNumber,
+					numbers_range_to: activityObject.highestNumber,
+					n_operands: activityObject.operandsCount,
+					operators: getActiveOperators(activityObject),
+				},
+				success: function (response) {
+					if ( response.redirect ){
+						window.location.href = response.redirect;
+					} else {
+						console.log(response);
+						activityObject.activity_id = response.activityId;
+					}
+				},
+				error: function ( jqXHR, textStatus, errorThrown ){
+					console.log('post activity error:', jqXHR, "", textStatus, "", errorThrown);
+				},
+
+				dataType: "json"
+			});
+		}
+		else if(activityIndex == 2){
+			$.ajax({
+				type: "POST",
+				url: "/api/activity/",
+				data: {
+					questions: activityObject.questions,
+					activity_type: "QUIZ",
+					element_id: elementID,
+				},
+				success: function (response) {
+					if ( response.redirect ){
+						window.location.href = response.redirect;
+					} else {
+						//console.log(response);
+						activityObject.activity_id = response.activityId;
+					}
+				},
+				error: function ( jqXHR, textStatus, errorThrown ){
+					console.log('post activity error:', jqXHR, textStatus, errorThrown);
+				},
+				dataType: "json"
+			}); 
+		}
 	}
-	else if(activityIndex == 2){
-		$.ajax({
-			type: "POST",
-			url: "/api/activity/",
-			data: {
-				questions: activityObject.questions,
-				activity_type: "QUIZ",
-				element_id: elementID,
-			},
-			success: function (response) {
-				if ( response.redirect ){
-					window.location.href = response.redirect;
-				} else {
-					//console.log(response);
-					activityObject.activity_id = response.activityId;
-				}
-			},
-			error: function ( jqXHR, textStatus, errorThrown ){
-				console.log('post activity error:', jqXHR, textStatus, errorThrown);
-			},
-			dataType: "json"
-		}); 
+	//Update
+	else{
+		if(activityIndex == 0){
+			$.ajax({
+				type: "POST",
+				url: "/api/activity/" + activityObject.activity_id,
+				data: {
+					activity_type: "MATH",
+					element_id: elementID,
+					numbers_range_from: activityObject.lowestNumber,
+					numbers_range_to: activityObject.highestNumber,
+					n_operands: activityObject.operandsCount,
+					operators: getActiveOperators(activityObject),
+				},
+				success: function (response) {
+					if ( response.redirect ){
+						window.location.href = response.redirect;
+					} else {
+						console.log(response);
+						activityObject.activity_id = response.activityId;
+					}
+				},
+				error: function ( jqXHR, textStatus, errorThrown ){
+					console.log('post activity error:', jqXHR, "", textStatus, "", errorThrown);
+				},
+
+				dataType: "json"
+			});
+		}
+		else if(activityIndex == 2){
+			$.ajax({
+				type: "POST",
+				url: "/api/activity/" + activityObject.activity_id,
+				data: {
+					questions: activityObject.questions,
+					activity_type: "QUIZ",
+					element_id: elementID,
+				},
+				success: function (response) {
+					if ( response.redirect ){
+						window.location.href = response.redirect;
+					} else {
+						//console.log(response);
+						activityObject.activity_id = response.activityId;
+					}
+				},
+				error: function ( jqXHR, textStatus, errorThrown ){
+					console.log('post activity error:', jqXHR, textStatus, errorThrown);
+				},
+				dataType: "json"
+			}); 
+		}	
 	}
 }
 
@@ -525,7 +633,7 @@ function addActivityByIdToElement(target,dialogObject,activityID,callBack){
 					dialogObject.activityObject = mathObject;
 					dialogObject.activityIndex = 0;
 					dialogObject.activityChecked = true;
-					console.log("matte");
+					console.log("math load");
 					$(target).on("click", mathActivityFunction);
 					dialogObject.activityClickActionMade = true;
 					return callBack(error,true);}
@@ -534,7 +642,7 @@ function addActivityByIdToElement(target,dialogObject,activityID,callBack){
 					dialogObject.activityObject = null; //create new language object based on database stored object and attach
 					dialogObject.activityIndex = 1;
 					dialogObject.activityChecked = true;
-					console.log("lang");
+					console.log("lang load");
 					$(target).on("click", languageActivityFunction);
 					dialogObject.activityClickActionMade = true;
 					return callBack(error,true);
@@ -544,7 +652,7 @@ function addActivityByIdToElement(target,dialogObject,activityID,callBack){
 					dialogObject.activityObject = new QuizActivity(response); 
 					dialogObject.activityIndex = 2;
 					dialogObject.activityChecked = true;
-					console.log("quiz");
+					console.log("quiz load");
 					$(target).on("click", quizActivityFunction);
 					dialogObject.activityClickActionMade = true;
 					return callBack(error,true);
@@ -604,27 +712,6 @@ function addDialogDataToElement(dialogObject,actionType){
 	});	
 }
 
-function deleteActionTypeFromElement(dialogObject,actionType){
-	$.ajax({
-		type: "DELETE",
-		url: "/api/element/" + dialogObject.element_id + "/actiontype/",
-		data:{
-			actiontype_id: actionType.actionTypeId,
-		},
-		success: function (response) {
-			if ( response.redirect ){
-				window.location.href = response.redirect;
-			} else {
-				console.log(response);
-
-			}
-		},
-		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('Delete actionType error:', jqXHR, "", textStatus, "", errorThrown);
-		},
-	});	
-}
-
 function addAnimationToElement(dialogObject,actionType){
 	$.ajax({
 		type: "POST",
@@ -645,6 +732,49 @@ function addAnimationToElement(dialogObject,actionType){
 			console.log('post animation error:', jqXHR, "", textStatus, "", errorThrown);
 		},
 	});
+}
+
+function addSceneToElement(dialogObject,actionType){
+	$.ajax({
+		type: "POST",
+		url: "/api/element/" + dialogObject.element_id + "/actiontype/",
+		data:{
+			actiontype_id: actionType.actionTypeId,
+			data: dialogObject.sceneIndex,
+		},
+		success: function (response) {
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				console.log(response);
+
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('post scene error:', jqXHR, "", textStatus, "", errorThrown);
+		},
+	});	
+}
+
+function deleteActionTypeFromElement(dialogObject,actionType){
+	$.ajax({
+		type: "DELETE",
+		url: "/api/element/" + dialogObject.element_id + "/actiontype/",
+		data:{
+			actiontype_id: actionType.actionTypeId,
+		},
+		success: function (response) {
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				console.log(response);
+
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('Delete actionType error:', jqXHR, "", textStatus, "", errorThrown);
+		},
+	});	
 }
 
 function getActionTypes(){
@@ -688,4 +818,13 @@ function getActionTypeByName(nameString){
 		if(actionTypes[i].name.localeCompare(nameString) == 0)
 			return actionTypes[i];
 	};
+}
+
+function getElementTypeById(elementTypeId){
+	for (key in elementTypes){
+		if(elementTypes[key].elementTypeId == elementTypeId){
+			// console.log(elementTypes[key]);
+			return elementTypes[key];
+		}
+	}
 }

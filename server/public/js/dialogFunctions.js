@@ -1,6 +1,6 @@
 function addScene(target,previousVersionDialog,index){
 	if(currentDialog.sceneChecked==true){
-		$(this).dialog("close");
+		$(".dialog").dialog("close");
 		
 		var option = {
 				to: "#storylineButton",
@@ -8,10 +8,50 @@ function addScene(target,previousVersionDialog,index){
 		};
 		$(target).effect("transfer", option, 1000);
 
-		saveContentFromMainFrame();
-		
+		// saveContentFromMainFrame();
+		var chooseScene = $(".chooseSceneDialog");
+
+		var html = '';
+		for (key in sceneList){
+			var scenetype = sceneList[key].sceneType;
+			var sceneId = sceneList[key].sceneId;
+			var div = '<div class="img-wrapper img-wrapper1" name="'+sceneId+'"><div class="img-container">';
+			div += '<img name="' + scenetype.sceneTypeId + '" src="' + scenetype.backgroundAvatar.url + '" width ="200" height="200">';
+			div += '</div></div>';
+
+			html += div;
+		}
+		chooseScene.html(html);
+
+		$(".chooseSceneDialog").dialog({
+			height: $(window).height()*0.8,
+			width: $(window).width()*0.7,
+			position: {
+				my: "center top",
+				at: "center top",
+				of: "#mainFrame"
+			},
+			title: "Velg blandt eksisterende scener, eller lag en ny",
+			buttons:{
+				"Ny Scene": function(){
+					$(".chooseSceneDialog").dialog("close");
+					$("#newWorldDialog").dialog("open");
+					addSceneToGame();
+				},
+				"Avbryt": function(){
+					$(this).dialog("close");
+					currentObjectList.objectList[index] = previousVersionDialog;
+					currentDialog = previousVersionDialog;
+				},
+			}
+		});
 	};
 }
+
+function selectSceneInDialog(){
+	return;
+}
+
 
 function addActivity(target,previousVersionDialog,index){
 	//make a new activity
@@ -22,7 +62,7 @@ function addActivity(target,previousVersionDialog,index){
 				at: "center top",
 				of: "#mainFrame"
 			},
-			title: "choose activity type",
+			title: "Vel aktivitetstype",
 			buttons:{
 				"Matte aktivitet": function(){
 					if(currentDialog.activityObject == null || currentDialog.activityIndex != 0){

@@ -4,19 +4,24 @@ function Dialog(object){
 	this.dialogChecked = false;
 	this.pickUpChecked = false;
 	this.animationChecked = false;
-	this.animationIndex = 0;
 	this.soundChecked = false;
-	
-	this.dialogData = "";
 	this.div = object;
 	this.element_id = -1;
+	this.elementType_id = -1;
 	
+	this.sceneIndex = -1;
+
 	this.activityObject = null;
 	this.activityIndex = -1;
 	
+	this.dialogData = "";
+	
+	this.animationIndex = 0;
+
 	this.animationClickActionMade = false;
 	this.dialogClickActionMade = false;
 	this.activityClickActionMade = false;
+	this.sceneClickActionMade = false;
 }
 
 function inList(arr,obj){

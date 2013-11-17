@@ -1,3 +1,7 @@
+function sceneFunction(e){
+	console.log("such scene, wow")
+}
+
 function dialogFunction(e){
 	$("#writtenText").val(currentObjectList.objectList[inList(currentObjectList.objectList,e.target)].dialogData);
 	$(".writtenDialog").dialog({
