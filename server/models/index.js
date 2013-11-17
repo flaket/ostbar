@@ -43,7 +43,7 @@ module.exports.QuizQuestion = QuizQuestion;
 var QuizQuestionAlternative             = require('./entities/quizquestionalternative').QuizQuestionAlternative;
 module.exports.QuizQuestionAlternative  = QuizQuestionAlternative;
 
-var Reward              = require('./entities/reward').Reward;
+var Reward              = require('./entities/reward.js').Reward;
 module.exports.Reward   = Reward;
 
 var Scene               = require('./entities/scene').Scene;

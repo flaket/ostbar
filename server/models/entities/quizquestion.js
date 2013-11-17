@@ -3,8 +3,7 @@ var DB      = require( '../db' );
 var db      = DB.instance;
 var async   = require( 'async' );
 
-var SubjectType             = require( './subjecttype' ).SubjectType;
-var QuizQuestionAlternative = require( './quizquestionalternative' ).QuizQuestionAlternative;
+var models  = require( '../../models' );
 
 function QuizQuestion( data ){
     Entity.call( this );
@@ -48,6 +47,9 @@ QuizQuestion.loadAllInActivityQuiz = function ( activityQuizId, callback ){
 
 QuizQuestion.initWithData = function ( data, callback ){
     if ( data == null ) return callback( null, false );
+
+    var QuizQuestionAlternative = models.QuizQuestionAlternative,
+        SubjectType = SubjectType;
 
     async.parallel({
         alternatives: QuizQuestionAlternative.loadAllInQuizQuestion.bind( QuizQuestionAlternative, data.quiz_question_id ),
@@ -97,6 +99,8 @@ QuizQuestion.create = function ( params, callback ){
                 for ( key in alternatives ){
                     alternatives[ key ].quizQuestionId = quizQuestionId;
                 }
+                
+                var QuizQuestionAlternative = models.QuizQuestionAlternative;
 
                 async.parallel({
                     alternatives: QuizQuestionAlternative.createAlternatives.bind( QuizQuestionAlternative, alternatives, quizQuestionId )

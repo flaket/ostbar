@@ -3,9 +3,7 @@ var DB      = require( '../db' );
 var db      = DB.instance;
 var async   = require( 'async' );
 
-var Goal    = require( './goal' ).Goal;
-var Scene   = require( './scene' ).Scene;
-// var util     = require( 'util' );
+var models  = require( '../../models' );
 
 function Game( data ){
     Entity.call( this );
@@ -59,6 +57,9 @@ Game.loadAllForUser = function ( userId, callback ){
 Game.initWithData = function ( data, callback ){
     if ( data == null ) return callback( null, false );
 
+    var Goal = models.Goal;
+    var Scene = models.Scene;
+
     async.parallel({
         goal: Goal.loadById.bind( Goal, data.goal_id ),
         scenes: Scene.loadAllInGame.bind( Scene, data.game_id )
@@ -81,6 +82,37 @@ Game.create = function ( userId, name, callback ){
 
         if ( rows.insertId ) Game.loadById( rows.insertId, callback );
         else callback( 'Kunne ikke opprette nytt spill', false );
+    });
+}
+
+Game.delete = function ( gameId, callback ){
+    if ( gameId == null ) return callback( 'Kan ikke slette Game der gameId er null', false );
+
+    Game.loadById( gameId, function ( error, game ){
+        if ( error ) return callback( error, false );
+
+        var Goal = models.Goal,
+            Scene = models.Scene;
+
+        var parallelOperations = {
+            scenes: Scene.deleteAllInGame.bind( Scene, gameId )
+        }
+
+        if ( game.goal ){
+            parallelOperations.goal = Goal.delete.bind( Goal, game.goal.goalId );
+        }
+
+        async.parallel( parallelOperations, function ( error, results ){
+            if ( error ) return callback( error, false );
+
+            var query = 'DELETE FROM game WHERE game_id = ?';
+
+            db.query( query, gameId, function ( error, rows, fields){
+                if ( error ) return callback( error, false );
+
+                return callback( error, true );
+            });
+        });
     });
 }
 

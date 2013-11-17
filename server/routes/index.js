@@ -1,7 +1,7 @@
-var User = require( '../models/entities/user' ).User;
-var Game = require( '../models/entities/game').Game;
 var util = require( 'util' );
 var server = require('../../server');
+
+var models = require( '../models' );
 
 // core routes - base is /
 module.exports.index = function( req, res ){
@@ -17,6 +17,8 @@ module.exports.account = function( req, res ){
 };
 
 module.exports.save_account = function( req, res ){
+    var User = models.User;
+
     User.loadById( req.user.userId, function ( error, user ){
         if ( error ){
             return res.render( 'account', { error: error } );
@@ -166,6 +168,8 @@ module.exports.register_user = function ( req, res ){
 }
 
 module.exports.mygames = function ( req, res ){
+    var Game = models.Game;
+
     if ( req.params.id ){
         Game.loadByIdForUser( req.params.id, req.user.userId, function ( error, game ){
             if ( error ){
@@ -185,13 +189,16 @@ module.exports.mygames = function ( req, res ){
 
             res.render( 'games', { 
                 user: req.user, 
-                games: games
+                games: games,
+                admin: 'true'
             }); 
         });
     }
 }
 
 module.exports.game_post = function ( req, res ){
+    var Game = models.Game;
+
     Game.loadByIdForUser( req.params.id, req.user.userId, function ( error, game ){
         console.log('error:', error);
 
@@ -202,18 +209,31 @@ module.exports.game_post = function ( req, res ){
         req.checkBody('name', 'name (string) is required').notEmpty();
 
         game.setName( req.body.name, function ( error, success ){
-            console.log('game setName', error, success);
-            if ( success ) res.send( { game: game } );
-            else res.send( null );
+            res.redirect( '/game' );
         });
     });
 };
 
-module.exports.new_game = function ( req, res ){
+module.exports.game_delete = function ( req, res ){
+    req.assert( 'id', 'urlparam id (int) is required' ).isInt();
+    req.sanitize( 'id' ).toInt();
+    var errors = req.validationErrors();
+    if ( errors ) return res.send( { error: errors } );
+
+    var Game = models.Game;
+
+    Game.delete( req.params.id, function( error, success ){
+        res.redirect( '/game' );        
+    });
+};
+
+module.exports.game = function ( req, res ){
     req.checkBody('name', 'name (string) is required').notEmpty();
     req.sanitize('name').xss();
 
     var errors = req.validationErrors();
+
+    var Game = models.Game;
 
     if ( errors ) {
         Game.loadAllForUser( req.user.userId, function ( error, games ){
@@ -235,5 +255,24 @@ module.exports.new_game = function ( req, res ){
         }
 
         res.redirect( '/game/' + game.gameId );
+    });
+};
+
+module.exports.playgame = function ( req, res ){
+    req.assert( 'id', 'urlparam id (int) is required' ).isInt();
+    req.sanitize( 'id' ).toInt();
+    var errors = req.validationErrors();
+    if ( errors ) return res.send( { error: errors } );
+
+    var Game = models.Game;
+
+    Game.loadById( req.params.id, function ( error, game ){
+        if ( error ) return res.render( '404', { error: 'Spillet finnes ikke' } );
+
+        res.render( 'game', {
+            user: req.user,
+            game: game,
+            admin: 'false'
+        });
     });
 };

@@ -3,7 +3,7 @@ var DB      = require( '../db' );
 var db      = DB.instance;
 var async   = require( 'async' );
 
-var LanguageQuestion = require( './languagequestion' ).LanguageQuestion;
+var models  = require( '../../models' );
 
 function ActivityLanguage( data ){
     Entity.call( this );
@@ -41,6 +41,8 @@ ActivityLanguage.loadByActivityId = function ( activityId, callback ){
 
 ActivityLanguage.initWithData = function ( data, callback ){
     if ( data == null ) callback( null, false );
+
+    var LanguageQuestion = models.LanguageQuestion;
 
     async.parallel({
         questions: LanguageQuestion.loadAllInActivityLanguage.bind( LanguageQuestion, data.activity_language_id )
@@ -81,6 +83,8 @@ ActivityLanguage.prototype.addQuestions = function ( questions, callback ){
         questions[ key ].activityLanguageId = this.activityLanguageId;
     }
 
+    var LanguageQuestion = models.LanguageQuestion;
+
     async.map( questions, LanguageQuestion.create, function ( error, results ){
         if ( error ) return callback( error, false );
         else if ( results.indexOf( false ) != -1 ) return callback( 'Kunne ikke opprette spørsmål nr ' + ( results.indexOf( false ) + 1 ), false );
@@ -98,7 +102,9 @@ ActivityLanguage.delete = function ( activityLanguageId, callback ){
     db.query( query, activityLanguageId, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        return LanguageQuestion.deleteByActivityLanguageId( activityLanguageId, callback );
+        var LanguageQuestion = models.LanguageQuestion;
+
+        LanguageQuestion.deleteByActivityLanguageId( activityLanguageId, callback );
     });
 };
 

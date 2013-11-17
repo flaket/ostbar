@@ -3,8 +3,9 @@ var DB      = require( '../db' );
 var db      = DB.instance;
 var async   = require( 'async' );
 
-function User( data )
-{
+var models  = require( '../../models' );
+
+function User( data ){
     Entity.call( this );
 
     this.userId   = data.user_id;

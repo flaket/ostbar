@@ -2,6 +2,8 @@ var Entity  = require( '../entity' ).Entity;
 var DB      = require( '../db' );
 var db      = DB.instance;
 
+var models  = require( '../../models' );
+
 function World( data ){
     Entity.call( this );
 
