@@ -75,16 +75,21 @@
   </form>
 </div>
 
-<div id="delete-game-dialog">
-  <form id="delete-game" method="POST" name="delete-game">
-    <label>Er du sikker på at du vil slette spillet?</label>
-  </form>
-</div>
-
 <div id="edit-game-name-dialog">
   <form id="edit-game-name" method="POST" name="edit-game-name">
     <label>Nytt navn:</label>
     <input type="text" name="name" id="name" />
+  </form>
+</div>
+
+<div id="game-link-dialog">
+  Lenke til spillet:<br>
+  <span id="link-game-span"></span>
+</div>
+
+<div id="delete-game-dialog">
+  <form id="delete-game" method="POST" name="delete-game">
+    <label>Er du sikker på at du vil slette spillet?</label>
   </form>
 </div>
 
@@ -123,6 +128,10 @@ $(document).ready(function() {
       'Avbryt': function (){
         $( this ).dialog( 'close' );
       }
+    },
+    show: {
+      effect: "blind",
+      duration: 200
     }
   });
 
@@ -138,8 +147,14 @@ $(document).ready(function() {
       'Avbryt': function (){
         $( this ).dialog( 'close' );
       }
+    },
+    show: {
+      effect: "blind",
+      duration: 200
     }
   });
+
+  $( '#link-game-dialog' )
 
   $( '#new-game-button' ).click( function () {
     $( '#new-game-dialog' ).dialog( 'open' );
