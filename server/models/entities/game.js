@@ -54,6 +54,14 @@ Game.loadAllForUser = function ( userId, callback ){
     });
 }
 
+Game.loadAll = function ( callback ){
+    db.query( 'SELECT * FROM game', function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        async.map( rows, Game.initWithData, callback );
+    });
+}
+
 Game.initWithData = function ( data, callback ){
     if ( data == null ) return callback( null, false );
 

@@ -178,7 +178,8 @@ module.exports.mygames = function ( req, res ){
 
             res.render( 'game', {
                 user: req.user,
-                game: game
+                game: game,
+                admin: 'true'
             });
         });
     } else {
@@ -189,8 +190,7 @@ module.exports.mygames = function ( req, res ){
 
             res.render( 'games', { 
                 user: req.user, 
-                games: games,
-                admin: 'true'
+                games: games
             }); 
         });
     }
@@ -266,13 +266,14 @@ module.exports.playgame = function ( req, res ){
 
     var Game = models.Game;
 
+    console.log('rendering game for play');
+
     Game.loadById( req.params.id, function ( error, game ){
         if ( error ) return res.render( '404', { error: 'Spillet finnes ikke' } );
 
         res.render( 'game', {
             user: req.user,
             game: game,
-            admin: 'false'
         });
     });
 };

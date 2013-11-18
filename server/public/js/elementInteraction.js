@@ -222,6 +222,15 @@ jQuery(document).ready(function(){
 			console.log('get game error:', textStatus, errorThrown);	
 		}
 	});
+
+
+	var keyboardPresent = $( '#keyboardPresent' ).html();
+	console.log(keyboardPresent);
+	if ( keyboardPresent ){
+		console.log('!!! keyboard present !!!');
+	} else {
+		console.log( '!!! keyboard not present !!!' );
+	}
 });
 
 function setupAfterCallsReturns() {

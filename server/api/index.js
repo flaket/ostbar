@@ -80,20 +80,24 @@ module.exports = function ( app ){
         
         req.sanitize( 'id' ).toInt();
 
-        if ( req.params.id ){
-            Game.loadByIdForUser( req.params.id, req.user.userId, function ( error, game ){
-                if ( error ) return requestError( res, error );
+        if ( req.user ){
+            if ( req.params.id ){
+                Game.loadByIdForUser( req.params.id, req.user.userId, function ( error, game ){
+                    if ( error ) return requestError( res, error );
 
-                if ( game ) res.send( game );
-                else emptyResponse( res );
-            });
+                    if ( game ) res.send( game );
+                    else emptyResponse( res );
+                });
+            } else {
+                Game.loadAllForUser( req.user.userId, function ( error, games ){
+                    if ( error ) return requestError( res, error );
+
+                    if ( games ) res.send( games );
+                    else emptyResponse( res );
+                });
+            }
         } else {
-            Game.loadAllForUser( req.user.userId, function ( error, games ){
-                if ( error ) return requestError( res, error );
-
-                if ( games ) res.send( games );
-                else emptyResponse( res );
-            });
+            standardGETResponse( req, res, Game );
         }
     });
 
