@@ -51,25 +51,25 @@ module.exports = function ( app ){
 
     // -- API ROOT ----------------------------------------------------------------------
 
-    app.get( '/api/', auth, function ( req, res ){
+    app.get( '/api/', function ( req, res ){
         emptyResponse( res );
     });
 
     // -- WORLD -------------------------------------------------------------------------
 
-    app.get( '/api/world/:id?', auth, function ( req, res  ){
+    app.get( '/api/world/:id?', function ( req, res  ){
         standardGETResponse( req, res, models.World );
     });
 
     // -- ACTION TYPE ------------------------------------------------------------------
 
-    app.get( '/api/actiontype/:id?', auth, function ( req, res ){
+    app.get( '/api/actiontype/:id?', function ( req, res ){
         standardGETResponse( req, res, models.ActionType );
     });
 
     // -- GAME --------------------------------------------------------------------------
 
-    app.get( '/api/game/:id?', auth, function ( req, res ){
+    app.get( '/api/game/:id?', function ( req, res ){
         var Game = models.Game;
 
         if ( req.params.id ){
@@ -80,32 +80,36 @@ module.exports = function ( app ){
         
         req.sanitize( 'id' ).toInt();
 
-        if ( req.params.id ){
-            Game.loadByIdForUser( req.params.id, req.user.userId, function ( error, game ){
-                if ( error ) return requestError( res, error );
+        if ( req.user ){
+            if ( req.params.id ){
+                Game.loadByIdForUser( req.params.id, req.user.userId, function ( error, game ){
+                    if ( error ) return requestError( res, error );
 
-                if ( game ) res.send( game );
-                else emptyResponse( res );
-            });
+                    if ( game ) res.send( game );
+                    else emptyResponse( res );
+                });
+            } else {
+                Game.loadAllForUser( req.user.userId, function ( error, games ){
+                    if ( error ) return requestError( res, error );
+
+                    if ( games ) res.send( games );
+                    else emptyResponse( res );
+                });
+            }
         } else {
-            Game.loadAllForUser( req.user.userId, function ( error, games ){
-                if ( error ) return requestError( res, error );
-
-                if ( games ) res.send( games );
-                else emptyResponse( res );
-            });
+            standardGETResponse( req, res, Game );
         }
     });
 
     // -- SCENETYPE ---------------------------------------------------------------------
 
-    app.get( '/api/scenetype/:id?', auth, function ( req, res ){
+    app.get( '/api/scenetype/:id?', function ( req, res ){
         standardGETResponse( req, res, models.SceneType );
     });
 
     // -- SCENE -------------------------------------------------------------------------
 
-    app.get( '/api/scene/:id?', auth, function ( req, res ){
+    app.get( '/api/scene/:id?', function ( req, res ){
         if (!req.params.id) return emptyResponse( res );
 
         standardGETResponse( req, res, models.Scene );
@@ -156,13 +160,13 @@ module.exports = function ( app ){
 
     // -- ELEMENT TYPE ------------------------------------------------------------------
 
-    app.get( '/api/elementtype/:id?', auth, function ( req, res ){
+    app.get( '/api/elementtype/:id?', function ( req, res ){
         standardGETResponse( req, res, models.ElementType );
     });
 
     // -- ELEMENT -----------------------------------------------------------------------
 
-    app.get( '/api/element/:id?', auth, function ( req, res ){
+    app.get( '/api/element/:id?', function ( req, res ){
         standardGETResponse( req, res, models.Element );
     });
 
@@ -183,6 +187,8 @@ module.exports = function ( app ){
         req.sanitize( 'frame_width' ).xss();
         req.sanitize( 'frame_height' ).xss();
         
+        console.log('element post', req.body);
+
         if ( !req.params.id ){
             req.checkBody( 'scene_id', 'scene_id (int) is required' ).isInt();
             req.sanitize( 'scene_id').toInt();
@@ -266,7 +272,6 @@ module.exports = function ( app ){
     });
 
     app.del( '/api/element/:id', auth, function ( req, res ){
-        console.log("del elem");
         var Element = models.Element;
 
         req.assert( 'id', 'urlparam id (int) is required' ).isInt();
@@ -282,7 +287,6 @@ module.exports = function ( app ){
     });
 
     app.del( '/api/element/:id/:method', auth, function ( req, res ){
-        console.log("del elem/type");
         var Element = models.Element;
 
         if ( req.params.method == 'actiontype' ){
@@ -315,13 +319,13 @@ module.exports = function ( app ){
 
     // -- MATHOPERATOR ------------------------------------------------------------------
 
-    app.get( '/api/mathoperator/:id?', auth, function ( req, res ){
+    app.get( '/api/mathoperator/:id?', function ( req, res ){
         standardGETResponse( req, res, models.MathOperator );
     });
 
     // -- ACTIVITY ----------------------------------------------------------------------
     
-    app.get( '/api/activity/:id', auth, function ( req, res ){
+    app.get( '/api/activity/:id', function ( req, res ){
         var Activity = models.Activity;
         
         if ( req.params.id ){
@@ -532,7 +536,7 @@ module.exports = function ( app ){
 
     // -- ACTIVITYQUIZ ------------------------------------------------------------------
 
-    app.get( '/api/activityquiz/:id', auth, function ( req, res ){
+    app.get( '/api/activityquiz/:id', function ( req, res ){
         var ActivityQuiz = models.ActivityQuiz;
 
         req.assert( 'id', 'urlparam id (int) is required' ).isInt();
@@ -549,7 +553,7 @@ module.exports = function ( app ){
 
     // -- ACTIVITYLANGUAGE --------------------------------------------------------------
 
-    app.get( '/api/activitylanguage/:id', auth, function ( req, res ){
+    app.get( '/api/activitylanguage/:id', function ( req, res ){
         var ActivityLanguage = models.ActivityLanguage;
 
         req.assert( 'id', 'urlparam id (int) is required' ).isInt();
@@ -566,7 +570,7 @@ module.exports = function ( app ){
 
     // -- ACTIVITYMATH ------------------------------------------------------------------
 
-    app.get( '/api/activitymath/:id', auth, function ( req, res ){
+    app.get( '/api/activitymath/:id', function ( req, res ){
         var ActivityMath = models.ActivityMath;
 
         req.assert( 'id', 'urlparam id (int) is required' ).isInt();

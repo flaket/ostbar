@@ -4,10 +4,7 @@ var db      = DB.instance;
 var async   = require( 'async' );
 var util    = require( 'util' );
 
-var ActionType  = require( './actiontype.js' ).ActionType;
-var Avatar      = require( './avatar' ).Avatar;
-var Sound       = require( './sound' ).Sound;
-var World       = require( './world' ).World;
+var models  = require( '../../models' );
 
 function ElementType( data ){
     Entity.call( this );
@@ -44,6 +41,11 @@ ElementType.loadAll = function ( callback ){
 
 ElementType.initWithData = function ( data, callback ){
     if ( data == null ) return callback( null, false );
+
+    var Avatar = models.Avatar,
+        Sound = models.Sound,
+        World = models.World,
+        ActionType = models.ActionType;
 
     async.parallel({
         avatar: Avatar.loadById.bind( Avatar, data.avatar_id ),

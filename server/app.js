@@ -15,6 +15,10 @@ conf(app, express, env);
 // -- bootstrap config
 require('./bootstrap').boot(app);
 
+// -- models
+
+require('./models');
+
 // -- api
 require('./api')(app);
 
@@ -36,15 +40,10 @@ app.get('/signup', core_routes.signup);
 app.post('/signup', core_routes.register_user);
 
 app.get( '/game/:id?', app.ensureAuthenticated, core_routes.mygames );
+app.post( '/game', app.ensureAuthenticated, core_routes.game );
+app.post( '/deletegame/:id', core_routes.game_delete );
 
-app.post( '/game', app.ensureAuthenticated, core_routes.new_game );
-
-app.get( '/postTester', function ( req, res ){
-    res.render( 'postTester', {
-        user: req.user
-    });
-
-});
+app.get( '/play/:id', core_routes.playgame );
 
 // -- ajax requests
 app.post( '/game/:id', app.ensureAuthenticatedAjax, core_routes.game_post );

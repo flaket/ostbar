@@ -4,9 +4,7 @@ var db      = DB.instance;
 var async   = require( 'async' );
 var util = require( 'util' );
 
-var Avatar                      = require( './avatar' ).Avatar;
-var Sound                       = require( './sound' ).Sound;
-var LanguageQuestionAlternative = require( './languagequestionalternative' ).LanguageQuestionAlternative;
+var models  = require( '../../models' );
 
 function LanguageQuestion( data ){
     Entity.call( this );
@@ -48,6 +46,9 @@ LanguageQuestion.loadAllInActivityLanguage = function( activityLanguageId, callb
 
 LanguageQuestion.initWithData = function ( data, callback ){
     if ( data == null ) return callback( null, false );
+
+    var Avatar = models.Avatar,
+        Sound = models.Sound;
 
     switch ( data.language_question_type ){
         case 'PICTURE_RECOGNIZE': dataClass = Avatar;
@@ -98,6 +99,8 @@ LanguageQuestion.create = function ( params, callback ){
                 for ( key in alternatives ){
                     alternatives[ key ].languageQuestionId = languageQuestionId;
                 }
+
+                var LanguageQuestionAlternative = models.LanguageQuestionAlternative;
 
                 async.parallel({
                     alternatives: LanguageQuestionAlternative.createAlternatives.bind( LanguageQuestionAlternative, alternatives, languageQuestionId )

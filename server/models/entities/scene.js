@@ -2,9 +2,9 @@ var Entity  = require( '../entity' ).Entity;
 var DB      = require( '../db' );
 var db      = DB.instance;
 var async   = require( 'async' );
+var util    = require( 'util' );
 
-var Element = require( './element' ).Element;
-var SceneType = require( './scenetype' ).SceneType;
+var models  = require( '../../models' );
 
 function Scene( data ){
     Entity.call( this );
@@ -40,6 +40,25 @@ Scene.loadAllInGame = function ( gameId, callback ){
     });
 }
 
+Scene.initWithData = function ( data, callback ){
+    if ( data == null ) return callback( null, false );
+
+    var SceneType = models.SceneType;
+    var Element = models.Element;
+
+    async.parallel({
+        sceneType: SceneType.loadById.bind( SceneType, data.scenetype_id ),
+        elements: Element.loadAllInScene.bind( Element, data.scene_id )
+    },
+    function ( error, results ){
+        if ( error ) return callback( error, false );
+        
+        data.sceneType = results.sceneType;
+        data.elements = results.elements;
+        callback( null, new Scene( data ) );  
+    });
+}
+
 Scene.create = function ( scenetype_id, gameId, callback ){
     if ( gameId == null || scenetype_id == null ){
         return callback( null, false );
@@ -53,19 +72,37 @@ Scene.create = function ( scenetype_id, gameId, callback ){
     });
 }
 
-Scene.initWithData = function ( data, callback ){
-    if ( data == null ) return callback( null, false );
+Scene.delete = function ( sceneId, callback ){
+    if ( sceneId == null ) return callback( 'Kan ikke slette Scene der sceneId er null', false );
 
-    async.parallel({
-        sceneType: SceneType.loadById.bind( SceneType, data.scenetype_id ),
-        elements: Element.loadAllInScene.bind( Element, data.scene_id )
-    },
-    function ( error, results ){
+    var Element = models.Element;
+
+    Element.deleteAllInScene( sceneId, function ( error, success){
         if ( error ) return callback( error, false );
-        
-        data.sceneType = results.sceneType;
-        data.elements = results.elements;
-        callback( null, new Scene( data ) );  
+
+        var query = 'DELETE FROM scene WHERE scene_id = ?';
+
+        db.query( query, sceneId, function ( error, rows, fields ){
+            if ( error ) return callback( error, false );
+
+            callback( null, true );
+        });
+    });
+}
+
+Scene.deleteAllInGame = function ( gameId, callback ){
+    if ( gameId == null ) return callback( 'Kan ikke slette Scene for Game der gameId er null', false );
+
+    db.query( 'SELECT scene_id FROM scene WHERE game_id = ?', gameId, function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        var sceneIds = new Array();
+
+        for ( key in rows ){
+            sceneIds.push( rows[ key ].scene_id );
+        }
+
+        async.map( sceneIds, Scene.delete, callback );
     });
 }
 

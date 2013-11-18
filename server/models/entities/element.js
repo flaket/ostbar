@@ -4,8 +4,7 @@ var db      = DB.instance;
 var async   = require( 'async' );
 var util    = require( 'util' );
 
-var ActionType  = require( './actiontype' ).ActionType;
-var ElementType = require( './elementtype' ).ElementType;
+var models  = require( '../../models' );
 
 function Element( data ){
     Entity.call( this );
@@ -26,8 +25,6 @@ Element.prototype.constructor = Element;
 Element.loadById = function ( id, callback ){
     if ( id == null ) return callback( null, false );
 
-    if ( id.element_id ) id = id.element_id;
-
     db.query( 'SELECT * FROM element WHERE element_id = ?', id, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
@@ -35,6 +32,14 @@ Element.loadById = function ( id, callback ){
         else callback( 'Could not load Element with id ' + util.inspect(id, false, null), false );
     });
 };
+
+Element.loadAll = function ( callback ){
+    db.query( 'SELECT * FROM element', function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        async.map( rows, Element.initWithData, callback );
+    });
+}
 
 Element.loadAllInScene = function ( sceneId, callback ){
     if ( sceneId == null ) return callback( null, false );
@@ -44,7 +49,29 @@ Element.loadAllInScene = function ( sceneId, callback ){
     db.query( query, sceneId, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        async.map ( rows, Element.loadById, callback);
+        var elementIds = Array();
+
+        for ( key in rows ){
+            elementIds.push( rows[ key ].element_id );
+        }
+
+        async.map ( elementIds, Element.loadById, callback);
+    });
+};
+
+Element.initWithData = function ( data, callback ){
+    if ( data == null ) return callback( null, false );
+
+    var ActionType = models.ActionType;
+
+    async.parallel({
+        actionTypes: ActionType.loadAllInElement.bind( ActionType, data.element_id )
+    },
+    function ( error, results ){
+        if ( error ) return callback( error, false );
+
+        data.action_types = results.actionTypes;
+        callback( null, new Element( data ) );
     });
 };
 
@@ -79,20 +106,6 @@ Element.create = function ( elementTypeId, frame, sceneId, callback ){
     });
 };
 
-Element.initWithData = function ( data, callback ){
-    if ( data == null ) return callback( null, false );
-
-    async.parallel({
-        actionTypes: ActionType.loadAllInElement.bind( ActionType, data.element_id )
-    },
-    function ( error, results ){
-        if ( error ) return callback( error, false );
-
-        data.action_types = results.actionTypes;
-        callback( null, new Element( data ) );
-    });
-};
-
 Element.prototype.update = function ( callback ){
     var query = 'UPDATE element SET ';
         query += 'element_type_id = ?, ';
@@ -117,6 +130,52 @@ Element.prototype.update = function ( callback ){
         if ( error ) return callback( error, false );
 
         callback( null, self );
+    });
+};
+
+Element.delete = function ( elementId, callback ){
+    if ( elementId == null ) return callback( 'Kan ikke slette Element der elementId er null', false );
+
+    Element.loadById( elementId, function ( error, element ){
+        if ( error ) return callback( error, false );
+
+        element.removeAndDeleteActivity( function ( error, success ){
+            if ( error ) return callback( error, false );
+
+            if ( success ){
+                db.query( 'DELETE FROM element WHERE element_id = ?', elementId, function ( error, rows, fields ){
+                    if ( error ) return callback( error, false );
+
+                    db.query( 'DELETE FROM element_to_action_type_rel WHERE element_id = ?', elementId, function ( error, rows, fields ){
+                        if ( error ) return callback( error, false );
+
+                        db.query( 'DELETE FROM scene_to_element_rel WHERE element_id = ?', elementId, function ( error, rows, fields ){
+                            if ( error ) return callback( error, false );
+
+                            return callback( null, true );
+                        });
+                    });
+                });
+            } else return callback( 'Kunne ikke slette aktivitet fra element med id ' + elementId, false );
+        });
+    });
+};
+
+Element.deleteAllInScene = function ( sceneId, callback ){
+    if ( sceneId == null ) return callback( 'Kan ikke slette Element for Scene der sceneId er null', false );
+
+    var query = 'SELECT element_id FROM scene_to_element_rel WHERE scene_id = ?';
+
+    db.query( query, sceneId, function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        var elementIds = new Array();
+
+        for ( key in rows ){
+            elementIds.push( rows[ key ].element_id );
+        }
+
+        async.map( elementIds, Element.delete, callback );
     });
 };
 
@@ -151,8 +210,6 @@ Element.prototype.addActionType = function( actionTypeId, data, callback ){
 };
 
 Element.prototype.removeActionType = function ( actionTypeId, callback ){
-    console.log( 'Element.removeActionType', actionTypeId );
-
     if ( actionTypeId == null ) return callback( null, false );
 
     var query = 'DELETE FROM element_to_action_type_rel WHERE element_id = ? AND action_type_id = ?',
@@ -185,35 +242,28 @@ Element.prototype.removeActivity = function ( callback ){
         if ( error ) return callback ( error, false );
 
         if ( rows.length == 1 ) self.removeActionType( rows[0].action_type_id, callback );
+        else return Element.loadById( self.elementId, callback );
     });
 };
+
+Element.prototype.removeAndDeleteActivity = function ( callback ){
+    var activityId = this.hasActivity();
+
+    var Activity = models.Activity;
+    
+    if ( activityId ){
+        Activity.delete( activityId, this.elementId, callback );
+    } else return callback( null, true );
+}
 
 Element.prototype.hasActivity = function (){
     for ( key in this.actionTypes ){
         var actionType = this.actionTypes[ key ];
 
-        if ( actionType.name == 'TO_ACTIVITY' ) return true;
+        if ( actionType.name == 'TO_ACTIVITY' ) return parseInt( actionType.data );
     }
 
     return false;
 }
-
-Element.delete = function ( elementId, callback ){
-    if ( elementId == null ) return callback( 'Kan ikke slette element med id null', false );
-
-    db.query( 'DELETE FROM element WHERE element_id = ?', elementId, function ( error, rows, fields ){
-        if ( error ) return callback( error, false );
-
-        db.query( 'DELETE FROM element_to_action_type_rel WHERE element_id = ?', elementId, function ( error, rows, fields ){
-            if ( error ) return callback( error, false );
-
-            db.query( 'DELETE FROM scene_to_element_rel WHERE element_id = ?', elementId, function ( error, rows, fields ){
-                if ( error ) return callback( error, false );
-
-                return callback( null, true );
-            });
-        });
-    });
-};
 
 module.exports.Element = Element;

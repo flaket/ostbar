@@ -3,7 +3,7 @@ var DB      = require( '../db' );
 var db      = DB.instance;
 var async   = require( 'async' );
 
-var QuizQuestion = require( './quizquestion' ).QuizQuestion;
+var models  = require( '../../models' );
 
 function ActivityQuiz( data ){
     Entity.call( this );
@@ -41,6 +41,8 @@ ActivityQuiz.loadByActivityId = function ( activityId, callback ){
 
 ActivityQuiz.initWithData = function ( data, callback ){
     if ( data == null ) return callback( null, false );
+
+    var QuizQuestion = models.QuizQuestion;
 
     async.parallel({
         questions: QuizQuestion.loadAllInActivityQuiz.bind( QuizQuestion, data.activity_quiz_id )
@@ -81,6 +83,8 @@ ActivityQuiz.prototype.addQuestions = function ( questions, callback ){
         questions[ key ].activityQuizId = this.activityQuizId;
     }
 
+    var QuizQuestion = models.QuizQuestion;
+
     async.map( questions, QuizQuestion.create, function ( error, results){
         if ( error ) return callback( error, false );
         else if ( results.indexOf( false ) != -1 ) return callback( 'Kunne ikke opprette spørsmål nr ' + ( results.indexOf( false ) + 1 ), false );
@@ -97,7 +101,9 @@ ActivityQuiz.delete = function ( activityQuizId, callback ){
     db.query( query, activityQuizId, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
-        return QuizQuestion.deleteByActivityQuizId( activityQuizId, callback );
+        var QuizQuestion = models.QuizQuestion;
+
+        QuizQuestion.deleteByActivityQuizId( activityQuizId, callback );
     });
 };
 

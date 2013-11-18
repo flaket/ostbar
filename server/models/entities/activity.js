@@ -3,11 +3,7 @@ var DB      = require( '../db' );
 var db      = DB.instance;
 var async   = require( 'async' );
 
-var ActivityLanguage    = require( './activitylanguage' ).ActivityLanguage;
-var ActivityMath        = require( './activitymath' ).ActivityMath;
-var ActivityQuiz        = require( './activityquiz' ).ActivityQuiz;
-var Element             = require( './element' ).Element;
-var Reward              = require( './reward' ).Reward;
+var models  = require( '../../models' );
 
 function Activity( data ){
     Entity.call( this );
@@ -33,11 +29,17 @@ Activity.loadById = function ( id, callback ){
             var data = rows[0];
             var subclass;
 
+            var ActivityLanguage = models.ActivityLanguage,
+                ActivityMath = models.ActivityMath,
+                ActivityQuiz = models.ActivityQuiz;
+
             switch ( data.activity_type ){
                 case 'LANGUAGE': subclass = ActivityLanguage; break;
                 case 'MATH': subclass = ActivityMath; break;
                 case 'QUIZ': subclass = ActivityQuiz; break;
             }
+
+            var Reward = models.Reward;
 
             async.parallel({
                 reward: Reward.loadById.bind( Reward, data.reward_id ),
@@ -59,6 +61,8 @@ Activity.loadById = function ( id, callback ){
 Activity.create = function ( activityType, rewardId, elementId, params, callback ){
     if ( activityType == null || elementId == null || params == null ) callback( null, false );
 
+    var Element = models.Element;
+
     Element.loadById( elementId, function ( error, element ){
         if ( error ) return callback( error, false );
 
@@ -71,6 +75,10 @@ Activity.create = function ( activityType, rewardId, elementId, params, callback
                         var activityId = rows.insertId;
 
                         if (!activityId) return callback( 'Kunne ikke opprette aktivitet', false );
+
+                        var ActivityLanguage = models.ActivityLanguage,
+                            ActivityMath = models.ActivityMath,
+                            ActivityQuiz = models.ActivityQuiz;
 
                         var subclass;
 
@@ -104,6 +112,8 @@ Activity.create = function ( activityType, rewardId, elementId, params, callback
 Activity.update = function ( activityId, activityType, rewardId, elementId, params, callback ){
     if ( activityId == null || activityType == null || elementId == null || params == null ) callback( null, false );
 
+    var Element = models.Element;
+
     Element.loadById( elementId, function ( error, element ){
         if ( error ) return callback( error, false );
 
@@ -115,6 +125,10 @@ Activity.update = function ( activityId, activityType, rewardId, elementId, para
 
                         if ( activity ){
 
+                            var ActivityLanguage = models.ActivityLanguage,
+                                ActivityMath = models.ActivityMath,
+                                ActivityQuiz = models.ActivityQuiz;
+                            
                             var subclass,
                                 subclassId;
 
@@ -126,9 +140,7 @@ Activity.update = function ( activityId, activityType, rewardId, elementId, para
 
                             params.activityId = activityId;
                             
-                            console.log('deleting subclass');
                             subclass.deleteByActivityId( activityId, function ( error, success ){
-                                console.log('deleted subclass', error, success);
                                 if ( error ) return callback( error, false );
 
                                 if ( success ){
@@ -138,9 +150,7 @@ Activity.update = function ( activityId, activityType, rewardId, elementId, para
                                         case 'QUIZ': subclass = ActivityQuiz; break;
                                     }
 
-                                    console.log('creating new subclass')
                                     subclass.create( params, function ( error, subclassInstance ){
-                                        console.log('created new subclass', error, subclassInstance);
                                         if ( error ) return callback( error, false );
 
                                         if ( subclassInstance ){
@@ -176,6 +186,10 @@ Activity.delete = function ( activityId, elementId, callback ){
         if ( error ) return callback( error, false );
 
         if ( activity ){
+            var ActivityLanguage = models.ActivityLanguage,
+                ActivityMath = models.ActivityMath,
+                ActivityQuiz = models.ActivityQuiz;
+
             var subclass,
                 activityType = activity.activityType;
 
@@ -192,10 +206,10 @@ Activity.delete = function ( activityId, elementId, callback ){
                     db.query( 'DELETE FROM activity WHERE activity_id = ?', activityId, function ( error, rows, fields ){
                         if ( error ) return callback( error, false );
 
+                        var Element = models.Element;
+
                         Element.loadById( elementId, function ( error, element ){
                             if ( error ) return calback( error, false );
-
-                            console.log('loaded element', element);
 
                             element.removeActivity( callback );
                         });

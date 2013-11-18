@@ -9,6 +9,36 @@
 // foundation 4 lib
 @import "../vendor/foundation/foundation";
 
+@mixin form-element() {
+  background-color: $input-bg-color;
+  font-family: $input-font-family;
+  border: $input-border-width $input-border-style $input-border-color;
+  @if $experimental {
+    -webkit-box-shadow: $input-box-shadow;
+  }
+  box-shadow: $input-box-shadow;
+  color: $input-font-color;
+  display: block;
+  font-size: $input-font-size;
+  margin: 0 0 $form-spacing 0;
+  padding: $form-spacing / 2;
+  height: ($input-font-size + ($form-spacing * 1.5) - em-calc(1));
+  width: 100%;
+  @include box-sizing(border-box);
+  @if $input-include-glowing-effect {
+      @include block-glowing-effect(focus, $glowing-effect-fade-time, $glowing-effect-color);
+  }
+  // Basic focus styles
+  &:focus {
+    background: $input-focus-bg-color;
+    border-color: $input-focus-border-color;
+    outline: none;
+  }
+
+  // Disabled background input background color
+  &[disabled] { background-color: $input-disabled-bg; }
+}
+
 // fonts
 /*@import "NEORD";
 @import "AlteHaasGrotesk";

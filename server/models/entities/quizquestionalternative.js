@@ -3,6 +3,8 @@ var DB      = require( '../db' );
 var db      = DB.instance;
 var async   = require( 'async' );
 
+var models  = require( '../../models' );
+
 function QuizQuestionAlternative( data ){
     Entity.call( this );
 

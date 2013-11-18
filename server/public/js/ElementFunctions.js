@@ -25,7 +25,7 @@ function mathActivityFunction(e){
 }
 
 function languageActivityFunction(){
-	//dummy
+	createLanguageActivity(currentObjectList.objectList[inList(currentObjectList.objectList, e.target)].activityObject);
 }
 
 function quizActivityFunction(e){

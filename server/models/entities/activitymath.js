@@ -3,7 +3,7 @@ var DB      = require( '../db' );
 var db      = DB.instance;
 var async   = require( 'async' );
 
-var MathOperator = require( './mathoperator' ).MathOperator;
+var models  = require( '../../models' );
 
 function ActivityMath( data ){
     Entity.call( this );
@@ -44,6 +44,8 @@ ActivityMath.loadByActivityId = function ( activityId, callback ){
 
 ActivityMath.initWithData = function ( data, callback ){
     if ( data == null ) return callback( null, false );
+
+    var MathOperator = models.MathOperator;
 
     async.parallel({
         operators: MathOperator.loadAllInActivityMath.bind( MathOperator, data.activity_math_id )
@@ -99,9 +101,11 @@ ActivityMath.prototype.addOperators = function ( operatorIds, callback ){
 
     var self = this;
 
+    var MathOperator = models.MathOperator;
+
     async.map( posts, MathOperator.addToMathActivity, function( error, results ){
         if ( error ) return callback( error, false );
-        else if (results.indexOf( false ) != -1) return callback ( 'Kunne ikke legge til operator nr ' + (results.indexOf( false ) + 1) , false );
+        else if ( results.indexOf( false ) != -1 ) return callback( 'Kunne ikke legge til operator nr ' + (results.indexOf( false ) + 1 ) , false );
 
         ActivityMath.loadById( self.activityMathId, callback );
     });

@@ -3,8 +3,7 @@ var DB      = require( '../db' );
 var db      = DB.instance;
 var async   = require( 'async' );
 
-var Avatar  = require( './avatar' ).Avatar;
-var World   = require( './world' ).World;
+var models  = require( '../../models' );
 
 function SceneType( data ){
     Entity.call( this );
@@ -39,6 +38,9 @@ SceneType.loadAll = function ( callback ){
 
 SceneType.initWithData = function ( data, callback ){
     if ( data == null ) return callback( null, false );
+
+    var World = models.World;
+    var Avatar = models.Avatar;
 
     async.parallel({
         world: World.loadById.bind( World, data.world_id ),
