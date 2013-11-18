@@ -23,17 +23,16 @@ jQuery(document).ready(function(){
 	gameId = parseInt(window.location.href.split('/').slice(-1)[0]);
 
 	$("#storylineButton").hide();
-	$(".elements").hide();
 	$(".draggable").tooltip({disabled: true});
 	$(".schoolbagImage").hide();
 	
-	$(".elements").draggable({
-		revert:"invalid",
-		helper:"clone",
-		cursor:"move",
-		containment:"document",
-		connectWith: "#mainFrame",
-	});
+	// $(".elements").draggable({
+	// 	revert:"invalid",
+	// 	helper:"clone",
+	// 	cursor:"move",
+	// 	containment:"document",
+	// 	connectWith: "#mainFrame",
+	// });
 	
 	$(".schoolbagImage").on("click", function(){
 		$(".schoolbagDialog").dialog({
@@ -72,12 +71,15 @@ jQuery(document).ready(function(){
 	
 	$(".draggable").on("contextmenu rightclick",".element",function(e){
 		e.preventDefault();
+		
 		var target = e.target;
 		var name = e.target.name;
+		
 		var parent = target.parentNode.parentNode;
+		var elementTypeId = e.target.parentNode.id;
 		
 		if(currentDialog == null){
-			var dia = new Dialog(target);
+			var dia = new Dialog(target,elementTypeId);
 			currentDialog = dia;
 			currentObjectList.objectList.push(dia);
 		}
@@ -87,7 +89,7 @@ jQuery(document).ready(function(){
 				currentDialog = currentObjectList.objectList[index];
 			}
 			else{
-				var dia = new Dialog(target);
+				var dia = new Dialog(target,elementTypeId);
 				currentDialog = dia;
 				currentObjectList.objectList.push(dia);
 				console.log("new object");
@@ -389,10 +391,13 @@ function loadElementsByScene(elements){
 	for(element in elements){
 		var elem = elements[element];
 		var elementType = getElementTypeById(elem.elementTypeId);
+		var elementTypeId = elementType.elementTypeId;
 		var url = elementType.avatar.url;
-		$("<div></div>").html("<div class =\"elements ui-draggable\" style=\"display:block;\">" + 
+		var name = url.split(".")[0];
+		name = name.split("/").slice(-1).toString();
+		$("<div></div>").html("<div class =\"elements ui-draggable\" id=\"" + elementTypeId + "\" style=\"display:block;\">" + 
 								"<img width=\""  + elem.frameWidth + "\" height=\"" + elem.frameHeight + 
-								"\" src=\"" + url +"\"" + "name = \"Penguin\">" +
+								"\" src=\"" + url +"\"" + "name = \"" + name +  "\">" +
 								"</img></div>")
 		.css({
 			"position": "absolute",
@@ -416,7 +421,7 @@ function loadElementsByScene(elements){
 		var target = temp[i].children[0].children[0];
 		// console.log("");
 		
-		var dia = new Dialog(target);
+		var dia = new Dialog(target,elements[i].elementTypeId);
 		dia.element_id = elements[i].elementId;
 		dia.elementType_id = elements[i].elementTypeId;
 
@@ -762,6 +767,7 @@ function getElementTypes(){
 			}
 			initialCallsReturned++;
 			setupAfterCallsReturns();
+			loadElementTypesIntoSideBar();
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
 			console.log('get elementType error:', jqXHR, "", textStatus, "", errorThrown);
@@ -907,3 +913,34 @@ function getSceneById(sceneId){
 // 	scene.elements[index].frameX = parseFloat(elementObject.frameX);
 // 	scene.elements[index].frameY = parseFloat(elementObject.frameY);
 // }
+
+function loadElementTypesIntoSideBar(){
+	var sidebar = $("#customSidebar");
+	
+	var html = '';
+	for (var i = 0; i < elementTypes.length; i++) {
+		var elementTypeId = elementTypes[i].elementTypeId;	
+		var url = elementTypes[i].avatar.url;
+		var name = elementTypes[i].avatar.url;
+		name = name.split(".")[0];
+		name = name.split("/").slice(-1).toString();
+		console.log(name);
+		var div = '<div class="elements" id="'+elementTypeId+'">';
+		div += '<img name="' + name + '" src="' + url + '" width ="100" height="150">';
+		div += '</div>';
+
+		html += div;
+	};
+	sidebar.html(html);
+
+	$(".elements").hide();
+
+
+	$(".elements").draggable({
+		revert:"invalid",
+		helper:"clone",
+		cursor:"move",
+		containment:"document",
+		connectWith: "#mainFrame",
+	});
+}
