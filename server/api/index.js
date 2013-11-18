@@ -187,6 +187,8 @@ module.exports = function ( app ){
         req.sanitize( 'frame_width' ).xss();
         req.sanitize( 'frame_height' ).xss();
         
+        console.log('element post', req.body);
+
         if ( !req.params.id ){
             req.checkBody( 'scene_id', 'scene_id (int) is required' ).isInt();
             req.sanitize( 'scene_id').toInt();

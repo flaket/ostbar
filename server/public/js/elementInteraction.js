@@ -380,6 +380,7 @@ function saveElements(){
 		var temp = currentObjectList.objectList[i];
 		var elemId = temp.element_id;
 		// console.log(temp);
+
 		if (temp.element_id < 0){
 			$.ajax({
 				type: "POST",

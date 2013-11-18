@@ -27,16 +27,16 @@ jQuery(document).ready(function(){
 
 	$("#storylineButton").hide();
 	$(".elements").hide();
-	$(".draggable").tooltip({disabled: true});
-	$(".schoolbagImage").hide();
+	// $(".draggable").tooltip({disabled: true});
+	$(".schoolbagImage").show();
 	
-	$(".elements").draggable({
-		revert:"invalid",
-		helper:"clone",
-		cursor:"move",
-		containment:"document",
-		connectWith: "#mainFrame",
-	});
+	// $(".elements").draggable({
+	// 	revert:"invalid",
+	// 	helper:"clone",
+	// 	cursor:"move",
+	// 	containment:"document",
+	// 	connectWith: "#mainFrame",
+	// });
 	
 	$(".schoolbagImage").on("click", function(){
 		$(".schoolbagDialog").dialog({
@@ -58,7 +58,10 @@ jQuery(document).ready(function(){
 			width: $(window).width()*0.5,
 		});
 	});
-	
+
+	$('#newWorldButton').remove();
+
+
 /*	$("#mainFrame").droppable({
 		accept: ".elements",
 		drop: function(event, ui){
@@ -238,9 +241,9 @@ function setupAfterCallsReturns() {
 				"background-size": "cover"
 			});
 
-			$(".elements").show();
+			// $(".elements").show();
 			$(".schoolbagImage").show();
-			$(".draggable").tooltip({disabled: false});
+			// $(".draggable").tooltip({disabled: false});
 			$("#storylineButton").show();
 		} else {
 			choseSceneFromSceneChooser();
