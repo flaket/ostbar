@@ -15,7 +15,7 @@ function addScene(target,previousVersionDialog,index){
 		for (key in sceneList){
 			var scenetype = sceneList[key].sceneType;
 			var sceneId = sceneList[key].sceneId;
-			var div = '<div class="img-wrapper img-wrapper1" name="'+sceneId+'"><div class="img-container">';
+			var div = '<div class="img-wrapper img-wrapper1" id="'+sceneId+'"><div class="img-container">';
 			div += '<img name="' + scenetype.sceneTypeId + '" src="' + scenetype.backgroundAvatar.url + '" width ="200" height="200">';
 			div += '</div></div>';
 
@@ -23,6 +23,7 @@ function addScene(target,previousVersionDialog,index){
 		}
 		chooseScene.html(html);
 
+		$(".img-wrapper").on("dblclick", target , selectSceneInDialog);
 		$(".chooseSceneDialog").dialog({
 			height: $(window).height()*0.8,
 			width: $(window).width()*0.7,
@@ -36,7 +37,12 @@ function addScene(target,previousVersionDialog,index){
 				"Ny Scene": function(){
 					$(".chooseSceneDialog").dialog("close");
 					$("#newWorldDialog").dialog("open");
+					$(".img-wrapper").off("dblclick", selectSceneInDialog);
 					addSceneToGame();
+					if(!currentDialog.sceneClickActionMade){
+						$(target).on("click", sceneFunction);
+						currentDialog.sceneClickActionMade = true;
+					}
 				},
 				"Avbryt": function(){
 					$(this).dialog("close");
@@ -46,10 +52,22 @@ function addScene(target,previousVersionDialog,index){
 			}
 		});
 	};
+	if(!currentDialog.sceneChecked){
+		$(target).off("click", sceneFunction);
+		currentDialog.sceneClickActionMade = false;
+	}
 }
 
-function selectSceneInDialog(){
-	return;
+function selectSceneInDialog(e){
+	var sceneId = e.target.parentNode.parentNode.getAttribute('id');
+	currentDialog.sceneIndex = sceneId;
+	addSceneToElement(currentDialog,getActionTypeByName("TO_SCENE"));
+	if(!currentDialog.sceneClickActionMade){
+		$(e.data).on("click", sceneFunction);
+		currentDialog.sceneClickActionMade = true;
+	}
+	$(".img-wrapper").off("dblclick", selectSceneInDialog);
+	$(".chooseSceneDialog").dialog("close");
 }
 
 
@@ -198,7 +216,6 @@ function addDialog(target,previousVersionDialog,index){
 	if(!currentDialog.dialogChecked){
 		$(target).off("click", dialogFunction);
 		currentDialog.dialogClickActionMade = false;
-		// deleteActionTypeFromElement(currentDialog,getActionTypeByName("DIALOG"));
 	}
 }
 
@@ -227,7 +244,6 @@ function addAnimation(target,previousVersionDialog,index){
 	if(!currentDialog.animationChecked){
 		$(target).off("click", animationFunction);
 		currentDialog.animationClickActionMade = false;
-		// deleteActionTypeFromElement(currentDialog,getActionTypeByName("ANIMATION"));
 	}
 }
 
@@ -242,4 +258,6 @@ function deleteActionTypesWhereChanged(previousVersionDialog){
 		deleteActionTypeFromElement(currentDialog,getActionTypeByName("ANIMATION"));
 	if(!currentDialog.dialogChecked && previousVersionDialog.dialogChecked)
 		deleteActionTypeFromElement(currentDialog,getActionTypeByName("DIALOG"));
+	if(!currentDialog.sceneChecked && previousVersionDialog.sceneChecked)
+		deleteActionTypeFromElement(currentDialog,getActionTypeByName("TO_SCENE"));
 }
