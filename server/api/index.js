@@ -482,6 +482,7 @@ module.exports = function ( app ){
             case 'QUIZ':
                 var result = validator.validate( questions, questionsSchema );
                 
+                console.log('activity post error', util.inspect(result.errors, false, null));
                 if ( result.errors.length ) return requestError( res, { msg: result.errors, param: 'questions' } );
 
                 params = {

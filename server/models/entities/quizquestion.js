@@ -49,7 +49,7 @@ QuizQuestion.initWithData = function ( data, callback ){
     if ( data == null ) return callback( null, false );
 
     var QuizQuestionAlternative = models.QuizQuestionAlternative,
-        SubjectType = SubjectType;
+        SubjectType = models.SubjectType;
 
     async.parallel({
         alternatives: QuizQuestionAlternative.loadAllInQuizQuestion.bind( QuizQuestionAlternative, data.quiz_question_id ),

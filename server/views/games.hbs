@@ -14,6 +14,7 @@
               <td></td>
               <td></td>
               <td></td>
+              <td></td>
           </tr>
       </thead>
       <tbody>
@@ -25,29 +26,20 @@
             <td>
               <ul class="button-group">
                 <label for="edit-game-name-button">{{name}}</label>
-                <input id="edit-game-name-button" type="submit" value="Rediger" class="button tiny success edit-game-name" style="float: right;"/>
+                <input id="edit-game-name-button" type="submit" value="Endre" class="button tiny success edit-game-name" style="float: right;"/>
               </ul>
-              <!-- <div class="control-group">
-                <div class="control-label" style="float: left; vertical-align: middle; width: 70%">
-                  {{name}}
-                </div>
-                <input type="text" value="{{name}}" class="edit-input" style="display: none; float: left; width: 70%;" />
-                <div class="controls" style="float: right; width: 30% text-align: right;">
-                  <a class="editSave" href="#">Rediger</a>
-                </div>
-              </div> -->
             </td>
             <td>
               {{datetimeformat created}}
             </td>
             <td>
               <ul class="button-group">
-                <input id="delete-game-button" type="submit" value="Rediger" class="button small success edit-game" />
+                <input id="edit-game-button" type="submit" value="Rediger spill" class="button small success edit-game" />
               </ul>
             </td>
             <td>
               <ul class="button-group">
-                <input id="delete-game-button" type="submit" value="Spill" class="button small play-game" />
+                <input id="link-game-button" type="submit" value="Lenke" class="button small link-game" />
               </ul>
             </td>
             <td>
@@ -69,16 +61,21 @@
   </form>
 </div>
 
-<div id="delete-game-dialog">
-  <form id="delete-game" method="POST" name="delete-game">
-    <label>Er du sikker på at du vil slette spillet?</label>
-  </form>
-</div>
-
 <div id="edit-game-name-dialog">
   <form id="edit-game-name" method="POST" name="edit-game-name">
     <label>Nytt navn:</label>
     <input type="text" name="name" id="name" />
+  </form>
+</div>
+
+<div id="link-game-dialog">
+  Offentlig lenke til spillet:<br>
+  <span id="game-link-span"></span>
+</div>
+
+<div id="delete-game-dialog">
+  <form id="delete-game" method="POST" name="delete-game">
+    <label>Er du sikker på at du vil slette spillet?</label>
   </form>
 </div>
 
@@ -105,21 +102,6 @@ $(document).ready(function() {
     }
   });
 
-  $( '#delete-game-dialog' ).dialog({
-    autoOpen: false,
-    height: 300,
-    width: 300,
-    modal: true,
-    buttons: {
-      'Slett': function (){
-        document.forms[ 'delete-game' ].submit();
-      },
-      'Avbryt': function (){
-        $( this ).dialog( 'close' );
-      }
-    }
-  });
-
   $( '#edit-game-name-dialog' ).dialog({
     autoOpen: false,
     height: 300,
@@ -132,6 +114,45 @@ $(document).ready(function() {
       'Avbryt': function (){
         $( this ).dialog( 'close' );
       }
+    },
+    show: {
+      effect: "blind",
+      duration: 200
+    }
+  });
+
+  $( '#link-game-dialog' ).dialog({
+    autoOpen: false,
+    height: 300,
+    width: 500,
+    modal: true,
+    buttons: {
+      'Ferdig': function (){
+        $( this ).dialog( 'close' );
+      }
+    },
+    show: {
+      effect: "blind",
+      duration: 200
+    }
+  });
+
+  $( '#delete-game-dialog' ).dialog({
+    autoOpen: false,
+    height: 300,
+    width: 300,
+    modal: true,
+    buttons: {
+      'Slett': function (){
+        document.forms[ 'delete-game' ].submit();
+      },
+      'Avbryt': function (){
+        $( this ).dialog( 'close' );
+      }
+    },
+    show: {
+      effect: "blind",
+      duration: 200
     }
   });
 
@@ -156,12 +177,20 @@ $(document).ready(function() {
     window.location.href = '/game/' + gameId;
   });
 
-  $( '.play-game' ).click( function (){
+  $( '.link-game' ).click( function (){
     var button = $(this);
     var row = button.parent().parent().parent();
     var gameId = parseInt( row.find( '#game-id' ).html() );
 
-    window.location.href = '/play/' + gameId;
+    var url = document.URL;
+    url = url.replace( 'game', 'play');
+    
+    if ( url.lastIndexOf('/') != ( url.length - 1 ) ) url += '/';
+    
+    url += gameId;
+
+    $( '#game-link-span' ).html( '<a href=' + url + '>' + url + '</a>' );
+    $( '#link-game-dialog' ).dialog( 'open' );
   });
 
   $( '.delete-game' ).click( function (){
