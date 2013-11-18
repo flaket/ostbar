@@ -222,8 +222,8 @@ function initialDoubleClickSceneAddingFunction(e){
 				} else {
 					sceneList.push(response);
 					currentScene = response;
-					currentScene.ObjectList = new ObjectList();
-					currentObjectList = currentScene.ObjectList;
+					currentScene.objectList = new ObjectList();
+					currentObjectList = currentScene.objectList;
 					currentGame.initialSceneId = currentScene.sceneId;
 
 					var imgUrl = currentSceneType.backgroundAvatar.url;
