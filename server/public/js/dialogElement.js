@@ -7,7 +7,7 @@ function Dialog(object){
 	this.soundChecked = false;
 	this.div = object;
 	this.element_id = -1;
-	this.elementType_id = -1;
+	this.elementType_id = 1;
 	
 	this.sceneIndex = -1;
 
