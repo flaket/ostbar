@@ -1,5 +1,5 @@
 var initialCallsReturned = 0;
-var initialCallsShouldReturn = 2;
+var initialCallsShouldReturn = 4;
 
 var currentDialog = null;
 var currentObjectList = null;
@@ -21,9 +21,6 @@ function ObjectList(){
 
 jQuery(document).ready(function(){
 	gameId = parseInt(window.location.href.split('/').slice(-1)[0]);
-
-	getActionTypes();
-	getElementTypes();
 
 	$("#storylineButton").hide();
 	$(".elements").hide();
@@ -153,77 +150,12 @@ jQuery(document).ready(function(){
 		return false;
 	});
 
-	$.ajax({
-		type: "GET",
-		url: "/api/scenetype",
-		success: function ( response ){
-			if ( response.redirect ){
-				window.location.href = response.redirect;
-			} else {
 
-				sceneTypes = response;
-
-				var newWorldDialog = $("#newWorldDialog"),
-					imageGrid = newWorldDialog.find('.img-grid');
-				
-				var html = '';
-				for ( key in response ){
-					var scenetype = response[key];
-					var div = '<div class="img-wrapper img-wrapper1"><div class="img-container">';
-					div += '<img name="' + scenetype.sceneTypeId + '" src="' + scenetype.backgroundAvatar.url + '" width ="200" height="200">';
-					div += '</div></div>';
-
-					html += div;
-				}
-				imageGrid.html(html);
-			}
-
-			initialCallsReturned++;
-			setupAfterCallsReturns();
-		},
-		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('get scenetype error:', textStatus, errorThrown);
-		},
-		dataType: "json"
-	});
-
-	$.ajax({
-		type: "GET",
-		url: '/api/game/' + gameId,
-		success: function ( response ){
-			if ( response.redirect ){
-				window.location.href = response.redirect;
-			} else {
-				currentGame = response;
-				if ( currentGame.scenes.length == 0){
-					$("#newWorldButton").show();
-
-				} else {
-					$("#newWorldButton").hide();
-
-					if (currentGame.initialSceneId != null){
-						for ( key in currentGame.scenes ){
-							var scene = currentGame.scenes[key];
-							scene.objectList = new ObjectList();
-							sceneList.push(scene);
-							if ( scene.sceneId == currentGame.initialSceneId ){
-								currentScene = scene;
-								currentObjectList = currentScene.objectList;
-							}
-						}
-					}
-				}
-
-				initialCallsReturned++;
-				setupAfterCallsReturns();
-			}
-		},
-		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('get game error:', textStatus, errorThrown);	
-		}
-	});
-
-
+	getActionTypes();
+	getElementTypes();
+	getSceneTypes();
+	getGame();
+	
 	var keyboardPresent = $( '#keyboardPresent' ).html();
 	console.log(keyboardPresent);
 	if ( keyboardPresent ){
@@ -234,10 +166,10 @@ jQuery(document).ready(function(){
 });
 
 function setupAfterCallsReturns() {
-	console.log(currentScene);
+	console.log("currentScene:",currentScene);
 	if ( initialCallsReturned == initialCallsShouldReturn ){
 		if ( currentScene != null ){
-			currentSceneType = currentScene.sceneType;
+			var currentSceneType = currentScene.sceneType;
 			loadElementsByScene(currentScene.elements);
 			var imgUrl = currentSceneType.backgroundAvatar.url;
 			$("#mainFrame").css({
@@ -285,26 +217,30 @@ function initialDoubleClickSceneAddingFunction(e){
 				is_initial_scene: true
 			},
 			success: function ( response ){
-				sceneList.push(response);
-				currentScene = response;
-				currentScene.ObjectList = new ObjectList();
-				currentObjectList = currentScene.ObjectList;
-				currentGame.initialSceneId = currentScene.sceneId;
+				if ( response.redirect ){
+					window.location.href = response.redirect;
+				} else {
+					sceneList.push(response);
+					currentScene = response;
+					currentScene.objectList = new ObjectList();
+					currentObjectList = currentScene.objectList;
+					currentGame.initialSceneId = currentScene.sceneId;
 
-				var imgUrl = currentSceneType.backgroundAvatar.url;
-				$("#mainFrame").css({
-					"background-image": "url('"+ imgUrl + "')",
-					"background-repeat": "no-repeat",
-					"background-position": "center",
-					"background-size": "cover"
-				});
-				$("#newWorldButton").hide();
-				$(".elements").show();
-				$(".schoolbagImage").show();
-				$(".draggable").tooltip({disabled: false});
-				$("#storylineButton").show();
-				$("#newWorldDialog").dialog("close");
-				$(".img-grid").off("dblclick", "img", initialDoubleClickSceneAddingFunction);
+					var imgUrl = currentSceneType.backgroundAvatar.url;
+					$("#mainFrame").css({
+						"background-image": "url('"+ imgUrl + "')",
+						"background-repeat": "no-repeat",
+						"background-position": "center",
+						"background-size": "cover"
+					});
+					$("#newWorldButton").hide();
+					$(".elements").show();
+					$(".schoolbagImage").show();
+					$(".draggable").tooltip({disabled: false});
+					$("#storylineButton").show();
+					$("#newWorldDialog").dialog("close");
+					$(".img-grid").off("dblclick", "img", initialDoubleClickSceneAddingFunction);
+				}
 			},
 			error: function ( jqXHR, textStatus, errorThrown ){
 				console.log('post scene error:', jqXHR, textStatus, errorThrown);
@@ -341,13 +277,20 @@ function doubleClickSceneAddingFunction(e){
 				scenetype_id: currentSceneType.sceneTypeId,
 			},
 			success: function ( response ){
-				console.log(response);
-				sceneList.push(response);
-				currentDialog.sceneIndex = response.sceneId;
-				addSceneToElement(currentDialog,getActionTypeByName("TO_SCENE"));
+				if ( response.redirect ){
+					window.location.href = response.redirect;
+				} else {
+					var scene = response;
+					scene.objectList = new ObjectList();
+					console.log(scene);
+					sceneList.push(scene);
+					currentDialog.sceneIndex = response.sceneId;
 
-				$(".img-grid").off("dblclick", "img", doubleClickSceneAddingFunction);
-				$("#newWorldDialog").dialog("close");
+					$(".img-grid").off("dblclick", "img", doubleClickSceneAddingFunction);
+					addSceneToElement(currentDialog,getActionTypeByName("TO_SCENE"));
+					
+					$("#newWorldDialog").dialog("close");
+				}
 			},
 			error: function ( jqXHR, textStatus, errorThrown ){
 				console.log('post scene error:', jqXHR, textStatus, errorThrown);
@@ -359,9 +302,10 @@ function doubleClickSceneAddingFunction(e){
 
 function loadSelectedScene(scene){
 
-	currentScene = response;
-	currentScene.ObjectList = new ObjectList();
-	currentObjectList = currentScene.ObjectList;
+	currentScene = scene;
+	currentObjectList = currentScene.objectList;
+	
+	var currentSceneType = currentScene.sceneType;
 
 	var imgUrl = currentSceneType.backgroundAvatar.url;
 	$("#mainFrame").css({
@@ -370,8 +314,14 @@ function loadSelectedScene(scene){
 		"background-position": "center",
 		"background-size": "cover"
 	});
-
 	removeElementsFromView();
+	getUpdatedElements(function(error,success){
+		if(error){ console.log("Failed to get Updated Scenes:" + error); return;}
+		if(success){
+			loadElementsByScene(currentScene.elements);
+		}
+	});
+	console.log(sceneList);
 }
 
 function saveElements(){
@@ -379,7 +329,6 @@ function saveElements(){
 	for(var i = 0; i < currentObjectList.objectList.length; i++){
 		var temp = currentObjectList.objectList[i];
 		var elemId = temp.element_id;
-		// console.log(temp);
 
 		if (temp.element_id < 0){
 			$.ajax({
@@ -397,8 +346,7 @@ function saveElements(){
 					if ( response.redirect ){
 						window.location.href = response.redirect;
 					} else {
-						console.log("new element:")
-						console.log(response);
+						console.log("new element: ", response)
 						temp.element_id = response.elementId;
 					}
 				},
@@ -408,6 +356,7 @@ function saveElements(){
 				dataType: "json"
 			});
 		}
+		//update
 		else{
 			$.ajax({
 				type: "POST",
@@ -424,8 +373,7 @@ function saveElements(){
 					if ( response.redirect ){
 						window.location.href = response.redirect;
 					} else {
-						console.log("updated element:");
-						console.log(response);
+						console.log("updated element: ",response);
 					}
 				},
 				error: function ( jqXHR, textStatus, errorThrown ){
@@ -438,9 +386,7 @@ function saveElements(){
 }
 
 function loadElementsByScene(elements){
-	console.log("");
 	for(element in elements){
-		// console.log(elements[element]);
 		var elem = elements[element];
 		var elementType = getElementTypeById(elem.elementTypeId);
 		var url = elementType.avatar.url;
@@ -512,7 +458,7 @@ function loadElementsByScene(elements){
 		currentObjectList.objectList.push(dia);
 	
 	};
-	console.log(currentScene);
+	console.log("current Scene with elements loaded", currentScene);
 }
 
 function removeElementsFromView(){
@@ -690,7 +636,7 @@ function deleteActivityByIdFromElement(elementID,activityID){
 			if ( response.redirect ){
 				window.location.href = response.redirect;
 			} else {
-				console.log(response);
+				console.log("Deleted Activity", response);
 
 			}
 		},
@@ -712,8 +658,7 @@ function addDialogDataToElement(dialogObject,actionType){
 			if ( response.redirect ){
 				window.location.href = response.redirect;
 			} else {
-				console.log(response);
-
+				console.log("added dialog action to Element",response);
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
@@ -734,8 +679,7 @@ function addAnimationToElement(dialogObject,actionType){
 			if ( response.redirect ){
 				window.location.href = response.redirect;
 			} else {
-				console.log(response);
-
+				console.log("added Animation action to Element",response);
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
@@ -756,8 +700,7 @@ function addSceneToElement(dialogObject,actionType){
 			if ( response.redirect ){
 				window.location.href = response.redirect;
 			} else {
-				console.log(response);
-
+				console.log("added Scene action to Element",response);
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
@@ -777,8 +720,7 @@ function deleteActionTypeFromElement(dialogObject,actionType){
 			if ( response.redirect ){
 				window.location.href = response.redirect;
 			} else {
-				console.log(response);
-
+				console.log("Deleted action",response);
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
@@ -795,9 +737,11 @@ function getActionTypes(){
 			if ( response.redirect ){
 				window.location.href = response.redirect;
 			} else {
-				console.log(response);
+				console.log("ActionTypes",response);
 				actionTypes = response;
 			}
+			initialCallsReturned++;
+			setupAfterCallsReturns();
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
 			console.log('get activityType error:', jqXHR, "", textStatus, "", errorThrown);
@@ -813,9 +757,11 @@ function getElementTypes(){
 			if ( response.redirect ){
 				window.location.href = response.redirect;
 			} else {
-				console.log(response);
+				console.log("ElementTypes",response);
 				elementTypes = response;
 			}
+			initialCallsReturned++;
+			setupAfterCallsReturns();
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
 			console.log('get elementType error:', jqXHR, "", textStatus, "", errorThrown);
@@ -833,8 +779,131 @@ function getActionTypeByName(nameString){
 function getElementTypeById(elementTypeId){
 	for (key in elementTypes){
 		if(elementTypes[key].elementTypeId == elementTypeId){
-			// console.log(elementTypes[key]);
 			return elementTypes[key];
 		}
 	}
 }
+
+function getSceneTypes(){
+	$.ajax({
+		type: "GET",
+		url: "/api/scenetype",
+		success: function ( response ){
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+
+				sceneTypes = response;
+
+				var newWorldDialog = $("#newWorldDialog"),
+					imageGrid = newWorldDialog.find('.img-grid');
+				
+				var html = '';
+				for ( key in response ){
+					var scenetype = response[key];
+					var div = '<div class="img-wrapper img-wrapper1"><div class="img-container">';
+					div += '<img name="' + scenetype.sceneTypeId + '" src="' + scenetype.backgroundAvatar.url + '" width ="200" height="200">';
+					div += '</div></div>';
+
+					html += div;
+				}
+				imageGrid.html(html);
+			}
+
+			initialCallsReturned++;
+			setupAfterCallsReturns();
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('get scenetype error:', textStatus, errorThrown);
+		},
+		dataType: "json"
+	});
+}
+
+function getGame(){
+	$.ajax({
+		type: "GET",
+		url: '/api/game/' + gameId,
+		success: function ( response ){
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				currentGame = response;
+				if ( currentGame.scenes.length == 0){
+					$("#newWorldButton").show();
+
+				} else {
+					$("#newWorldButton").hide();
+
+					if (currentGame.initialSceneId != null){
+						for ( key in currentGame.scenes ){
+							var scene = currentGame.scenes[key];
+							scene.objectList = new ObjectList();
+							sceneList.push(scene);
+							if ( scene.sceneId == currentGame.initialSceneId ){
+								currentScene = scene;
+								currentObjectList = currentScene.objectList;
+							}
+						}
+					}
+				}
+
+				initialCallsReturned++;
+				setupAfterCallsReturns();
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('get game error:', textStatus, errorThrown);	
+		}
+	});
+}
+
+function getUpdatedElements(callBack){
+	$.ajax({
+		type: "GET",
+		url: '/api/game/' + gameId,
+		success: function ( response ){
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				var error = response.error;
+				currentGame = response;
+				
+				for ( key in currentGame.scenes ){
+					sceneList[key].elements.length = 0;
+					var scene = currentGame.scenes[key];
+					sceneList[key].elements = scene.elements;
+				}
+				console.log(sceneList);
+				return callBack(error,true);
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('get game error:', textStatus, errorThrown);
+			return callBack(error,false);
+		}
+	});
+}
+
+function getSceneById(sceneId){
+	for (var i = 0; i < sceneList.length; i++) {
+		if(sceneList[i].sceneId == sceneId)
+			return sceneList[i];
+	};
+}
+
+// function getElementInScene(scene,elementId){
+// 	for (var i = 0; i < scene.elements.length; i++) {
+// 		if(scene.elements[i].elementId == elementId)
+// 			return i;
+// 	};
+// }
+
+
+// function updateElementAtPositionInScene(scene,index,elementObject){
+// 	scene.elements[index].actionTypes = elementObject.actionTypes;
+// 	scene.elements[index].frameHeight = parseFloat(elementObject.frameHeight);
+// 	scene.elements[index].frameWidth = parseFloat(elementObject.frameWidth);
+// 	scene.elements[index].frameX = parseFloat(elementObject.frameX);
+// 	scene.elements[index].frameY = parseFloat(elementObject.frameY);
+// }

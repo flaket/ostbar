@@ -1,5 +1,6 @@
 function sceneFunction(e){
-	console.log("such scene, wow")
+	console.log("changed scene");
+	loadSelectedScene(getSceneById(currentObjectList.objectList[inList(currentObjectList.objectList,e.target)].sceneIndex));
 }
 
 function dialogFunction(e){

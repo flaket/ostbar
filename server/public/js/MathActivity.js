@@ -184,7 +184,12 @@ function initializeMathDialog(){
 			my: "center top",
 			at: "center top",
 			of: "#mainFrame"
-		}
+		},
+		buttons:{
+			"Lukk": function(){
+				$(".mathActivity").dialog("close");
+			},
+		},
 	});
 	
 }
