@@ -1,5 +1,7 @@
 var currentQuestion = [];
 var correctQuestionsAnswered = 0;
+var alternative = "";
+var correct = "";
 
 function QuizActivity(response){
 	this.questionsAnswered = 0;
@@ -199,6 +201,28 @@ function finalizeQuiz(){
 	}
 
 	console.log(currentQuestion);
+
+	for(var i=0; i<currentDialog.activityObject.questions.length; i++){
+		console.log(currentDialog.activityObject.questions[i].constructor.name == "Object")
+		if(currentDialog.activityObject.questions[i].constructor.name == "Object"){
+			var objectAlternatives = currentDialog.activityObject.questions[i].alternatives;
+			var correctAlternativeId = currentDialog.activityObject.questions[i].correctAlternatives;
+			for(var j=0; j<objectAlternatives.length; j++){
+				for(var n=0; n<correctAlternativeId.length; n++){
+					if(objectAlternatives[j].quizQuestionAlternativeId == correctAlternativeId[n]){
+						currentDialog.activityObject.questions[i].alternatives[j].correct = "true";
+					}
+					else{
+						currentDialog.activityObject.questions[i].alternatives[j].correct = "false";
+					}
+					
+				}
+			}
+		}
+		else{
+			console.log("heisann...");
+		}
+	}
 	
 	saveActivityByElementId(currentDialog.activityIndex, currentDialog.activityObject, currentDialog.element_id);
 	console.log("lagrer...");

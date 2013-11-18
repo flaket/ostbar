@@ -1,4 +1,4 @@
-function Dialog(object){
+function Dialog(object,elementTypeId){
 	this.sceneChecked = false;
 	this.activityChecked = false;
 	this.dialogChecked = false;
@@ -7,7 +7,7 @@ function Dialog(object){
 	this.soundChecked = false;
 	this.div = object;
 	this.element_id = -1;
-	this.elementType_id = 1; //TODO, fix for proper elementtype
+	this.elementType_id = elementTypeId; //TODO, fix for proper elementtype
 	
 	this.sceneIndex = -1;
 

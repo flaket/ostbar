@@ -69,7 +69,7 @@ QuizQuestion.initWithData = function ( data, callback ){
 
 QuizQuestion.create = function ( params, callback ){
     var question = params.question,
-        timeLimit = parseInt(params.timeLimit),
+        timeLimit = parseInt(params.timeLimit) || null,
         subjectId = params.subjectId,
         alternatives = params.alternatives,
         activityQuizId = params.activityQuizId;
