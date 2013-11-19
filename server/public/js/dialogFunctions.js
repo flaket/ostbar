@@ -118,41 +118,41 @@ function addActivity(target,previousVersionDialog,index){
 						currentDialog.activityClickActionMade = true;
 					}
 				},
-				"Språk aktivitet": function(){
-					if(currentDialog.activityObject == null || currentDialog.activityIndex != 1){
-						if(currentDialog.activityIndex > -1){
-							if(currentDialog.activityIndex == 0)
-								$(target).off("click", mathActivityFunction);
-							if(currentDialog.activityIndex == 2)
-								$(target).off("click", quizActivityFunction);
-							if(currentDialog.activityIndex != 1){
-								if(currentDialog.activityObject.activity_id >-1){
-									deleteActivityByIdFromElement(currentDialog.element_id,currentDialog.activityObject.activity_id);
-									currentDialog.activityObject.activity_id = -1;
-								}
-							}
-							currentDialog.activityClickActionMade = false;
-						}
-						currentDialog.activityIndex = 1;
-						var languageObject = new LanguageActivity();
-						console.log(currentObjectList.objectList);
-						currentDialog.activityObject = languageObject;
-						console.log("new languageObject");
-						console.log(currentDialog);
-						console.log("\n");
-						createNewLanguageActivity(languageObject,true);
-					}
-					else if(currentDialog.activityObject!=null && currentDialog.activityIndex == 1){
-						console.log("refresh language object");
-						console.log(currentDialog);
-						console.log("\n");
-						createNewLanguageActivity(currentDialog.activityObject,true);
-					}
-					if(!currentDialog.activityClickActionMade && currentDialog.activityIndex == 1){
-						$(target).on("click", languageActivityFunction);
-						currentDialog.activityClickActionMade = true;
-					}
-				},
+				// "Språk aktivitet": function(){
+				// 	if(currentDialog.activityObject == null || currentDialog.activityIndex != 1){
+				// 		if(currentDialog.activityIndex > -1){
+				// 			if(currentDialog.activityIndex == 0)
+				// 				$(target).off("click", mathActivityFunction);
+				// 			if(currentDialog.activityIndex == 2)
+				// 				$(target).off("click", quizActivityFunction);
+				// 			if(currentDialog.activityIndex != 1){
+				// 				if(currentDialog.activityObject.activity_id >-1){
+				// 					deleteActivityByIdFromElement(currentDialog.element_id,currentDialog.activityObject.activity_id);
+				// 					currentDialog.activityObject.activity_id = -1;
+				// 				}
+				// 			}
+				// 			currentDialog.activityClickActionMade = false;
+				// 		}
+				// 		currentDialog.activityIndex = 1;
+				// 		var languageObject = new LanguageActivity();
+				// 		console.log(currentObjectList.objectList);
+				// 		currentDialog.activityObject = languageObject;
+				// 		console.log("new languageObject");
+				// 		console.log(currentDialog);
+				// 		console.log("\n");
+				// 		createNewLanguageActivity(languageObject,true);
+				// 	}
+				// 	else if(currentDialog.activityObject!=null && currentDialog.activityIndex == 1){
+				// 		console.log("refresh language object");
+				// 		console.log(currentDialog);
+				// 		console.log("\n");
+				// 		createNewLanguageActivity(currentDialog.activityObject,true);
+				// 	}
+				// 	if(!currentDialog.activityClickActionMade && currentDialog.activityIndex == 1){
+				// 		$(target).on("click", languageActivityFunction);
+				// 		currentDialog.activityClickActionMade = true;
+				// 	}
+				// },
 				"Quiz aktivitet": function(){
 					if(currentDialog.activityObject == null || currentDialog.activityIndex != 2){
 						if(currentDialog.activityIndex > -1){
@@ -199,9 +199,11 @@ function addActivity(target,previousVersionDialog,index){
 		if(currentDialog.activityIndex == 2)
 			$(target).off("click", quizActivityFunction);
 		currentDialog.activityClickActionMade = false;
-		if(currentDialog.activityObject.activity_id >-1){
-			deleteActivityByIdFromElement(currentDialog.element_id,currentDialog.activityObject.activity_id);
-			currentDialog.activityObject.activity_id = -1;
+		if(currentDialog.activityObject != null){
+			if(currentDialog.activityObject.activity_id >-1){
+				deleteActivityByIdFromElement(currentDialog.element_id,currentDialog.activityObject.activity_id);
+				currentDialog.activityObject.activity_id = -1;
+			}
 		}
 	}
 }

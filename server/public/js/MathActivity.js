@@ -231,7 +231,7 @@ function afterParametersAreSetView(){
 	$(".operatorsAndOperands").css({"display": "none"})
 	
 	$(".question").css({"display": "block"});
-	$("#questionHeader").text("Hva er svaret, (husk at * har presedens):");
+	$("#questionHeader").text("Hva er svaret, (husk at man må gange før man legger sammen eller trekker fra) :");
 	
 	$(".equals").text("=").css({"display": "inline"});
 	$(".answer").css({"display": "inline"});

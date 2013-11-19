@@ -26,14 +26,6 @@ jQuery(document).ready(function(){
 	$(".draggable").tooltip({disabled: true});
 	$(".schoolbagImage").hide();
 	
-	// $(".elements").draggable({
-	// 	revert:"invalid",
-	// 	helper:"clone",
-	// 	cursor:"move",
-	// 	containment:"document",
-	// 	connectWith: "#mainFrame",
-	// });
-	
 	$(".schoolbagImage").on("click", function(){
 		$(".schoolbagDialog").dialog({
 			resizable: false,
