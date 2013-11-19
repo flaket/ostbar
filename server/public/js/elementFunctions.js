@@ -4,6 +4,7 @@ function sceneFunction(e){
 }
 
 function dialogFunction(e){
+	console.log("objekt liste", currentObjectList);
 	$("#writtenText").val(currentObjectList.objectList[inList(currentObjectList.objectList,e.target)].dialogData);
 	$(".writtenDialog").dialog({
 		modal: true,
