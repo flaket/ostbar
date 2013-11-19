@@ -90,6 +90,12 @@ function addActivity(target,previousVersionDialog,index){
 							if(currentDialog.activityIndex == 2)
 								$(target).off("click", quizActivityFunction);
 							currentDialog.activityClickActionMade = false;
+							if(currentDialog.activityIndex != 0){
+								if(currentDialog.activityObject.activity_id >-1){
+									deleteActivityByIdFromElement(currentDialog.element_id,currentDialog.activityObject.activity_id);
+									currentDialog.activityObject.activity_id = -1;
+								}
+							}
 						}
 						currentDialog.activityIndex = 0;
 						var mathObject = new MathActivity();						
@@ -117,8 +123,14 @@ function addActivity(target,previousVersionDialog,index){
 						if(currentDialog.activityIndex > -1){
 							if(currentDialog.activityIndex == 0)
 								$(target).off("click", mathActivityFunction);
-							if(currentDialog.activityIndex == 1)
+							if(currentDialog.activityIndex == 2)
 								$(target).off("click", quizActivityFunction);
+							if(currentDialog.activityIndex != 1){
+								if(currentDialog.activityObject.activity_id >-1){
+									deleteActivityByIdFromElement(currentDialog.element_id,currentDialog.activityObject.activity_id);
+									currentDialog.activityObject.activity_id = -1;
+								}
+							}
 							currentDialog.activityClickActionMade = false;
 						}
 						currentDialog.activityIndex = 1;
@@ -148,6 +160,12 @@ function addActivity(target,previousVersionDialog,index){
 								$(target).off("click", mathActivityFunction);
 							if(currentDialog.activityIndex == 1)
 								$(target).off("click", languageActivityFunction);
+							if(currentDialog.activityIndex != 2){
+								if(currentDialog.activityObject.activity_id >-1){
+									deleteActivityByIdFromElement(currentDialog.element_id,currentDialog.activityObject.activity_id);
+									currentDialog.activityObject.activity_id = -1;
+								}
+							}
 							currentDialog.activityClickActionMade = false;
 						}
 						currentDialog.activityIndex = 2;
@@ -181,6 +199,10 @@ function addActivity(target,previousVersionDialog,index){
 		if(currentDialog.activityIndex == 2)
 			$(target).off("click", quizActivityFunction);
 		currentDialog.activityClickActionMade = false;
+		if(currentDialog.activityObject.activity_id >-1){
+			deleteActivityByIdFromElement(currentDialog.element_id,currentDialog.activityObject.activity_id);
+			currentDialog.activityObject.activity_id = -1;
+		}
 	}
 }
 

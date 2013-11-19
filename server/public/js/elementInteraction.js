@@ -139,6 +139,7 @@ jQuery(document).ready(function(){
 					$('input[type=checkbox]').attr('checked', false);
 					$("#effectTypes").attr("disabled", true);
 					$("#button").attr("disabled", true);
+					deleteElementById(currentDialog.element_id);
 					currentObjectList.objectList.splice(index,1); //removes from the list
 					$(parent).remove();
 					$(this).dialog("close");
@@ -196,7 +197,6 @@ function choseSceneFromSceneChooser() {
 }
 
 function initialDoubleClickSceneAddingFunction(e){
-	console.log(e);
 	var sceneTypeId = e.target.getAttribute('name');
 
 	var currentSceneType = null;
@@ -385,6 +385,24 @@ function saveElements(){
 			});
 		}
 	}
+}
+
+function deleteElementById(elementId){
+	$.ajax({
+		type: "DELETE",
+		url: "/api/element/"  +elementId,
+		success: function (response) {
+			if ( response.redirect ){
+				window.location.href = response.redirect;
+			} else {
+				console.log("Deleted element: ",response);
+			}
+		},
+		error: function ( jqXHR, textStatus, errorThrown ){
+			console.log('update element error:', jqXHR, textStatus, errorThrown);
+		},
+		dataType: "json"
+	});
 }
 
 function loadElementsByScene(elements){
@@ -897,22 +915,6 @@ function getSceneById(sceneId){
 	};
 }
 
-// function getElementInScene(scene,elementId){
-// 	for (var i = 0; i < scene.elements.length; i++) {
-// 		if(scene.elements[i].elementId == elementId)
-// 			return i;
-// 	};
-// }
-
-
-// function updateElementAtPositionInScene(scene,index,elementObject){
-// 	scene.elements[index].actionTypes = elementObject.actionTypes;
-// 	scene.elements[index].frameHeight = parseFloat(elementObject.frameHeight);
-// 	scene.elements[index].frameWidth = parseFloat(elementObject.frameWidth);
-// 	scene.elements[index].frameX = parseFloat(elementObject.frameX);
-// 	scene.elements[index].frameY = parseFloat(elementObject.frameY);
-// }
-
 function loadElementTypesIntoSideBar(){
 	var sidebar = $("#customSidebar");
 	
@@ -923,7 +925,7 @@ function loadElementTypesIntoSideBar(){
 		var name = elementTypes[i].avatar.url;
 		name = name.split(".")[0];
 		name = name.split("/").slice(-1).toString();
-		console.log(name);
+		// console.log(name);
 		var div = '<div class="elements" id="'+elementTypeId+'">';
 		div += '<img name="' + name + '" src="' + url + '" width ="100" height="150">';
 		div += '</div>';
