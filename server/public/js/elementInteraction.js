@@ -516,6 +516,7 @@ function saveActivityByElementId(activityIndex,activityObject,elementID){
 					} else {
 						//console.log(response);
 						activityObject.activity_id = response.activityId;
+						console.log(response);
 					}
 				},
 				error: function ( jqXHR, textStatus, errorThrown ){
@@ -544,7 +545,6 @@ function saveActivityByElementId(activityIndex,activityObject,elementID){
 						window.location.href = response.redirect;
 					} else {
 						console.log(response);
-						activityObject.activity_id = response.activityId;
 					}
 				},
 				error: function ( jqXHR, textStatus, errorThrown ){
@@ -568,7 +568,6 @@ function saveActivityByElementId(activityIndex,activityObject,elementID){
 						window.location.href = response.redirect;
 					} else {
 						//console.log(response);
-						activityObject.activity_id = response.activityId;
 					}
 				},
 				error: function ( jqXHR, textStatus, errorThrown ){
