@@ -432,7 +432,6 @@ function loadElementsByScene(elements){
 		
 	}
 	var temp = document.getElementsByClassName("element");
-	// console.log(temp);
 
 	if(currentObjectList.objectList.length>0){
 		currentObjectList.objectList.length = 0;
@@ -524,6 +523,7 @@ function saveActivityByElementId(activityIndex,activityObject,elementID){
 				dataType: "json"
 			});
 		}
+		//TODO, add language (activityIndex == 1)
 		else if(activityIndex == 2){
 			$.ajax({
 				type: "POST",
@@ -577,6 +577,7 @@ function saveActivityByElementId(activityIndex,activityObject,elementID){
 				dataType: "json"
 			});
 		}
+		//TODO, add language (activityIndex == 1)
 		else if(activityIndex == 2){
 			$.ajax({
 				type: "POST",

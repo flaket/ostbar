@@ -295,7 +295,7 @@ function checkAnswer(){
 		setTimeout(function(){
 			if(currentMathObject.questionsAnswered == 9){
 				$(".numberOfQuestionsAnswered").text(currentMathObject.questionsAnswered+1);
-				alert("Du svarte riktig på " + currentMathObject.correctAnswers + " sporsmål av totalt 10 sporsmål");
+				alert("Du svarte riktig på " + currentMathObject.correctAnswers + " spørsmål av totalt 10 spørsmål");
 				$(".mathActivity").dialog("close");
 			}
 			if(currentMathObject.questionsAnswered!=9 && $(".answerField").val()!=""){
@@ -453,7 +453,7 @@ function chooseRandomOperators(possibleNumbersOfOperators){
 }
 
 function getActiveOperators(mathObject){
-	var arr = mathObject.activeOperators.slice(0); //clone
+	var arr = mathObject.activeOperators.slice(0);
 	var index = 0;
 	while(index < arr.length){
 		if(arr[index]<=-1){
