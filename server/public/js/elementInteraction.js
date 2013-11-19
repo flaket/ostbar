@@ -324,10 +324,10 @@ function loadScenecallBack(){
 		var currentSceneType = currentScene.sceneType;
 		var imgUrl = currentSceneType.backgroundAvatar.url;
 		$("#mainFrame").css({
-		"background-image": "url('"+ imgUrl + "')",
-		"background-repeat": "no-repeat",
-		"background-position": "center",
-		"background-size": "cover"
+			"background-image": "url('"+ imgUrl + "')",
+			"background-repeat": "no-repeat",
+			"background-position": "center",
+			"background-size": "cover"
 		});
 		$("#mainFrame").fadeIn();
 		getUpdatedElements(function(error,success){
