@@ -212,12 +212,12 @@ function addDialog(target,previousVersionDialog,index){
 	if(currentDialog.dialogChecked){
 		//make a new dialog
 		$(".userInputDialog").dialog({
-			title: "type in dialog",
+			title: "Skriv en dialog",
 			height: $(window).height()*0.5,
 			buttons:{
 				"Bekreft": function(){
 					if(!$("#dialogText").val()){
-						alert("please type in a dialog");
+						alert("Skriv inn en dialog");
 					}
 					else{
 						if(!currentDialog.dialogClickActionMade){
