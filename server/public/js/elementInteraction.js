@@ -312,23 +312,32 @@ function loadSelectedScene(scene){
 	currentScene = scene;
 	currentObjectList = currentScene.objectList;
 	
-	var currentSceneType = currentScene.sceneType;
 
-	var imgUrl = currentSceneType.backgroundAvatar.url;
-	$("#mainFrame").css({
+	removeElementsFromView();
+	$("#mainFrame").effect("fade",5,loadScenecallBack);
+
+	
+	console.log(sceneList);
+}
+
+function loadScenecallBack(){
+	setTimeout(function(){
+		var currentSceneType = currentScene.sceneType;
+		var imgUrl = currentSceneType.backgroundAvatar.url;
+		$("#mainFrame").css({
 		"background-image": "url('"+ imgUrl + "')",
 		"background-repeat": "no-repeat",
 		"background-position": "center",
 		"background-size": "cover"
-	});
-	removeElementsFromView();
-	getUpdatedElements(function(error,success){
+		});
+		$("#mainFrame").fadeIn();
+		getUpdatedElements(function(error,success){
 		if(error){ console.log("Failed to get Updated Scenes:" + error); return;}
 		if(success){
 			loadElementsByScene(currentScene.elements);
 		}
 	});
-	console.log(sceneList);
+	},10);
 }
 
 function saveElements(){
