@@ -312,7 +312,6 @@ function loadSelectedScene(scene){
 	currentScene = scene;
 	currentObjectList = currentScene.objectList;
 	
-
 	removeElementsFromView();
 	$("#mainFrame").effect("fade",5,loadScenecallBack);
 
@@ -332,9 +331,9 @@ function loadScenecallBack(){
 		});
 		$("#mainFrame").fadeIn();
 		getUpdatedElements(function(error,success){
-		if(error){ console.log("Failed to get Updated Scenes:" + error); return;}
-		if(success){
-			loadElementsByScene(currentScene.elements);
+			if(error){ console.log("Failed to get Updated Scenes:" + error); return;}
+			if(success){
+				loadElementsByScene(currentScene.elements);
 		}
 	});
 	},10);
