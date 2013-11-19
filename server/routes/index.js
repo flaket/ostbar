@@ -191,8 +191,6 @@ module.exports.mygames = function ( req, res ){
             }
 
             Game.loadAllForOtherUsersSparse( req.user.userId, function ( error, otherGames ){
-                console.log('got othergames', otherGames);
-
                 if ( error ){
                     return res.render( 'error', { error: error } );
                 }
