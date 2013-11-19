@@ -16,6 +16,9 @@ function Game( data ){
     this.goal = data.goal;
     this.created = data.created;
     this.deleted = data.deleted;
+    if ( data.user ){
+        this.createdBy = data.user.username;
+    }
 }
 
 Game.prototype = new Entity();
@@ -54,6 +57,26 @@ Game.loadAllForUser = function ( userId, callback ){
     });
 }
 
+Game.loadAllForUserSparse = function ( userId, callback ){
+    if ( userId == null ) return callback( null, false );
+
+    db.query( 'SELECT * FROM game WHERE user_id = ?', userId, function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        async.map( rows, Game.initWithDataSparse, callback );
+    });
+}
+
+Game.loadAllForOtherUsersSparse = function ( userId, callback ){
+    if ( userId == null ) return callback( null, false );
+
+    db.query( 'SELECT * FROM game WHERE NOT user_id = ?', userId, function ( error, rows, fields ){
+        if ( error ) return callback( error, false );
+
+        async.map( rows, Game.initWithDataSparse, callback );
+    });
+}
+
 Game.loadAll = function ( callback ){
     db.query( 'SELECT * FROM game', function ( error, rows, fields ){
         if ( error ) return callback( error, false );
@@ -81,6 +104,20 @@ Game.initWithData = function ( data, callback ){
         callback(null,  new Game( data ) );
     });
 }
+
+Game.initWithDataSparse = function ( data, callback ){
+
+    var User = models.User;
+
+    async.parallel({
+        user: User.loadById.bind( User, data.user_id )
+    },
+    function ( error, results ){
+        data.user = results.user;
+
+        callback( null, new Game( data ) );
+    });
+};
 
 Game.create = function ( userId, name, callback ){
     if ( userId == null || name == null ) return callback( null, false );
