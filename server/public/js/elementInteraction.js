@@ -68,8 +68,9 @@ function setupAfterCallsReturns() {
 		} else {
 			if(keyboardPresent){
 				choseSceneFromSceneChooser();
-			else
+			} else {
 				playMode();
+			}
 		}
 	}
 }
