@@ -72,6 +72,7 @@ function setupAfterCallsReturns() {
 }
 
 function playMode(){
+	$("#newWorldButton").hide();
 	//should show the "backpack" probably and maybe other stuff needed when playing the game
 }
 
