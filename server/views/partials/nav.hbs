@@ -1,13 +1,22 @@
 <nav class="top-bar">
     <ul class="title-area">
-        <li class="name">
-        <h1><a href="/">TEGF - The Educational Game Framework</a></h1>
+        <li class="name hide-for-small">
+            <h1><a href="/">TEGF - The Educational Game Framework</a></h1>
+        </li>
+        <li class="name show-for-small">
+            <h1><a href="/">TEGF</a></h1>
         </li>
         <li class="toggle-topbar menu-icon"><a href=""><span>Menu</span></a></li>
     </ul>
 
     <section class="top-bar-section">
         <ul class="right">
+            {{#if game}}
+            <li style="is_hover: false;">
+                <span style="line-height: 45px; font-family: Raleway, sans-serif; font-size: 17px; font-style: normal; font-weight: bold;">{{game.name}}&nbsp;&nbsp;&nbsp;</span>
+            </li>
+            <li class="divider"></li>
+            {{/if}}
             {{#if user}}
             <li><a href="/game">Mine spill</a></li>
             <li class="has-dropdown"><a href="/account">Min brukerkonto</a>

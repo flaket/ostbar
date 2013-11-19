@@ -193,40 +193,40 @@ function finalizeQuiz(){
 
 	if( (!$("#quizQuestion").val().length > 0) || (!$("#alt1").val().length > 0) || (!$("#alt2").val().length > 0) || (!$("#alt3").val().length > 0) 
 		|| ( (!$("#checkAlt1").is(":checked")) && (!$("#checkAlt2").is(":checked")) && (!$("#checkAlt3").is(":checked")) ) ){
-		$(".quizActivity").dialog("close");
+		resetFields(false);
+		//$(".quizActivity").dialog("close");
 	}
 	else{
 		resetFields(false);
-		$(".quizActivity").dialog("close");
-	}
 
-	console.log(currentQuestion);
-
-	for(var i=0; i<currentDialog.activityObject.questions.length; i++){
+		for(var i=0; i<currentDialog.activityObject.questions.length; i++){
 		console.log(currentDialog.activityObject.questions[i].constructor.name == "Object")
-		if(currentDialog.activityObject.questions[i].constructor.name == "Object"){
-			var objectAlternatives = currentDialog.activityObject.questions[i].alternatives;
-			var correctAlternativeId = currentDialog.activityObject.questions[i].correctAlternatives;
-			for(var j=0; j<objectAlternatives.length; j++){
-				for(var n=0; n<correctAlternativeId.length; n++){
-					if(objectAlternatives[j].quizQuestionAlternativeId == correctAlternativeId[n]){
-						currentDialog.activityObject.questions[i].alternatives[j].correct = "true";
+			if(currentDialog.activityObject.questions[i].constructor.name == "Object"){
+				var objectAlternatives = currentDialog.activityObject.questions[i].alternatives;
+				var correctAlternativeId = currentDialog.activityObject.questions[i].correctAlternatives;
+				for(var j=0; j<objectAlternatives.length; j++){
+					for(var n=0; n<correctAlternativeId.length; n++){
+						if(objectAlternatives[j].quizQuestionAlternativeId == correctAlternativeId[n]){
+							currentDialog.activityObject.questions[i].alternatives[j].correct = "true";
+						}
+						else{
+							currentDialog.activityObject.questions[i].alternatives[j].correct = "false";
+						}
+						
 					}
-					else{
-						currentDialog.activityObject.questions[i].alternatives[j].correct = "false";
-					}
-					
 				}
 			}
+			else{
+				console.log("heisann...");
+			}
 		}
-		else{
-			console.log("heisann...");
-		}
-	}
-	
-	saveActivityByElementId(currentDialog.activityIndex, currentDialog.activityObject, currentDialog.element_id);
-	console.log("lagrer...");
+		
+		saveActivityByElementId(currentDialog.activityIndex, currentDialog.activityObject, currentDialog.element_id);
+		console.log("lagrer...");
+		console.log(currentQuestion);
 
+		$(".quizActivity").dialog("close");
+	}
 }
 
 function createQuizActivity(listOfQuestions){
@@ -235,7 +235,7 @@ function createQuizActivity(listOfQuestions){
 	console.log("quiz activity");
 	currentQuestion = listOfQuestions;
 	if(currentQuestion.questionsAnswered<currentQuestion.questions.length){
-		initializeQuizDialog();
+		initializeQuizDialog(); 
 	}
 	else{
 		alert("Du er ferdig med alle spørsmål");
