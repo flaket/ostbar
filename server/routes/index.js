@@ -154,6 +154,8 @@ module.exports.register_user = function ( req, res ){
         });
     }
 
+    var User = models.User;
+
     User.create( req.body.username, req.body.password, function ( error, user ){
         if ( error ) return res.render( 'signup', { error: error } );
 
