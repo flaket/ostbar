@@ -152,7 +152,9 @@ jQuery(document).ready(function(){
 	getGame();
 	
 	var keyboardPresent = $( '#keyboardPresent' ).html();
+
 	console.log(keyboardPresent);
+
 	if ( keyboardPresent ){
 		console.log('!!! keyboard present !!!');
 	} else {
