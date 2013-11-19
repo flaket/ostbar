@@ -72,12 +72,12 @@ function setupAfterCallsReturns() {
 }
 
 function playMode(){
-	
+	//should show the "backpack" probably and maybe other stuff needed when playing the game
 }
 
 function createMode(){
 	$(".elements").show();
-	$(".schoolbagImage").show();
+	// $(".schoolbagImage").show();
 	$(".draggable").tooltip({disabled: false});
 	$("#storylineButton").show();
 
