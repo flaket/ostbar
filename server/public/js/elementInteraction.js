@@ -15,6 +15,8 @@ var gameId = 0;
 var actionTypes = null;
 var elementTypes = null;
 
+var keyboardPresent = false;
+
 function ObjectList(){
 	this.objectList = [];
 }
@@ -26,6 +28,59 @@ jQuery(document).ready(function(){
 	$(".draggable").tooltip({disabled: true});
 	$(".schoolbagImage").hide();
 	
+	getActionTypes();
+	getElementTypes();
+	getSceneTypes();
+	getGame();
+	
+	keyboardPresent = $( '#keyboardPresent' ).html();
+
+	console.log(keyboardPresent);
+
+	if ( keyboardPresent ){
+		console.log('!!! keyboard present !!!');
+		keyboardPresent = true;
+	} else {
+		console.log( '!!! keyboard not present !!!' );
+		keyboardPresent = false;
+	}
+});
+
+function setupAfterCallsReturns() {
+	console.log("currentScene:",currentScene);
+	if ( initialCallsReturned == initialCallsShouldReturn ){
+		if ( currentScene != null ){
+			var currentSceneType = currentScene.sceneType;
+			loadElementsByScene(currentScene.elements);
+			var imgUrl = currentSceneType.backgroundAvatar.url;
+			$("#mainFrame").css({
+				"background-image": "url('"+ imgUrl + "')",
+				"background-repeat": "no-repeat",
+				"background-position": "center",
+				"background-size": "cover"
+			});
+			if(keyboardPresent){
+				createMode();
+			}
+			else{
+				playMode();
+			}
+		} else {
+			choseSceneFromSceneChooser();
+		}
+	}
+}
+
+function playMode(){
+	
+}
+
+function createMode(){
+	$(".elements").show();
+	$(".schoolbagImage").show();
+	$(".draggable").tooltip({disabled: false});
+	$("#storylineButton").show();
+
 	$(".schoolbagImage").on("click", function(){
 		$(".schoolbagDialog").dialog({
 			resizable: false,
@@ -59,8 +114,7 @@ jQuery(document).ready(function(){
 			}).removeClass("ui-draggable").toggleClass("element");
 		}
 	});
-	
-	
+
 	$(".draggable").on("contextmenu rightclick",".element",function(e){
 		e.preventDefault();
 		
@@ -144,46 +198,6 @@ jQuery(document).ready(function(){
 		runAnimationEffect(currentDialog);
 		return false;
 	});
-
-
-	getActionTypes();
-	getElementTypes();
-	getSceneTypes();
-	getGame();
-	
-	var keyboardPresent = $( '#keyboardPresent' ).html();
-
-	console.log(keyboardPresent);
-
-	if ( keyboardPresent ){
-		console.log('!!! keyboard present !!!');
-	} else {
-		console.log( '!!! keyboard not present !!!' );
-	}
-});
-
-function setupAfterCallsReturns() {
-	console.log("currentScene:",currentScene);
-	if ( initialCallsReturned == initialCallsShouldReturn ){
-		if ( currentScene != null ){
-			var currentSceneType = currentScene.sceneType;
-			loadElementsByScene(currentScene.elements);
-			var imgUrl = currentSceneType.backgroundAvatar.url;
-			$("#mainFrame").css({
-				"background-image": "url('"+ imgUrl + "')",
-				"background-repeat": "no-repeat",
-				"background-position": "center",
-				"background-size": "cover"
-			});
-
-			$(".elements").show();
-			$(".schoolbagImage").show();
-			$(".draggable").tooltip({disabled: false});
-			$("#storylineButton").show();
-		} else {
-			choseSceneFromSceneChooser();
-		}
-	}
 }
 
 function choseSceneFromSceneChooser() {
@@ -230,10 +244,7 @@ function initialDoubleClickSceneAddingFunction(e){
 						"background-size": "cover"
 					});
 					$("#newWorldButton").hide();
-					$(".elements").show();
-					$(".schoolbagImage").show();
-					$(".draggable").tooltip({disabled: false});
-					$("#storylineButton").show();
+					createMode();
 					$("#newWorldDialog").dialog("close");
 					$(".img-grid").off("dblclick", "img", initialDoubleClickSceneAddingFunction);
 				}
