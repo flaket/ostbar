@@ -185,15 +185,22 @@ module.exports.mygames = function ( req, res ){
             });
         });
     } else {
-        Game.loadAllForUser( req.user.userId, function ( error, games ){
+        Game.loadAllForUserSparse( req.user.userId, function ( error, games ){
             if ( error ){
                 return res.render( 'error', { error: error } );
             }
 
-            res.render( 'games', { 
-                user: req.user, 
-                games: games
-            }); 
+            Game.loadAllForOtherUsersSparse( req.user.userId, function ( error, otherGames ){
+                if ( error ){
+                    return res.render( 'error', { error: error } );
+                }
+
+                res.render( 'games', { 
+                    user: req.user, 
+                    games: games,
+                    otherGames: otherGames
+                }); 
+            });
         });
     }
 }

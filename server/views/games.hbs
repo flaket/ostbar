@@ -1,56 +1,96 @@
 {{!< main}}
-<div class="row contentbox">
+<div class="row">
   <div class="large-12 columns">
-    <h3 style="float: left; width: 50%">Mine spill</h3>
-    <br>
-    <input id="new-game-button" type="submit" value="Nytt spill" class="button small" style="float: right;" />
-    <div id="error" {{#if error}} class="error" {{/if}}>{{error}}</div>
-    <table class="large-12 columns">
-      <thead>
-          <tr>
-              <td class="top-left">Spill-id</td>
-              <td>Navn</td>
-              <td>Laget</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-          </tr>
-      </thead>
-      <tbody>
-        {{#each games}}
-          <tr>
-            <td id="game-id">
-              {{gameId}}
-            </td>
-            <td>
-              <ul class="button-group">
-                <label for="edit-game-name-button">{{name}}</label>
-                <input id="edit-game-name-button" type="submit" value="Endre" class="button tiny success edit-game-name" style="float: right;"/>
-              </ul>
-            </td>
-            <td>
-              {{datetimeformat created}}
-            </td>
-            <td>
-              <ul class="button-group">
-                <input id="edit-game-button" type="submit" value="Rediger spill" class="button small success edit-game" />
-              </ul>
-            </td>
-            <td>
-              <ul class="button-group">
-                <input id="link-game-button" type="submit" value="Lenke" class="button small link-game" />
-              </ul>
-            </td>
-            <td>
-              <ul class="button-group">
-                <input id="delete-game-button" type="submit" value="Slett" class="button small secondary delete-game" />
-              </ul>
-            </td>
-          </tr>
-        {{/each}}
-      </tbody>
-    </table>
+    <div class="contentbox row">
+      <h3 style="float: left; width: 50%">Mine spill</h3>
+      <br>
+      <input id="new-game-button" type="submit" value="Nytt spill" class="button small" style="float: right;" />
+      <div id="error" {{#if error}} class="error" {{/if}}>{{error}}</div>
+      <table id="my-games" class="large-12 columns">
+        <thead>
+            <tr>
+                <td class="top-left">Spill-id</td>
+                <td>Navn</td>
+                <td>Laget</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+          {{#each games}}
+            <tr>
+              <td id="game-id">
+                {{gameId}}
+              </td>
+              <td>
+                <ul class="button-group">
+                  <label for="edit-game-name-button">{{name}}</label>
+                  <input id="edit-game-name-button" type="submit" value="Endre" class="button tiny success edit-game-name" style="float: right;"/>
+                </ul>
+              </td>
+              <td>
+                {{datetimeformat created}}
+              </td>
+              <td>
+                <ul class="button-group">
+                  <input id="edit-game-button" type="submit" value="Rediger spill" class="button small success edit-game" />
+                </ul>
+              </td>
+              <td>
+                <ul class="button-group">
+                  <input id="link-game-button" type="submit" value="Lenke" class="button small link-game" />
+                </ul>
+              </td>
+              <td>
+                <ul class="button-group">
+                  <input id="delete-game-button" type="submit" value="Slett" class="button small secondary delete-game" />
+                </ul>
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+    <div class="contentbox row">
+      <h3>Andre spill</h3>
+      <table id="other-games" class="large-12 columns">
+        <thead>
+            <tr>
+                <td class="top-left">Spill-id</td>
+                <td>Navn</td>
+                <td>Laget</td>
+                <td>Laget av</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+          {{#each otherGames}}
+            <tr>
+              <td id="game-id">
+                {{gameId}}
+              </td>
+              <td>
+                {{name}}
+              </td>
+              <td>
+                {{datetimeformat created}}
+              </td>
+              <td>
+                {{createdBy}}
+              </td>
+              <td>
+                <ul class="button-group">
+                  <input id="link-game-button" type="submit" value="Test spillet" class="button small others-game" />
+                </ul>
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
@@ -191,6 +231,21 @@ $(document).ready(function() {
 
     $( '#game-link-span' ).html( '<a href=' + url + '>' + url + '</a>' );
     $( '#link-game-dialog' ).dialog( 'open' );
+  });
+
+  $( '.others-game' ).click( function (){
+    var button = $(this);
+    var row = button.parent().parent().parent();
+    var gameId = parseInt( row.find( '#game-id' ).html() );
+
+    var url = document.URL;
+    url = url.replace( 'game', 'play');
+    
+    if ( url.lastIndexOf('/') != ( url.length - 1 ) ) url += '/';
+    
+    url += gameId;
+
+    window.location.href = url;
   });
 
   $( '.delete-game' ).click( function (){
