@@ -4890,10 +4890,6 @@ body {
 .textarea {
   resize: none; }
 
-/*#storylineButton {
-  margin:  auto;
-}*/
-
 .question2 {
   font-size: 50px; }
 
@@ -4904,21 +4900,6 @@ body {
   float: left;
   margin-left: 5%;
   font-size: 50px; }
-
-.randomNumber1 {
-  float: left;
-  margin-left: 5%;
-  font-size: 50px; }
-
-.operator {
-  float: left;
-  margin-left: 5%;
-  font-size: 50px; }
-
-.randomNumber2 {
-  float: left;
-  font-size: 50px;
-  margin-left: 5%; }
 
 .equals {
   float: left;
