@@ -187,8 +187,6 @@ module.exports = function ( app ){
         req.sanitize( 'frame_width' ).xss();
         req.sanitize( 'frame_height' ).xss();
         
-        console.log('element post', req.body);
-
         if ( !req.params.id ){
             req.checkBody( 'scene_id', 'scene_id (int) is required' ).isInt();
             req.sanitize( 'scene_id').toInt();
@@ -482,7 +480,6 @@ module.exports = function ( app ){
             case 'QUIZ':
                 var result = validator.validate( questions, questionsSchema );
                 
-                console.log('activity post error', util.inspect(result.errors, false, null));
                 if ( result.errors.length ) return requestError( res, { msg: result.errors, param: 'questions' } );
 
                 params = {
@@ -497,8 +494,6 @@ module.exports = function ( app ){
 
         if ( req.params.id ){
             Activity.update( req.params.id, activityType, rewardId, elementId, params, function ( error, activity ){
-                console.log( 'activity update', error, activity );
-
                 if ( error ) return requestError( res, error );
 
                 if ( activity ) return res.send( activity );
@@ -506,7 +501,6 @@ module.exports = function ( app ){
             });
         } else {
             Activity.create( activityType, rewardId, elementId, params, function ( error, activity ){            
-                console.log( 'activity create', error, activity );
                 if ( error ) return requestError( res, error );
 
                 if ( activity ) return res.send( 201, activity );

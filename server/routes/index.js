@@ -154,6 +154,8 @@ module.exports.register_user = function ( req, res ){
         });
     }
 
+    var User = models.User;
+
     User.create( req.body.username, req.body.password, function ( error, user ){
         if ( error ) return res.render( 'signup', { error: error } );
 
@@ -200,8 +202,6 @@ module.exports.game_post = function ( req, res ){
     var Game = models.Game;
 
     Game.loadByIdForUser( req.params.id, req.user.userId, function ( error, game ){
-        console.log('error:', error);
-
         if ( error ){
             return res.send( { error: error });
         }
@@ -265,8 +265,6 @@ module.exports.playgame = function ( req, res ){
     if ( errors ) return res.send( { error: errors } );
 
     var Game = models.Game;
-
-    console.log('rendering game for play');
 
     Game.loadById( req.params.id, function ( error, game ){
         if ( error ) return res.render( '404', { error: 'Spillet finnes ikke' } );
