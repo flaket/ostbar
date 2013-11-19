@@ -80,7 +80,7 @@ function addActivity(target,previousVersionDialog,index){
 				at: "center top",
 				of: "#mainFrame"
 			},
-			title: "Vel aktivitetstype",
+			title: "Velg aktivitetstype",
 			buttons:{
 				"Matte aktivitet": function(){
 					if(currentDialog.activityObject == null || currentDialog.activityIndex != 0){
