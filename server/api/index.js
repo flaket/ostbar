@@ -70,35 +70,7 @@ module.exports = function ( app ){
     // -- GAME --------------------------------------------------------------------------
 
     app.get( '/api/game/:id?', function ( req, res ){
-        var Game = models.Game;
-
-        if ( req.params.id ){
-            req.assert( 'id', 'urlparam id (int) is required' ).isInt();
-            var errors = req.validationErrors();
-            if ( errors ) return requestError( res, errors );
-        }
-        
-        req.sanitize( 'id' ).toInt();
-
-        if ( req.user ){
-            if ( req.params.id ){
-                Game.loadByIdForUser( req.params.id, req.user.userId, function ( error, game ){
-                    if ( error ) return requestError( res, error );
-
-                    if ( game ) res.send( game );
-                    else emptyResponse( res );
-                });
-            } else {
-                Game.loadAllForUser( req.user.userId, function ( error, games ){
-                    if ( error ) return requestError( res, error );
-
-                    if ( games ) res.send( games );
-                    else emptyResponse( res );
-                });
-            }
-        } else {
-            standardGETResponse( req, res, Game );
-        }
+        standardGETResponse( req, res, models.Game );
     });
 
     // -- SCENETYPE ---------------------------------------------------------------------
