@@ -70,10 +70,24 @@ Game.loadAllForUserSparse = function ( userId, callback ){
 Game.loadAllForOtherUsersSparse = function ( userId, callback ){
     if ( userId == null ) return callback( null, false );
 
-    db.query( 'SELECT * FROM game WHERE NOT user_id = ?', userId, function ( error, rows, fields ){
+    db.query( 'SELECT * FROM game WHERE NOT user_id = ? ORDER BY created DESC LIMIT 50', userId, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
 
         async.map( rows, Game.initWithDataSparse, callback );
+    });
+}
+
+Game.loadAllForUserAndOtherUsers = function ( userId, callback ){
+    if ( userId == null ) return callback( null, false );
+
+    async.parallel({
+        games: Game.loadAllForUserSparse.bind( Game, userId ),
+        otherGames: Game.loadAllForOtherUsersSparse.bind( Game, userId )
+    },
+    function ( error, results ){
+        if ( error ) callback( error, false );
+
+        callback( null, results );
     });
 }
 

@@ -173,7 +173,7 @@ module.exports.mygames = function ( req, res ){
     var Game = models.Game;
 
     if ( req.params.id ){
-        Game.loadByIdForUser( req.params.id, req.user.userId, function ( error, game ){
+        Game.loadById( req.params.id, function ( error, game ){
             if ( error ){
                 return res.render( 'error', { error: error } );
             }
@@ -185,21 +185,12 @@ module.exports.mygames = function ( req, res ){
             });
         });
     } else {
-        Game.loadAllForUserSparse( req.user.userId, function ( error, games ){
-            if ( error ){
-                return res.render( 'error', { error: error } );
-            }
-
-            Game.loadAllForOtherUsersSparse( req.user.userId, function ( error, otherGames ){
-                if ( error ){
-                    return res.render( 'error', { error: error } );
-                }
-
-                res.render( 'games', { 
-                    user: req.user, 
-                    games: games,
-                    otherGames: otherGames
-                }); 
+        Game.loadAllForUserAndOtherUsers( req.user.userId , function ( error, data ){
+            return res.render( 'games', {
+                user: req.user,
+                error: 'heisann',
+                games: data.games,
+                otherGames: data.otherGames
             });
         });
     }
@@ -230,6 +221,8 @@ module.exports.game_delete = function ( req, res ){
     var Game = models.Game;
 
     Game.delete( req.params.id, function( error, success ){
+        if ( error ) return res.render( 'error', { error: error } );
+
         res.redirect( '/game' );        
     });
 };
