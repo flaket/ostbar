@@ -1,6 +1,8 @@
 function sceneFunction(e){
 	console.log("changed scene");
-	loadSelectedScene(getSceneById(currentObjectList.objectList[inList(currentObjectList.objectList,e.target)].sceneIndex));
+	setTimeout(function(){
+		loadSelectedScene(getSceneById(currentObjectList.objectList[inList(currentObjectList.objectList,e.target)].sceneIndex));
+	},50);
 }
 
 function dialogFunction(e){
