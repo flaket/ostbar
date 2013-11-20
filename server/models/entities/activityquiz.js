@@ -96,7 +96,7 @@ ActivityQuiz.prototype.addQuestions = function ( questions, callback ){
 ActivityQuiz.delete = function ( activityQuizId, callback ){
     if ( activityQuizId == null ) return callback( 'Kan ikke slette ActivityQuiz der activityQuizId er null', false );
 
-    var query = 'DELETE FROM activity_Quiz WHERE activity_quiz_id = ?';
+    var query = 'DELETE FROM activity_quiz WHERE activity_quiz_id = ?';
 
     db.query( query, activityQuizId, function ( error, rows, fields ){
         if ( error ) return callback( error, false );
