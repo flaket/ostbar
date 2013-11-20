@@ -188,7 +188,7 @@ module.exports.mygames = function ( req, res ){
         Game.loadAllForUserAndOtherUsers( req.user.userId , function ( error, data ){
             return res.render( 'games', {
                 user: req.user,
-                error: 'heisann',
+                error: error,
                 games: data.games,
                 otherGames: data.otherGames
             });
