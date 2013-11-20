@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.14, for osx10.7 (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.32, for debian-linux-gnu (x86_64)
 --
 -- Host: localhost    Database: tegf
 -- ------------------------------------------------------
--- Server version	5.6.14
+-- Server version 5.5.32-0ubuntu0.12.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -169,7 +169,7 @@ CREATE TABLE `avatar` (
   `avatar_id` int(11) NOT NULL AUTO_INCREMENT,
   `url` varchar(50) NOT NULL,
   PRIMARY KEY (`avatar_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -178,7 +178,7 @@ CREATE TABLE `avatar` (
 
 LOCK TABLES `avatar` WRITE;
 /*!40000 ALTER TABLE `avatar` DISABLE KEYS */;
-INSERT INTO `avatar` VALUES (1,'/gfx/bg1.svg'),(2,'/gfx/bg2.jpg'),(3,'/gfx/bg3.jpg'),(4,'/gfx/bg4.jpg'),(5,'/gfx/bg5.jpg'),(6,'/gfx/bg6.jpg'),(7,'/gfx/Penguins.jpg'),(8,'/gfx/Koala.jpg'),(9,'/gfx/our/chicken_element.svg'),(10,'/gfx/our/cow_element.svg');
+INSERT INTO `avatar` VALUES (1,'/gfx/bg1.svg'),(2,'/gfx/bg2.jpg'),(3,'/gfx/bg3.jpg'),(4,'/gfx/bg4.jpg'),(5,'/gfx/bg5.jpg'),(6,'/gfx/bg6.jpg'),(7,'/gfx/Penguins.jpg'),(8,'/gfx/Koala.jpg'),(9,'/gfx/our/chicken_element.svg'),(10,'/gfx/our/cow_element.svg'),(11,'/gfx/demoPictures/cake.png'),(12,'/gfx/demoPictures/cake2.png'),(13,'/gfx/demoPictures/chicken2.png'),(14,'/gfx/demoPictures/chicken.png'),(15,'/gfx/demoPictures/cow.png'),(16,'/gfx/demoPictures/grandma.png'),(17,'/gfx/demoPictures/hen_house.png'),(18,'/gfx/demoPictures/little girl.png'),(19,'/gfx/demoPictures/livingroom.png');
 /*!40000 ALTER TABLE `avatar` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -246,7 +246,7 @@ CREATE TABLE `element_type` (
   `sound_id` int(11) NOT NULL,
   `world_id` int(11) NOT NULL,
   PRIMARY KEY (`element_type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -255,7 +255,7 @@ CREATE TABLE `element_type` (
 
 LOCK TABLES `element_type` WRITE;
 /*!40000 ALTER TABLE `element_type` DISABLE KEYS */;
-INSERT INTO `element_type` VALUES (1,7,1,1),(2,8,1,1),(3,9,1,1),(4,10,1,1);
+INSERT INTO `element_type` VALUES (1,7,1,1),(2,8,1,1),(3,9,1,1),(4,10,1,1),(5,11,1,1),(6,12,1,1),(7,13,1,1),(8,14,1,1),(9,15,1,1),(10,16,1,1),(12,18,1,1);
 /*!40000 ALTER TABLE `element_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -565,7 +565,7 @@ CREATE TABLE `scenetype` (
   `background_avatar_id` int(11) NOT NULL,
   `world_id` int(11) NOT NULL,
   PRIMARY KEY (`scenetype_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -574,7 +574,7 @@ CREATE TABLE `scenetype` (
 
 LOCK TABLES `scenetype` WRITE;
 /*!40000 ALTER TABLE `scenetype` DISABLE KEYS */;
-INSERT INTO `scenetype` VALUES (1,1,1),(2,2,2),(3,3,3),(4,4,4),(5,5,5),(6,6,6);
+INSERT INTO `scenetype` VALUES (1,1,1),(2,2,2),(3,3,3),(4,4,4),(5,5,5),(6,6,6),(7,17,1),(8,19,1);
 /*!40000 ALTER TABLE `scenetype` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -674,7 +674,7 @@ CREATE TABLE `world` (
 
 LOCK TABLES `world` WRITE;
 /*!40000 ALTER TABLE `world` DISABLE KEYS */;
-INSERT INTO `world` VALUES (1,'Bondegård'),(2,'Verdensrommet'),(3,'Skolegården'),(4,'Hjemme'),(5,'Snøverden'),(6,'Kjøkkenet');
+INSERT INTO `world` VALUES (1,'Bondegrd'),(2,'Verdensrommet'),(3,'Skolegrden'),(4,'Hjemme'),(5,'Snvvvvvvvverden'),(6,'Kjkkkkkkkkkenet');
 /*!40000 ALTER TABLE `world` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -687,4 +687,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-11-14 15:59:29
+-- Dump completed on 2013-11-20 11:31:53
