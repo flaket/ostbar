@@ -60,8 +60,6 @@ ActivityMath.initWithData = function ( data, callback ){
 };
 
 ActivityMath.create = function ( args, callback ){
-    console.log('ActivityMath.create called with params', args);
-
     var activityId = args.activityId, 
         numbersRangeFrom = args.numbersRangeFrom, 
         numbersRangeTo = args.numbersRangeTo, 
