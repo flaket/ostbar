@@ -8,7 +8,6 @@ function addScene(target,previousVersionDialog,index){
 		};
 		$(target).effect("transfer", option, 1000);
 
-		// saveContentFromMainFrame();
 		var chooseScene = $(".chooseSceneDialog");
 
 		var html = '';
@@ -99,21 +98,21 @@ function addActivity(target,previousVersionDialog,index){
 						}
 						currentDialog.activityIndex = 0;
 						var mathObject = new MathActivity();						
-						console.log(currentObjectList.objectList);
+						// console.log(currentObjectList.objectList);
 						currentDialog.activityObject = mathObject;
-						console.log("new mathobject");
-						console.log(currentDialog);
-						console.log("\n");
+						// console.log("new mathobject");
+						// console.log(currentDialog);
+						// console.log("\n");
 						createNewMathActivity(mathObject);
 					}
 					else if(currentDialog.activityObject!=null && currentDialog.activityIndex == 0){
-						console.log("refresh math object");
-						console.log(currentDialog);
-						console.log("\n");
+						// console.log("refresh math object");
+						// console.log(currentDialog);
+						// console.log("\n");
 						createNewMathActivity(currentDialog.activityObject);
 					}
 					if(!currentDialog.activityClickActionMade && currentDialog.activityIndex == 0){
-						console.log("added the click");
+						// console.log("added the click");
 						$(target).on("click", mathActivityFunction);
 						currentDialog.activityClickActionMade = true;
 					}
@@ -170,17 +169,17 @@ function addActivity(target,previousVersionDialog,index){
 						}
 						currentDialog.activityIndex = 2;
 						var questionList = new QuizActivity();
-						console.log(currentObjectList.objectList);
+						// console.log(currentObjectList.objectList);
 						currentDialog.activityObject = questionList;
-						console.log("new questionList");
-						console.log(currentDialog);
-						console.log("\n");
+						// console.log("new questionList");
+						// console.log(currentDialog);
+						// console.log("\n");
 						createNewQuizActivity(questionList,true);
 					}
 					else if(currentDialog.activityObject!=null && currentDialog.activityIndex == 2){
-						console.log("refresh quiz object");
-						console.log(currentDialog);
-						console.log("\n");
+						// console.log("refresh quiz object");
+						// console.log(currentDialog);
+						// console.log("\n");
 						createNewQuizActivity(currentDialog.activityObject,true);
 					}
 					if(!currentDialog.activityClickActionMade && currentDialog.activityIndex == 2){

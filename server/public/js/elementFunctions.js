@@ -1,5 +1,5 @@
 function sceneFunction(e){
-	console.log("changed scene");
+	// console.log("changed scene");
 	setTimeout(function(){
 		loadSelectedScene(getSceneById(currentObjectList.objectList[inList(currentObjectList.objectList,e.target)].sceneIndex));
 	},50);

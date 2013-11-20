@@ -83,8 +83,8 @@ function createAnotherQuestion(questionObject, isNewGame){
 }
 
 function resetFields(isNewGame){
-	console.log("Question object is: ");
-	console.log(currentQuestion);
+	// console.log("Question object is: ",currentQuestion);
+	
 
 
 	$(".numberOfQuestions").text(currentQuestion.questionsMade);
@@ -177,7 +177,7 @@ function createNewQuestionObject(questionName, alternatives){
 			correctAlternatives.push(questionAlternatives[i].alternative);
 		}
 		else{
-			console.log(questionAlternatives[i]);
+			// console.log(questionAlternatives[i]);
 		}
 	}
 	
@@ -200,7 +200,7 @@ function finalizeQuiz(){
 		resetFields(false);
 
 		for(var i=0; i<currentDialog.activityObject.questions.length; i++){
-		console.log(currentDialog.activityObject.questions[i].constructor.name == "Object")
+		// console.log(currentDialog.activityObject.questions[i].constructor.name == "Object")
 			if(currentDialog.activityObject.questions[i].constructor.name == "Object"){
 				var objectAlternatives = currentDialog.activityObject.questions[i].alternatives;
 				var correctAlternativeId = currentDialog.activityObject.questions[i].correctAlternatives;
@@ -217,22 +217,21 @@ function finalizeQuiz(){
 				}
 			}
 			else{
-				console.log("heisann...");
+				
 			}
 		}
 		
 		saveActivityByElementId(currentDialog.activityIndex, currentDialog.activityObject, currentDialog.element_id);
-		console.log("lagrer...");
-		console.log(currentQuestion);
+		// console.log(currentQuestion);
 
 		$(".quizActivity").dialog("close");
 	}
 }
 
 function createQuizActivity(listOfQuestions){
-	console.log(listOfQuestions.questions);
+	// console.log(listOfQuestions.questions);
 
-	console.log("quiz activity");
+	// console.log("quiz activity");
 	currentQuestion = listOfQuestions;
 	if(currentQuestion.questionsAnswered<currentQuestion.questions.length){
 		initializeQuizDialog(); 
@@ -303,42 +302,42 @@ function checkQuizAnswer(){
 	var correctAnswer = currentQuestion.questions[currentQuestion.questionsAnswered];
 	if($("#checkAlt1").is(":checked")){
 		if(correctAnswer.alternatives[0].quizQuestionAlternativeId == correctAnswer.correctAlternatives){
-			console.log("RIKTIG");
+			// console.log("RIKTIG");
 			correctQuestionsAnswered++;
 			resetAnswer();
 			currentQuestion.questionsAnswered++;
 			showQuestions();
 		}
 		else{
-			console.log("FEIL");
+			// console.log("FEIL");
 			resetAnswer();
 			alert("Feil svar, du må svare riktig for å gå videre");
 		}
 	}
 	else if($("#checkAlt2").is(":checked")){
 		if(correctAnswer.alternatives[1].quizQuestionAlternativeId == correctAnswer.correctAlternatives){
-			console.log("RIKTIG");
+			// console.log("RIKTIG");
 			correctQuestionsAnswered++;
 			resetAnswer();
 			currentQuestion.questionsAnswered++;
 			showQuestions();
 		}
 		else{
-			console.log("FEIL");
+			// console.log("FEIL");
 			resetAnswer();
 			alert("Feil svar, du må svare riktig for å gå videre");
 		}
 	}
 	else if($("#checkAlt3").is(":checked")){
 		if(correctAnswer.alternatives[2].quizQuestionAlternativeId == correctAnswer.correctAlternatives){
-			console.log("RIKTIG");
+			// console.log("RIKTIG");
 			correctQuestionsAnswered++;
 			resetAnswer();
 			currentQuestion.questionsAnswered++;
 			showQuestions();
 		}
 		else{
-			console.log("FEIL");
+			// console.log("FEIL");
 			resetAnswer();
 			alert("Feil svar, du må svare riktig for å gå videre");
 		}

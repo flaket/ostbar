@@ -3,14 +3,14 @@ var currentMathObject = null;
 $(document).ready(function(){
 
 	$("#all").change(function(){
-		console.log("checking all the boxes!");
+		// console.log("checking all the boxes!");
 		$(".operatorCheckboxes").prop('checked', $("#all").is(':checked'));
 	});
 
 	$(".operatorCheckboxes").change(function(){
 		var allChecked = $(".operatorCheckboxes:checked").length == $(".operatorCheckboxes").length;
 		if(allChecked)
-			console.log("all checked");
+			// console.log("all checked");
 		$(".allOperatorCheckboxes").prop('checked', allChecked);
 	});
 });
@@ -158,7 +158,7 @@ function resetScoreAndFields(){
 }
 
 function createMathActivity(mathObject){
-	console.log("math activity");
+	// console.log("math activity");
 	afterParametersAreSetView();
 	currentMathObject = mathObject;
 	
@@ -195,7 +195,7 @@ function initializeMathDialog(){
 }
 
 function beforeParametersAreSetView(){
-	console.log(currentMathObject);
+	// console.log(currentMathObject);
 	$(".question1").css({"display": "block"});
 	$("#lownumber").val(currentMathObject.lowestNumber).css({"display": "block"});
 	$("#highnumber").val(currentMathObject.highestNumber).css({"display": "block"});
@@ -254,7 +254,7 @@ function checkAnswer(){
 	
 	var answer = combineAnswer(currentMathObject.question);
 	
-	console.log(answer);
+	// console.log(answer);
 
 	if($(".answerField").val() == ""){
 		alert("Please type in a number");
@@ -364,10 +364,8 @@ function createQuestion(){
 			while(arr[i*2+2]==0){
 				updateRandomValueAtPositions(arr,[i*2+2]);	
 			}
-			console.log(currentMathObject.question.toString());
 
 			if(arr[i*2] < arr[i*2+2]){
-				console.log("swap")
 				var temp1 = arr[i*2];
 				var temp2 = arr[i*2+2];
 				arr[i*2] = temp2;
@@ -376,14 +374,12 @@ function createQuestion(){
 
 			if(arr[i*2] % arr[i*2+2] != 0){
 				while(arr[i*2] % arr[i*2+2] != 0 || arr[i*2] == 0 || arr[i*2+2] == 0){
-					console.log("changing values");
 					updateRandomValueAtPositions(arr,[i*2,i*2+2]);
 				}
 			}
 		}
 	};
 
-	console.log(currentMathObject.question.toString());
 	$(".questionText").text(currentMathObject.question.join(" "));
 
 }
@@ -392,7 +388,7 @@ function combineAnswer(list){
 	var tempList = list.slice(0); //copy
 
 	var index = 0;
-	console.log(tempList.toString());
+	// console.log(tempList.toString());
 	while(index<tempList.length){
 		if(tempList[index] == "*"){
 			var num1 = tempList[index-1];
@@ -400,7 +396,7 @@ function combineAnswer(list){
 			var num2 = tempList[index+1];
 			var answer = calculateAnswer(num1,num2,op);
 			tempList.splice(index-1,3,answer); //remove the 3 affected fields and insert the answer on that position.
-			console.log(tempList.toString());
+			// console.log(tempList.toString());
 			index = index-2;
 		}
 		index++;
@@ -412,7 +408,7 @@ function combineAnswer(list){
 		var num2 = parseFloat(tempList.shift());
 		var answer = calculateAnswer(num1,num2,op);
 		tempList.unshift(answer); //insert at the start of the list
-		console.log(tempList.toString());
+		// console.log(tempList.toString());
 	}
 	return tempList[0];
 }
@@ -448,7 +444,7 @@ function chooseRandomOperators(possibleNumbersOfOperators){
 	for(var i=0; i<possibleNumbersOfOperators; i++){
 		chosenOperator += choosableOperators.charAt(Math.floor(Math.random() * choosableOperators.length));
 	}
-	console.log("chosen operators are : " + chosenOperator);
+	// console.log("chosen operators are : " + chosenOperator);
 	return chosenOperator;
 }
 

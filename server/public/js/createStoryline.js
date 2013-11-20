@@ -64,7 +64,7 @@ $(function createStorylineView(){
 				for ( prop in names ){
 					var count = names[prop];
 
-					console.log('count is', count, 'for', prop);
+					// console.log('count is', count, 'for', prop);
 
 					namesString += prop;
 					if ( count > 1 ) namesString += ' (' + count + ')';

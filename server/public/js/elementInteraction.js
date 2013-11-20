@@ -35,19 +35,19 @@ jQuery(document).ready(function(){
 	
 	keyboardPresent = $( '#keyboardPresent' ).html();
 
-	console.log(keyboardPresent);
+	// console.log(keyboardPresent);
 
 	if ( keyboardPresent ){
-		console.log('!!! keyboard present !!!');
+		// console.log('!!! keyboard present !!!');
 		keyboardPresent = true;
 	} else {
-		console.log( '!!! keyboard not present !!!' );
+		// console.log( '!!! keyboard not present !!!' );
 		keyboardPresent = false;
 	}
 });
 
 function setupAfterCallsReturns() {
-	console.log("currentScene:",currentScene);
+	// console.log("currentScene:",currentScene);
 	if ( initialCallsReturned == initialCallsShouldReturn ){
 		if ( currentScene != null ){
 			var currentSceneType = currentScene.sceneType;
@@ -143,11 +143,11 @@ function createMode(){
 				var dia = new Dialog(target,elementTypeId);
 				currentDialog = dia;
 				currentObjectList.objectList.push(dia);
-				console.log("new object");
+				// console.log("new object");
 			}
 		}
-		console.log(currentScene);
-		console.log(sceneList);
+		// console.log(currentScene);
+		// console.log(sceneList);
 		
 		var previousVersionDialog = $.extend(true,{},currentDialog); // copy
 		
@@ -255,7 +255,7 @@ function initialDoubleClickSceneAddingFunction(e){
 				}
 			},
 			error: function ( jqXHR, textStatus, errorThrown ){
-				console.log('post scene error:', jqXHR, textStatus, errorThrown);
+				// console.log('post scene error:', jqXHR, textStatus, errorThrown);
 			},
 			dataType: "json" 
 		});
@@ -267,7 +267,7 @@ function addSceneToGame(){
 }
 
 function doubleClickSceneAddingFunction(e){
-	console.log("getting here");
+
 	var sceneTypeId = e.target.getAttribute('name');
 
 	var currentSceneType = null;
@@ -294,7 +294,7 @@ function doubleClickSceneAddingFunction(e){
 				} else {
 					var scene = response;
 					scene.objectList = new ObjectList();
-					console.log(scene);
+					// console.log(scene);
 					sceneList.push(scene);
 					currentDialog.sceneIndex = response.sceneId;
 
@@ -321,7 +321,7 @@ function loadSelectedScene(scene){
 	$("#mainFrame").effect("fade",5,loadScenecallBack);
 
 	
-	console.log(sceneList);
+	// console.log(sceneList);
 }
 
 function loadScenecallBack(){
@@ -336,7 +336,7 @@ function loadScenecallBack(){
 		});
 		$("#mainFrame").fadeIn();
 		getUpdatedElements(function(error,success){
-			if(error){ console.log("Failed to get Updated Scenes:" + error); return;}
+			if(error){ /*console.log("Failed to get Updated Scenes:" + error);*/ return;}
 			if(success){
 				loadElementsByScene(currentScene.elements);
 		}
@@ -366,12 +366,12 @@ function saveElements(){
 					if ( response.redirect ){
 						window.location.href = response.redirect;
 					} else {
-						console.log("new element: ", response)
+						// console.log("new element: ", response);
 						temp.element_id = response.elementId;
 					}
 				},
 				error: function ( jqXHR, textStatus, errorThrown ){
-					console.log('post element error:', jqXHR, textStatus, errorThrown);
+					// console.log('post element error:', jqXHR, textStatus, errorThrown);
 				},
 				dataType: "json"
 			});
@@ -393,11 +393,11 @@ function saveElements(){
 					if ( response.redirect ){
 						window.location.href = response.redirect;
 					} else {
-						console.log("updated element: ",response);
+						// console.log("updated element: ",response);
 					}
 				},
 				error: function ( jqXHR, textStatus, errorThrown ){
-					console.log('update element error:', jqXHR, textStatus, errorThrown);
+					// console.log('update element error:', jqXHR, textStatus, errorThrown);
 				},
 				dataType: "json"
 			});
@@ -413,11 +413,11 @@ function deleteElementById(elementId){
 			if ( response.redirect ){
 				window.location.href = response.redirect;
 			} else {
-				console.log("Deleted element: ",response);
+				// console.log("Deleted element: ",response);
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('update element error:', jqXHR, textStatus, errorThrown);
+			// console.log('update element error:', jqXHR, textStatus, errorThrown);
 		},
 		dataType: "json"
 	});
@@ -451,10 +451,7 @@ function loadElementsByScene(elements){
 	}
 
 	for (var i = 0; i < temp.length ; i++) {
-		// console.log(temp[i]);
-		// console.log(temp[i].children[0].children[0]);
 		var target = temp[i].children[0].children[0];
-		// console.log("");
 		
 		var dia = new Dialog(target,elements[i].elementTypeId);
 		dia.element_id = elements[i].elementId;
@@ -464,30 +461,30 @@ function loadElementsByScene(elements){
 			if(elements[i].actionTypes[j].name.localeCompare("TO_ACTIVITY") == 0){
 				var activityId = elements[i].actionTypes[j].data;
 				addActivityByIdToElement(target,dia,activityId,function(error,success){
-					if(error){ console.log("error thrown" + error); return;}
+					if(error){ /*console.log("error thrown" + error);*/ return;}
 					
 					if(success){
-						console.log("added existing activity to the element");
+						// console.log("added existing activity to the element");
 					}
 					return;
 				});
 			}
 			if(elements[i].actionTypes[j].name.localeCompare("DIALOG") == 0){
-				console.log("adding existing dialog to the element");
+				// console.log("adding existing dialog to the element");
 				dia.dialogData = elements[i].actionTypes[j].data;
 				dia.dialogChecked = true;
 				$(target).on("click", dialogFunction);
 				dia.dialogClickActionMade = true;
 			}
 			if(elements[i].actionTypes[j].name.localeCompare("ANIMATION") == 0){
-				console.log("adding the existing animation to the element");
+				// console.log("adding the existing animation to the element");
 				dia.animationIndex = parseInt(elements[i].actionTypes[j].data);
 				dia.animationChecked = true;
 				$(target).on("click", animationFunction);
 				dia.animationClickActionMade = true;
 			}
 			if(elements[i].actionTypes[j].name.localeCompare("TO_SCENE") == 0){
-				console.log("adding the existing scene to the element");
+				// console.log("adding the existing scene to the element");
 				dia.sceneIndex = parseInt(elements[i].actionTypes[j].data);
 				dia.sceneChecked = true;
 				$(target).on("click", sceneFunction);
@@ -498,7 +495,7 @@ function loadElementsByScene(elements){
 		currentObjectList.objectList.push(dia);
 	
 	};
-	console.log("current Scene with elements loaded", currentScene);
+	// console.log("current Scene with elements loaded", currentScene);
 }
 
 function removeElementsFromView(){
@@ -525,12 +522,11 @@ function saveActivityByElementId(activityIndex,activityObject,elementID){
 					if ( response.redirect ){
 						window.location.href = response.redirect;
 					} else {
-						console.log(response);
 						activityObject.activity_id = response.activityId;
 					}
 				},
 				error: function ( jqXHR, textStatus, errorThrown ){
-					console.log('post activity error:', jqXHR, "", textStatus, "", errorThrown);
+					// console.log('post activity error:', jqXHR, "", textStatus, "", errorThrown);
 				},
 
 				dataType: "json"
@@ -550,13 +546,11 @@ function saveActivityByElementId(activityIndex,activityObject,elementID){
 					if ( response.redirect ){
 						window.location.href = response.redirect;
 					} else {
-						//console.log(response);
 						activityObject.activity_id = response.activityId;
-						console.log(response);
 					}
 				},
 				error: function ( jqXHR, textStatus, errorThrown ){
-					console.log('post activity error:', jqXHR, textStatus, errorThrown);
+					// console.log('post activity error:', jqXHR, textStatus, errorThrown);
 				},
 				dataType: "json"
 			}); 
@@ -580,7 +574,7 @@ function saveActivityByElementId(activityIndex,activityObject,elementID){
 					if ( response.redirect ){
 						window.location.href = response.redirect;
 					} else {
-						console.log(response);
+
 					}
 				},
 				error: function ( jqXHR, textStatus, errorThrown ){
@@ -604,7 +598,7 @@ function saveActivityByElementId(activityIndex,activityObject,elementID){
 					if ( response.redirect ){
 						window.location.href = response.redirect;
 					} else {
-						//console.log(response);
+						
 					}
 				},
 				error: function ( jqXHR, textStatus, errorThrown ){
@@ -630,7 +624,7 @@ function addActivityByIdToElement(target,dialogObject,activityID,callBack){
 					dialogObject.activityObject = mathObject;
 					dialogObject.activityIndex = 0;
 					dialogObject.activityChecked = true;
-					console.log("math load");
+					// console.log("math load");
 					$(target).on("click", mathActivityFunction);
 					dialogObject.activityClickActionMade = true;
 					return callBack(error,true);}
@@ -639,7 +633,7 @@ function addActivityByIdToElement(target,dialogObject,activityID,callBack){
 					dialogObject.activityObject = null; //create new language object based on database stored object and attach
 					dialogObject.activityIndex = 1;
 					dialogObject.activityChecked = true;
-					console.log("lang load");
+					// console.log("lang load");
 					$(target).on("click", languageActivityFunction);
 					dialogObject.activityClickActionMade = true;
 					return callBack(error,true);
@@ -649,7 +643,7 @@ function addActivityByIdToElement(target,dialogObject,activityID,callBack){
 					dialogObject.activityObject = new QuizActivity(response); 
 					dialogObject.activityIndex = 2;
 					dialogObject.activityChecked = true;
-					console.log("quiz load");
+					// console.log("quiz load");
 					$(target).on("click", quizActivityFunction);
 					dialogObject.activityClickActionMade = true;
 					return callBack(error,true);
@@ -660,7 +654,7 @@ function addActivityByIdToElement(target,dialogObject,activityID,callBack){
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('get activity error:', jqXHR, "", textStatus, "", errorThrown);
+			// console.log('get activity error:', jqXHR, "", textStatus, "", errorThrown);
 		},
 	});
 }
@@ -677,12 +671,12 @@ function deleteActivityByIdFromElement(elementID,activityID){
 			if ( response.redirect ){
 				window.location.href = response.redirect;
 			} else {
-				console.log("Deleted Activity", response);
+				// console.log("Deleted Activity", response);
 
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('delete activity error:', jqXHR, "", textStatus, "", errorThrown);
+			// console.log('delete activity error:', jqXHR, "", textStatus, "", errorThrown);
 		},
 	});	
 }
@@ -699,11 +693,11 @@ function addDialogDataToElement(dialogObject,actionType){
 			if ( response.redirect ){
 				window.location.href = response.redirect;
 			} else {
-				console.log("added dialog action to Element",response);
+				// console.log("added dialog action to Element",response);
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('post dialog error:', jqXHR, "", textStatus, "", errorThrown);
+			// console.log('post dialog error:', jqXHR, "", textStatus, "", errorThrown);
 		},
 	});	
 }
@@ -720,11 +714,11 @@ function addAnimationToElement(dialogObject,actionType){
 			if ( response.redirect ){
 				window.location.href = response.redirect;
 			} else {
-				console.log("added Animation action to Element",response);
+				// console.log("added Animation action to Element",response);
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('post animation error:', jqXHR, "", textStatus, "", errorThrown);
+			// console.log('post animation error:', jqXHR, "", textStatus, "", errorThrown);
 		},
 	});
 }
@@ -741,11 +735,11 @@ function addSceneToElement(dialogObject,actionType){
 			if ( response.redirect ){
 				window.location.href = response.redirect;
 			} else {
-				console.log("added Scene action to Element",response);
+				// console.log("added Scene action to Element",response);
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('post scene error:', jqXHR, "", textStatus, "", errorThrown);
+			// console.log('post scene error:', jqXHR, "", textStatus, "", errorThrown);
 		},
 	});	
 }
@@ -761,11 +755,11 @@ function deleteActionTypeFromElement(dialogObject,actionType){
 			if ( response.redirect ){
 				window.location.href = response.redirect;
 			} else {
-				console.log("Deleted action",response);
+				// console.log("Deleted action",response);
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('Delete actionType error:', jqXHR, "", textStatus, "", errorThrown);
+			// console.log('Delete actionType error:', jqXHR, "", textStatus, "", errorThrown);
 		},
 	});	
 }
@@ -778,14 +772,14 @@ function getActionTypes(){
 			if ( response.redirect ){
 				window.location.href = response.redirect;
 			} else {
-				console.log("ActionTypes",response);
+				// console.log("ActionTypes",response);
 				actionTypes = response;
 			}
 			initialCallsReturned++;
 			setupAfterCallsReturns();
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('get activityType error:', jqXHR, "", textStatus, "", errorThrown);
+			// console.log('get activityType error:', jqXHR, "", textStatus, "", errorThrown);
 		},
 	});
 }
@@ -798,7 +792,7 @@ function getElementTypes(){
 			if ( response.redirect ){
 				window.location.href = response.redirect;
 			} else {
-				console.log("ElementTypes",response);
+				// console.log("ElementTypes",response);
 				elementTypes = response;
 			}
 			initialCallsReturned++;
@@ -806,7 +800,7 @@ function getElementTypes(){
 			loadElementTypesIntoSideBar();
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('get elementType error:', jqXHR, "", textStatus, "", errorThrown);
+			// console.log('get elementType error:', jqXHR, "", textStatus, "", errorThrown);
 		},
 	});	
 }
@@ -856,7 +850,7 @@ function getSceneTypes(){
 			setupAfterCallsReturns();
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('get scenetype error:', textStatus, errorThrown);
+			// console.log('get scenetype error:', textStatus, errorThrown);
 		},
 		dataType: "json"
 	});
@@ -895,7 +889,7 @@ function getGame(){
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('get game error:', textStatus, errorThrown);	
+			// console.log('get game error:', textStatus, errorThrown);	
 		}
 	});
 }
@@ -916,12 +910,12 @@ function getUpdatedElements(callBack){
 					var scene = currentGame.scenes[key];
 					sceneList[key].elements = scene.elements;
 				}
-				console.log(sceneList);
+				// console.log(sceneList);
 				return callBack(error,true);
 			}
 		},
 		error: function ( jqXHR, textStatus, errorThrown ){
-			console.log('get game error:', textStatus, errorThrown);
+			// console.log('get game error:', textStatus, errorThrown);
 			return callBack(error,false);
 		}
 	});
@@ -944,7 +938,6 @@ function loadElementTypesIntoSideBar(){
 		var name = elementTypes[i].avatar.url;
 		name = name.split(".")[0];
 		name = name.split("/").slice(-1).toString();
-		// console.log(name);
 		var div = '<div class="elements" id="'+elementTypeId+'">';
 		div += '<img name="' + name + '" src="' + url + '" width ="100" height="150">';
 		div += '</div>';
